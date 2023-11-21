@@ -1,0 +1,9 @@
+
+7
+java:S1220""Move this file to a named package.8ÂÌäÂ½1
+o
+java:S3776	"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(Çµí‘8 ÍäÂ½1
+f
+java:S3252"IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(¢¡´8¢ÍäÂ½1
+B
+java:S1128"%Remove this unused import 'java.awt'.(ï´µ©8¥ÍäÂ½1

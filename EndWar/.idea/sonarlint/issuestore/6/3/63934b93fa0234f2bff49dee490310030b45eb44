@@ -1,0 +1,14 @@
+
+i	java:S101"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(è¥ÓÕ8ô∞‘¿Ω1
+X	java:S125"<This block of commented-out lines of code should be removed.( ®ûË8±∞‘¿Ω1
+X	java:S125"<This block of commented-out lines of code should be removed.(¸ú±î8≥∞‘¿Ω1
+H
+java:S1128"&Remove this unused import 'tile.Tile'.(º÷¬«˙ˇˇˇˇ8ΩóÂ∆æ1
+O
+java:S1128"2Remove this unused import 'javax.imageio.ImageIO'.(ëÁ‘˚8ΩóÂ∆æ1
+J
+java:S1128"(Remove this unused import 'javax.swing'.(ÃÌø‹¸ˇˇˇˇ8ΩóÂ∆æ1
+B
+java:S1128"%Remove this unused import 'java.awt'.(Ô¥µ©8ΩóÂ∆æ1
+R
+java:S1128	"0Remove this unused import 'java.io.IOException'.(™∫ª⁄˝ˇˇˇˇ8ΩóÂ∆æ1

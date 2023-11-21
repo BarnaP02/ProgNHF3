@@ -1,0 +1,16 @@
+
+C
+java:S1604
+"(Make this anonymous inner class a lambda(Ô¶µÿşÿÿÿÿ
+0
+java:S1220""Move this file to a named package.
+_
+java:S3252"IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(¢¡´
+;
+java:S1128"%Remove this unused import 'java.awt'.(ï´µ©
+S
+java:S1128"8Remove this unused import 'java.awt.event.MouseAdapter'.( ÜÍÁûÿÿÿÿ
+L
+java:S1128"6Remove this unused import 'java.awt.event.MouseEvent'.(›õ
+M
+java:S1128"2Remove this unused import 'javax.swing.ImageIcon'.(ßöèóûÿÿÿÿ
