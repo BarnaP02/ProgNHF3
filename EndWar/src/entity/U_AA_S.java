@@ -25,13 +25,17 @@ public class U_AA_S extends SuperUnit implements SUInterface {
     public U_AA_S(){}
 
     public U_AA_S(GamePanel gp, int tileX, int tileY){
-        imgList = new ArrayList<>();
+        //imgList = new ArrayList<>();
         type = "AAS";
         setCurrentTile(gp,tileX,tileY);
+        setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
         direction = 3;
         movementRange = 2;
         traverseSpeed = new double[]{1,10,10,0.6,10,10};
+        selectedSound.setFile(13);
+        moveSound.setFile(2);
+        attackSound.setFile(0);
     }
 }

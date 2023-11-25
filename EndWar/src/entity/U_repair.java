@@ -25,12 +25,16 @@ public class U_repair extends SuperUnit implements SUInterface {
     public U_repair(){}
 
     public U_repair(GamePanel gp, int tileX, int tileY){
-        imgList = new ArrayList<>();
+        //imgList = new ArrayList<>();
         type = "repair";
         setCurrentTile(gp,tileX,tileY);
+        setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
         direction = 2;
         traverseSpeed = new double[]{1,10,10,0.6,10,10};
+        selectedSound.setFile(13);
+        moveSound.setFile(2);
+        attackSound.setFile(0);
     }
 }

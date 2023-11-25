@@ -67,3 +67,15 @@ E
 src/entity/U_sub.java,4\e\4e309b3a93cdfa25d3910b5d8b78d679bcfc4391
 M
 src/entity/U_transport_P.java,2\4\24dd0b754933c6f7a78499dec5abe61038e49a34
+I
+src/entity/Structure.java,1\e\1e7954f279d3bd1ac099d422aeadba8d05bcb9c0
+I
+src/entity/U_carrier.java,0\8\089ca26aca46cb7c7325cd21ec89ba69e7353449
+I
+src/entity/unit2Tile.java,a\f\af34aafa362939d0fe31db2d57b2d3a45b745ee9
+L
+src/entity/U_battleship.java,7\9\7915999a393931bf9cedc5f6d13fa66129c18c0b
+G
+src/entity/U_cargo.java,5\2\526c021b88fd9b10a33980f3be416177c075ab7e
+C
+src/main/Sound.java,4\0\40b07cb713f9534671f9b7ad0f9fe764dae17d6f

@@ -25,13 +25,17 @@ public class U_infantry_L extends SuperUnit implements SUInterface {
     public U_infantry_L(){}
 
     public U_infantry_L(GamePanel gp, int tileX, int tileY){
-        imgList = new ArrayList<>();
+        //imgList = new ArrayList<>();
         type = "infantryL";
         setCurrentTile(gp,tileX,tileY);
+        setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
         direction = 3;
         movementRange = 1;
         traverseSpeed = new double[]{1,1.5,1,1,10,10};
+        selectedSound.setFile(13);
+        moveSound.setFile(12);
+        attackSound.setFile(11);
     }
 }

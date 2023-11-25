@@ -69,6 +69,7 @@ public class Cruser extends Entity{
                 //hover = hover.getBorder(5);
             }
             hover = gp.Grid[hover.getCoords()[0]][hover.getCoords()[1]-1];
+            gp.playSFX(4);
             if(fromLeft) {
                 screenX -= gp.tileWidth / 2;
             }
@@ -95,6 +96,7 @@ public class Cruser extends Entity{
                 //hover = hover.getBorder(3);
             }
             hover = gp.Grid[hover.getCoords()[0]][hover.getCoords()[1]+1];
+            gp.playSFX(4);
             if(fromLeft) {
                 screenX -= gp.tileWidth / 2;
             }
@@ -111,6 +113,7 @@ public class Cruser extends Entity{
             last_hover = hover;
             //hover = hover.getBorder(1);
             hover = gp.Grid[hover.getCoords()[0]-1][hover.getCoords()[1]];
+            gp.playSFX(4);
             if (!nearScreenLeft() || nearLeftEdge()){      //ha nincs közel a palya szelehez akkor o mozog, egyebkent a palya
                 screenX -= gp.tileWidth;
             }
@@ -121,6 +124,7 @@ public class Cruser extends Entity{
             last_hover = hover;
             //hover = hover.getBorder(4);
             hover = gp.Grid[hover.getCoords()[0]+1][hover.getCoords()[1]];
+            gp.playSFX(4);
             if (!nearScreenRight() || nearRightEdge()){      //ha nincs közel a palya szelehez akkor o mozog, egyebkent a palya
                 screenX += gp.tileWidth;
             }

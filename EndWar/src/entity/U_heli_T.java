@@ -27,9 +27,10 @@ public class U_heli_T extends SuperUnit implements SUInterface {
 
     public U_heli_T(GamePanel gp, int tileX, int tileY){
         //slowNum = 59;
-        imgList = new ArrayList<>();
+        //imgList = new ArrayList<>();
         type = "heliT";
         setCurrentTile(gp,tileX,tileY);
+        setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
         direction = 3;
@@ -37,5 +38,8 @@ public class U_heli_T extends SuperUnit implements SUInterface {
         isAvian = true;
         movementRange = 4;
         traverseSpeed = new double[]{1,1,1,1,1,1};
+        selectedSound.setFile(13);
+        moveSound.setFile(8);
+        attackSound.setFile(0);
     }
 }

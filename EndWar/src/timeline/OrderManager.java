@@ -2,13 +2,17 @@ package timeline;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.Sound;
 import tile.RangeFinder;
+import tile.Tile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class OrderManager {
     GamePanel gp;
     ArrayList<Order>timeline;
+    ArrayList<Order>processing;
     String newOrderUnitSide;
     int newOrderUnitIndex;
     int slowCounter = 0;
@@ -18,6 +22,7 @@ public class OrderManager {
         newOrderUnitSide = "";
         this.gp = gp;
         timeline = new ArrayList<>();
+        processing = new ArrayList<>();
     }
     public void giveOrder(Order o){
         o.complete(gp);
@@ -36,6 +41,7 @@ public class OrderManager {
                         newOrderUnitIndex = i;
                         gp.rFinder.findMovementRange(gp, gp.ally.get(i));
                         slowCounter = -20;
+                        gp.ally.get(newOrderUnitIndex).getSelectedSound().play();
                     }
                 }
                 //ez később nem kell
@@ -50,20 +56,26 @@ public class OrderManager {
             }
             else {
                 if (newOrderUnitSide.equals("ally")) {
-                    //if (gp.cruser.getHover() != gp.ally.get(newOrderUnitIndex).getCurrentTile()){
+                    if (gp.cruser.getHover() != gp.ally.get(newOrderUnitIndex).getCurrentTile()){
                         //gp.ally.get(newOrderUnitIndex).currentTile = gp.cruser.getHover();
                         //gp.ally.get(newOrderUnitIndex).worldX = gp.ally.get(newOrderUnitIndex).currentTile.worldX;
                         //gp.ally.get(newOrderUnitIndex).worldY = gp.ally.get(newOrderUnitIndex).currentTile.worldY;
-                        timeline.add(new Move("ally", newOrderUnitIndex, gp.cruser.getHover()));
-                        timeline.get(timeline.size()-1).complete(gp);
-                        //end of selection
-                        for (int i = 0; i < gp.maxWorldCol; ++i){
-                            for (int j = 0; j < gp.maxWorldRow; j++) {
-                                gp.Grid[i][j].setIsHighlighted(true);
-                            }
+                        List<Tile> path = gp.rFinder.findMovementPath(gp,gp.ally.get(newOrderUnitIndex), gp.cruser.getHover());
+                        for (Tile t : path){
+                            System.out.println(t.getCoords()[0]+","+t.getCoords()[1]);
                         }
-                        slowCounter = -40;
-                    //}
+                        gp.ally.get(newOrderUnitIndex).getMoveSound().play();
+                        timeline.add(new Move("ally", newOrderUnitIndex, gp.cruser.getHover(), path));
+                        processing.add(new Move("ally", newOrderUnitIndex, gp.cruser.getHover(), path));
+                        //timeline.get(timeline.size()-1).complete(gp);
+                    }
+                    //end of selection
+                    for (int i = 0; i < gp.maxWorldCol; ++i){
+                        for (int j = 0; j < gp.maxWorldRow; j++) {
+                            gp.Grid[i][j].setIsHighlighted(true);
+                        }
+                    }
+                    slowCounter = -40;
                     newOrderUnitSide = "";
                 }
                 /*
@@ -73,6 +85,11 @@ public class OrderManager {
                         newOrderUnitIndex = i;
                     }
                 }*/
+            }
+        }
+        for (Order o : processing){
+            if (!o.isCompleted()){
+                o.complete(gp);
             }
         }
     }

@@ -21,14 +21,18 @@ public class U_bomber extends SuperUnit implements SUInterface {
     public U_bomber(){}
 
     public U_bomber(GamePanel gp, int tileX, int tileY){
-        imgList = new ArrayList<>();
+        //imgList = new ArrayList<>();
         type = "bomber";
         setCurrentTile(gp,tileX,tileY);
+        setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
         direction = 3;
         isAvian = true;
         movementRange = 6;
         traverseSpeed = new double[]{1,1,1,1,1,1};
+        selectedSound.setFile(13);
+        moveSound.setFile(18);
+        attackSound.setFile(0);
     }
 }

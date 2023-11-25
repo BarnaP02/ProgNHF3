@@ -1,21 +1,21 @@
 
-m	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(šÓ8Ÿ»ÈÄ¾1
-p	java:S116"ORename this field "Grid" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘áÙ²şÿÿÿÿ8ü¼ÈÄ¾1
+p	java:S116	"ORename this field "Grid" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘áÙ²şÿÿÿÿ8ç‰À1
 t
-java:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(Â€ıØúÿÿÿÿ8ş¼ÈÄ¾1
-]	java:S125"<This block of commented-out lines of code should be removed.(»¦®òøÿÿÿÿ8ÿ¼ÈÄ¾1
-X	java:S125 "<This block of commented-out lines of code should be removed.(™ù£Ê8‚½ÈÄ¾1
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(Â€ıØúÿÿÿÿ8é‰À1
+X	java:S125 "<This block of commented-out lines of code should be removed.(™ù£Ê8ë‰À1
 o
-java:S37762"RRefactor this method to reduce its Cognitive Complexity from 28 to the 15 allowed.(ÄŒ—ı8ƒ½ÈÄ¾1
-]
-java:S1854g"@Remove this useless assignment to local variable "cameFromGrid".(¨õŸ¬8„½ÈÄ¾1
-X	java:S1254"<This block of commented-out lines of code should be removed.(ÏØ´·8…½ÈÄ¾1
-]	java:S125f"<This block of commented-out lines of code should be removed.(Ö‰˜‘ûÿÿÿÿ8†½ÈÄ¾1
-N
-java:S1481g"1Remove this unused "cameFromGrid" local variable.(¨õŸ¬8†½ÈÄ¾1
+java:S37762"RRefactor this method to reduce its Cognitive Complexity from 37 to the 15 allowed.(ÄŒ—ı8ì‰À1
+V
+java:S1854j"9Remove this useless assignment to local variable "route".(®ÔÔÓ8ì‰À1
+]	java:S1255"<This block of commented-out lines of code should be removed.(Ö‰˜‘ûÿÿÿÿ8í‰À1
+G
+java:S1481j"*Remove this unused "route" local variable.(®ÔÔÓ8î‰À1
+M
+java:S1172~"0Remove these unused method parameters "gp", "u".(ªĞı·8ğ‰À1
+Y	java:S125ƒ"<This block of commented-out lines of code should be removed.(”¹”€8ğ‰À1
+^	java:S125…"<This block of commented-out lines of code should be removed.(¦“‹ßüÿÿÿÿ8ğ‰À1
+^	java:S125Œ"<This block of commented-out lines of code should be removed.(¦“‹ßüÿÿÿÿ8ğ‰À1
 |
-java:S1210µ"YOverride "equals(Object obj)" to comply with the contract of the "compareTo(T o)" method.(Ë¶œûûÿÿÿÿ8‹½ÈÄ¾1
-O
-java:S1128"-Remove this unused import 'java.util.Arrays'.(î–˜Éüÿÿÿÿ8Œ½ÈÄ¾1
+java:S1210›"YOverride "equals(Object obj)" to comply with the contract of the "compareTo(T o)" method.(Ë¶œûûÿÿÿÿ8ğ‰À1
 ã
-java:S65412"ÅA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 66 to 64, Complexity from 19 to 14, Nesting Level from 4 to 2, Number of Variables from 16 to 6.(ÄŒ—ı8Œ½ÈÄ¾1
+java:S65412"ÅA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 70 to 64, Complexity from 23 to 14, Nesting Level from 4 to 2, Number of Variables from 15 to 6.(ÄŒ—ı8ñ‰À1

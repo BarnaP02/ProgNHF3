@@ -26,14 +26,18 @@ public class U_fighter extends SuperUnit implements SUInterface {
     public U_fighter(){}
 
     public U_fighter(GamePanel gp, int tileX, int tileY){
-        imgList = new ArrayList<>();
+        //imgList = new ArrayList<>();
         type = "fighter";
         setCurrentTile(gp,tileX,tileY);
+        setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
         direction = 3;
         isAvian = true;
         movementRange = 8;
         traverseSpeed = new double[]{1,1,1,1,1,1};
+        selectedSound.setFile(13);
+        moveSound.setFile(18);
+        attackSound.setFile(0);
     }
 }

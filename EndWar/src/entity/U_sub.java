@@ -25,13 +25,19 @@ public class U_sub extends SuperUnit implements SUInterface {
     public U_sub(){}
 
     public U_sub(GamePanel gp, int tileX, int tileY){
-        imgList = new ArrayList<>();
+        //imgList = new ArrayList<>();
         type = "sub";
         setCurrentTile(gp,tileX,tileY);
+        setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
         direction = 3;
+        isNavy = true;
+        isSub = true;
         movementRange = 3;
         traverseSpeed = new double[]{10,10,10,10,1,1};
+        selectedSound.setFile(13);
+        moveSound.setFile(16);
+        attackSound.setFile(0);
     }
 }

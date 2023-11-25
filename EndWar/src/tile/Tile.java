@@ -3,7 +3,8 @@ package tile;
 import java.awt.image.BufferedImage;
 
 public class Tile {
-    public BufferedImage image;
+    private BufferedImage image;
+    private BufferedImage imageShaded;
     String type;
     int coords[];
     Tile border[];
@@ -13,6 +14,7 @@ public class Tile {
     //public int screenX;
     //public int screenY;
     boolean isStructure;
+    boolean isObstacle;
     boolean isStructureDoor;
     boolean isRoad;
     boolean isSelected;
@@ -33,6 +35,7 @@ public class Tile {
         isSelected = false;
         isHighlighted = true;
         isVisited = false;
+        isObstacle = false;
     }
     public void setBorder(int i, Tile t){
         border[i] = t;
@@ -55,12 +58,26 @@ public class Tile {
     }
 
     public int[] borders(){
-        int counter = 0;
         for(int i = 0; i < 6; i++){
             if(border[i] != null) borders[i]=1;
             else borders[i]=0;
         }
         return borders;
+    }
+
+    public BufferedImage getImage() {
+        return image;
+    }
+    public void setImage(BufferedImage image) {
+        this.image = image;
+    }
+
+    public BufferedImage getImageShaded() {
+        return imageShaded;
+    }
+
+    public void setImageShaded(BufferedImage imageShaded) {
+        this.imageShaded = imageShaded;
     }
 
     public String getType() {

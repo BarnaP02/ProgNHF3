@@ -1,7 +1,32 @@
 
+e
+java:S1192„"GDefine a constant instead of duplicating this literal "100100" 3 times.(ÃÕı‘8è™²õ¿1
+j
+java:S1192‘"GDefine a constant instead of duplicating this literal "110110" 3 times.(ç—ôøÿÿÿÿ8è™²õ¿1
+e
+java:S1192•"GDefine a constant instead of duplicating this literal "101101" 3 times.(”îû§8è™²õ¿1
+j
+java:S1192“"GDefine a constant instead of duplicating this literal "011011" 3 times.(Û¹“‡ùÿÿÿÿ8è™²õ¿1
+j
+java:S1192ˆ"GDefine a constant instead of duplicating this literal "001001" 3 times.(û¦ôÂşÿÿÿÿ8è™²õ¿1
+j
+java:S1192†"GDefine a constant instead of duplicating this literal "010010" 3 times.(¬Øùêüÿÿÿÿ8è™²õ¿1
 o
-java:S3776"RRefactor this method to reduce its Cognitive Complexity from 49 to the 15 allowed.(¼›¾¹8ó¯­Ç½1
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 67 to the 15 allowed.(¼›¾¹8ëŸ²õ¿1
+^	java:S125¤"<This block of commented-out lines of code should be removed.( åê„ıÿÿÿÿ8õŸ²õ¿1
+Y	java:S125¬"<This block of commented-out lines of code should be removed.(ÂÏ–†8 ²õ¿1
+^	java:S125à"<This block of commented-out lines of code should be removed.(»ø›íøÿÿÿÿ8‘ ²õ¿1
 p
-java:S3776¤"RRefactor this method to reduce its Cognitive Complexity from 44 to the 15 allowed.(ˆöù8ş¯­Ç½1
+java:S3776×"RRefactor this method to reduce its Cognitive Complexity from 44 to the 15 allowed.(ˆöù8™ ²õ¿1
+Y	java:S125"<This block of commented-out lines of code should be removed.(š”ÍØ8 ²õ¿1
+^	java:S125¦"<This block of commented-out lines of code should be removed.(ÉÍËÍûÿÿÿÿ8 ²õ¿1
 J
-java:S1128"(Remove this unused import 'javax.swing'.(Ìí¿Üüÿÿÿÿ8‚°­Ç½1
+java:S1128"(Remove this unused import 'javax.swing'.(Ìí¿Üüÿÿÿÿ8´¾•ŠÀ1
+X
+java:S1068";Remove this unused "defaultStructureGallery" private field.(É”‡˜8  ²õ¿1
+c
+java:S1068"ARemove this unused "defaultStructureGalleryShaded" private field.(£»€–ûÿÿÿÿ8  ²õ¿1
+V
+java:S1068"9Remove this unused "structureGalleryTeam1" private field.(¸Ûå‘8  ²õ¿1
+[
+java:S1068"9Remove this unused "structureGalleryTeam2" private field.(±¸Å“ûÿÿÿÿ8  ²õ¿1

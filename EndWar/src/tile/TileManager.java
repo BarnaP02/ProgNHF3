@@ -1,5 +1,6 @@
 package tile;
 
+import entity.Structure;
 import main.GamePanel;
 
 import javax.imageio.ImageIO;
@@ -9,18 +10,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class TileManager {
     GamePanel gp;
     //Tile[] tile;
-    int mapTileNum[][];
+    //int mapTileNum[][];
 
     public TileManager(GamePanel gp){
         this.gp = gp;
 
         //tile = new Tile[10];
         //getTileImage();
-        loadMap("/maps/map023.txt");
+        loadMap("/maps/map03.txt");
     }
 /*
     public void getTileImage() {
@@ -53,8 +57,8 @@ public class TileManager {
             gp.maxWorldCol = Integer.parseInt(init[0]);
             gp.maxWorldRow = Integer.parseInt(init[1]);
             int numOfUnits = Integer.parseInt(init[2]);
-            mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
-            gp.Grid= new Tile[gp.maxWorldCol][gp.maxWorldRow];
+            //mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
+            gp.Grid = new Tile[gp.maxWorldCol][gp.maxWorldRow];
             int col = 0;
             int row = 0;
 
@@ -64,12 +68,27 @@ public class TileManager {
                 while (col < gp.maxWorldCol) {
                     String[] pure = line.split(",");
                     String[] numbers = pure[1].split("-");
-                    int num = Integer.parseInt(numbers[col]);
-                    mapTileNum[col][row] = num;
+                    String[] cell = numbers[col].split("");
+                    int num = Integer.parseInt(cell[0]);
+                    int traverse = Integer.parseInt(cell[1]);
+                    //mapTileNum[col][row] = num;
                     String type = getTileType(num);
                     gp.Grid[col][row] = new Tile(type);
                     gp.Grid[col][row].coords[0] = col;
                     gp.Grid[col][row].coords[1] = row;
+                    gp.Grid[col][row].worldX = gp.getCoordsFromTile(gp.Grid[col][row])[0];
+                    gp.Grid[col][row].worldY = gp.getCoordsFromTile(gp.Grid[col][row])[1];
+                    BufferedImage image = null;
+                    double randy = Math.random();
+                    int validIndex = (int) (randy*gp.imagS.getTileGallery().get(type).size());
+                    image = gp.imagS.getTileGallery().get(type).get(validIndex);
+                    if (traverse == 1){
+                        gp.Grid[col][row].isRoad = true;
+                    }
+                    if (traverse == 2){
+                        gp.Grid[col][row].isObstacle = true;
+                    }
+                    gp.Grid[col][row].setImage(image);
                     ++col;
                 }
                 if (col == gp.maxWorldCol) {
@@ -83,16 +102,87 @@ public class TileManager {
                         int newCol;
                         int newRow;
                         if (r % 2 == 0) {
-                            newCol = c + gp.neighborOffsetEven[i][0];
-                            newRow = r + gp.neighborOffsetEven[i][1];
+                            newCol = c + GamePanel.neighborOffsetEven[i][0];
+                            newRow = r + GamePanel.neighborOffsetEven[i][1];
                         } else {
-                            newCol = c + gp.neighborOffsetOdd[i][0];
-                            newRow = r + gp.neighborOffsetOdd[i][1];
+                            newCol = c + GamePanel.neighborOffsetOdd[i][0];
+                            newRow = r + GamePanel.neighborOffsetOdd[i][1];
                         }
                         if (isValidHexagon(newCol, newRow)) {
                             gp.Grid[c][r].setBorder(i, gp.Grid[newCol][newRow]);
                         }
                     }
+                    if (gp.Grid[c][r].type.equals("depot")){
+                        gp.Grid[c][r].isStructureDoor = true;
+                        gp.Grid[c][r].getBorder(0).isStructure = true;
+                        gp.Grid[c][r].getBorder(5).isStructure = true;
+                        gp.Grid[c][r].getBorder(0).getBorder(5).isStructure = true;
+                        gp.structures.add(new Structure(gp,"depot",gp.Grid[c][r], 0));
+                    }
+                    if (gp.Grid[c][r].type.equals("harbor")){
+                        gp.Grid[c][r].isStructureDoor = true;
+                        gp.Grid[c][r].getBorder(0).isStructure = true;
+                        gp.Grid[c][r].getBorder(5).isStructure = true;
+                        gp.Grid[c][r].getBorder(0).getBorder(5).isStructure = true;
+                        gp.structures.add(new Structure(gp,"harbor",gp.Grid[c][r], 0));
+                    }
+                    if (gp.Grid[c][r].type.equals("factory")){
+                        gp.Grid[c][r].isStructureDoor = true;
+                        gp.Grid[c][r].getBorder(0).isStructure = true;
+                        gp.Grid[c][r].getBorder(5).isStructure = true;
+                        gp.Grid[c][r].getBorder(0).getBorder(5).isStructure = true;
+                        gp.structures.add(new Structure(gp,"factory",gp.Grid[c][r], 0));
+                    }
+                    if (gp.Grid[c][r].type.equals("water")){
+                        StringBuilder waterCode = new StringBuilder();
+                        for (int i = 0; i < 6; i++) {
+                            if (gp.Grid[c][r].borders()[i]==1 && (gp.Grid[c][r].getBorder(i).getType().equals("grass") ||
+                                    gp.Grid[c][r].getBorder(i).getType().equals("woods"))){
+                                waterCode.append("1");
+                            }
+                            else if (gp.Grid[c][r].borders()[i]==1 && (gp.Grid[c][r].getBorder(i).getType().equals("concrete") ||
+                                    gp.Grid[c][r].getBorder(i).getType().equals("depot") ||
+                                    gp.Grid[c][r].getBorder(i).getType().equals("factory"))){
+                                waterCode.append("2");
+                            } else if (gp.Grid[c][r].borders()[i]==1 && i > 0 && i < 5 && gp.Grid[c][r].getBorder(i).getType().equals("harbor")) {
+                                waterCode.append("2");
+                            } else {
+                                waterCode.append("0");
+                            }
+                        }
+                        gp.Grid[c][r].setImage(gp.imagS.getWaterGallery().get(waterCode.toString()));
+                    }
+                    if (gp.Grid[c][r].isObstacle){
+                        double randy = Math.random();
+                        int validIndex = (int) (randy*gp.imagS.getObstacleGallery().get(gp.Grid[c][r].getType()).size());
+                        BufferedImage obstacle = gp.imagS.getObstacleGallery().get(gp.Grid[c][r].getType()).get(validIndex);
+                        gp.Grid[c][r].setImage(gp.imagS.combineImages(gp.Grid[c][r].getImage(), obstacle));
+                        //List<BufferedImage> shading = new ArrayList<>();
+                        //shading.add(gp.Grid[c][r].getImage());
+                        //gp.Grid[c][r].setImageShaded(gp.imagS.changeColor(shading,-100,-100,-100,true).get(0));
+                    }
+                    if (gp.Grid[c][r].isRoad){
+                        StringBuilder roadCode = new StringBuilder();
+                        for (int i = 0; i < 6; i++) {
+                            if (gp.Grid[c][r].borders()[i]==1 && gp.Grid[c][r].getBorder(i).isRoad){
+                                roadCode.append("1");
+                            }
+                            else {
+                                roadCode.append("0");
+                            }
+                        }
+                        BufferedImage road = null;
+                        if (gp.Grid[c][r].type.equals("water")){
+                            road = gp.imagS.getRoadGallery().get(roadCode.toString()+"w");
+                        }
+                        else {
+                            road = gp.imagS.getRoadGallery().get(roadCode.toString());
+                        }
+                        gp.Grid[c][r].setImage(gp.imagS.combineImages(gp.Grid[c][r].getImage(), road));
+                    }
+                    List<BufferedImage> shading = new ArrayList<>();
+                    shading.add(gp.Grid[c][r].getImage());
+                    gp.Grid[c][r].setImageShaded(gp.imagS.changeColor(shading,-70,-70,-70,true).get(0));
                 }
             }
             for (int u = 0; u < numOfUnits; ++u){
@@ -113,8 +203,8 @@ public class TileManager {
 
         while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow){
 
-            int tileNum = mapTileNum[worldCol][worldRow];
-            String key = getTileType(tileNum);
+            //int tileNum = mapTileNum[worldCol][worldRow];
+            //String key = getTileType(tileNum);
 
             int worldX = gp.tileWidth * worldCol;// + gp.tileWidth/2;
             int worldY = (gp.tileHeight * (worldRow)) / 4*3;// + gp.tileHeight;
@@ -130,10 +220,10 @@ public class TileManager {
                     screenY > - gp.tileHeight &&
                     screenY < gp.screenHeight + gp.tileHeight){
                 if (gp.Grid[worldCol][worldRow].isHighlighted){
-                    g2.drawImage(gp.imagS.getTileGallery().get(key), screenX, screenY, gp.tileWidth, gp.tileHeight, null);
+                    g2.drawImage(gp.Grid[worldCol][worldRow].getImage(), screenX, screenY,null);// gp.tileWidth, gp.tileHeight, null);
                 }
                 else {
-                    g2.drawImage(gp.imagS.getTileOutOfRangeGallery().get(key), screenX, screenY, gp.tileWidth, gp.tileHeight, null);
+                    g2.drawImage(gp.Grid[worldCol][worldRow].getImageShaded(), screenX, screenY,null);// gp.tileWidth, gp.tileHeight, null);
                 }
                 //gp.Grid[worldCol][worldRow].worldX = worldX;
                 //gp.Grid[worldCol][worldRow].worldY = worldY;
@@ -154,16 +244,25 @@ public class TileManager {
         String key = "";
         switch (tileNum){
             case 1:
-                key+="concrete";
+                key+="woods";
                 break;
             case 2:
-                key+="water";
+                key+="concrete";
                 break;
             case 3:
-                key+="structure";
+                key+="water";
                 break;
             case 4:
-                key+="structure_door";
+                key+="ocean";
+                break;
+            case 5:
+                key+="depot";
+                break;
+            case 6:
+                key+="harbor";
+                break;
+            case 7:
+                key+="factory";
                 break;
             default:
                 key+="grass";

@@ -2,6 +2,7 @@ package main;
 
 import entity.Cruser;
 import entity.ImageStore;
+import entity.Structure;
 import tile.RangeFinder;
 import tile.Tile;
 import tile.TileManager;
@@ -15,11 +16,11 @@ import java.util.ArrayList;
 
 public class GamePanel  extends JPanel implements Runnable{
     // SCREEN SETTINGS
-    final int originalTileHeight = 20;
-    final int originalTileWidth = 21;
-    final int scale = 2;
-    public final int tileHeight = originalTileHeight * scale;
-    public final int tileWidth = originalTileWidth * scale;
+    final int originalTileHeight = 40;
+    final int originalTileWidth = 42;
+    //final int scale = 2;
+    public final int tileHeight = 40;//originalTileHeight * scale;
+    public final int tileWidth = 42;//originalTileWidth * scale;
     public final int maxScreenCol = 21;
     public final int maxScreenRow = 19;
     public final int screenWidth = tileWidth * maxScreenCol + tileWidth/2;
@@ -29,11 +30,18 @@ public class GamePanel  extends JPanel implements Runnable{
     int FPS = 60;
 
     public Tile[][] Grid;
-    public int[][] neighborOffsetEven = {                              //Offset in even rows
+    public static final int[][] neighborOffsetEvenOld = {                              //Offset in even rows
             {0, -1}, {-1, 0}, {0, 1}, {1, 1}, {1, 0}, {1, -1}
     };
-    public int[][] neighborOffsetOdd = {                              //Offset in odd rows
+    public static final int[][] neighborOffsetEven = {                              //Offset in even rows
+            {0, -1}, {-1, 0}, {0, 1}, {1, 1}, {1, 0}, {1, -1}
+    };
+    public static final int[][] neighborOffsetOdd = {                              //Offset in odd rows
             {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 0}, {0, -1}
+    };
+    public final int[][] twoTileShift = {
+            {0, -tileHeight*3/4}, {0, -tileHeight*3/4}, {0, -tileHeight*3/4},
+            {-tileWidth, -tileHeight*3/4}, {-tileWidth, -tileHeight*3/4}, {-tileWidth, -tileHeight*3/4}
     };
 
     //WORLD SETTINGS
@@ -42,16 +50,24 @@ public class GamePanel  extends JPanel implements Runnable{
     public ImageStore imagS = new ImageStore();
     public ArrayList<SuperUnit> ally = new ArrayList<>();
     public ArrayList<SuperUnit> enemy = new ArrayList<>();
+    public ArrayList<Structure> structures = new ArrayList<>();
     public AssetSetter aSetter = new AssetSetter(this);
     TileManager tileM = new TileManager(this);
+    Sound sound = new Sound();
+    Sound sfx = new Sound();
     public final int worldWidth = tileWidth * maxWorldCol + tileWidth/2;
     public final int worldHeight = (tileHeight * (maxWorldRow - 1)) / 4*3 + tileHeight;
-    KeyHandler keyH = new KeyHandler();
+    KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
     public Cruser cruser = new Cruser(this, keyH);
-    public RangeFinder rFinder = new RangeFinder(Grid);
+    public RangeFinder rFinder = new RangeFinder(this, Grid);
     public OrderManager timeL = new OrderManager(this);
-    public SuperUnit testUnit;
+    //public SuperUnit testUnit;
+
+    //GAME STATE
+    protected  int gameState;
+    public static final int playState = 1;
+    public static final int pauseState = 2;
 
 
     public GamePanel(){
@@ -60,9 +76,11 @@ public class GamePanel  extends JPanel implements Runnable{
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        gameState = playState;
     }
 
     public void setupGame(){
+        playMusic(1);
         //aSetter.setUnit();
     }
     public void startGameThread() {
@@ -83,25 +101,28 @@ public class GamePanel  extends JPanel implements Runnable{
 
         while (gameThread != null) {
 
-            currentTime = System.nanoTime();
+            if (gameState == playState){
+                sound.resume();
 
-            delta += (currentTime - lastTime) / drawInterval;
-            timer += (currentTime - lastTime);
-            lastTime = currentTime;
-            if (delta >= 1){
-                update();
-                repaint();
-                delta--;
-                drawCount++;
-            }
+                currentTime = System.nanoTime();
 
-            if (timer >= 1000000000) {
-                System.out.println("FPS:" + drawCount);
-                //System.out.println("x:" + cursorX + " y:" + cursorY);
-                drawCount = 0;
-                timer = 0;
+                delta += (currentTime - lastTime) / drawInterval;
+                timer += (currentTime - lastTime);
+                lastTime = currentTime;
+                if (delta >= 1){
+                    update();
+                    repaint();
+                    delta--;
+                    drawCount++;
+                }
 
-                //DEBUG PRINTF
+                if (timer >= 1000000000) {
+                    System.out.println("FPS:" + drawCount + " " + gameState);
+                    //System.out.println("x:" + cursorX + " y:" + cursorY);
+                    drawCount = 0;
+                    timer = 0;
+
+                    //DEBUG PRINTF
                 /*for (int i = 0; i < maxScreenRow;++i){
                     for (int j = 0; j < maxScreenCol;++j){
                         System.out.print(Grid[j][i].numOfBorder()+Grid[j][i].getType()+" ");
@@ -119,9 +140,9 @@ public class GamePanel  extends JPanel implements Runnable{
                     System.out.println();
                 }
                 System.out.println();*/
-                for (int i = 0; i < 6; ++i){
-                    System.out.print(cruser.getHover().borders()[i]+" ");
-                }
+                    for (int i = 0; i < 6; ++i){
+                        System.out.print(cruser.getHover().borders()[i]+" ");
+                    }
                 /*System.out.println("["+cruser.getHover().getCoords()[0]+":"+cruser.getHover().getCoords()[1]+"]  ["+
                         cruser.getLast_hover().getCoords()[0]+":"+cruser.getLast_hover().getCoords()[1]+"]  [" +
                         cruser.getScreenX()+":"+cruser.getScreenY()+"]  s:"+cruser.isNotNearScreenEdge()+" e:"+cruser.isNotNearEdge()+"  t:"+
@@ -134,20 +155,29 @@ public class GamePanel  extends JPanel implements Runnable{
                         cruser.getHover().worldY+"]  ["+
                         cruser.getHover().screenX+":"+
                         cruser.getHover().screenY+"] ");*/
-                for (SuperUnit su : ally){
-                    //System.out.print("["+su.worldX+":"+su.worldY+"] ");
+                    for (SuperUnit su : ally){
+                        //System.out.print("["+su.worldX+":"+su.worldY+"] ");
+                    }
+                    //System.out.println();
+                    for (Order o : timeL.getTimeline()){
+                        System.out.print(", "+o.getSide()+"["+o.getIndex()+"] ");
+                    }
+                    System.out.println();
                 }
-                //System.out.println();
-                for (Order o : timeL.getTimeline()){
-                    System.out.print(", "+o.getSide()+"["+o.getIndex()+"] ");
-                }
-                System.out.println();
+            }
+            else {
+                sound.freeze();
             }
         }
     }
     public void update() {
-        cruser.update();
-        timeL.update(this, keyH);
+        if (gameState == playState){
+            cruser.update();
+            timeL.update(this, keyH);
+        }
+        if (gameState == pauseState){
+            //nothing yet
+        }
     }
     public void paintComponent(Graphics g) {
 
@@ -161,6 +191,11 @@ public class GamePanel  extends JPanel implements Runnable{
         }
 
         tileM.draw(g2);
+        for (Structure struct : structures){
+            if (struct != null) {
+                struct.draw(g2, this);
+            }
+        }
         cruser.draw(g2);
         for (SuperUnit superUnit : ally) {
             if (superUnit != null) {
@@ -217,5 +252,17 @@ public class GamePanel  extends JPanel implements Runnable{
             result[0] += tileWidth/2;
         }
         return result;
+    }
+    public void playMusic(int i){
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+    public void stopMusic(){
+        sound.stop();
+    }
+    public void playSFX(int i){
+        sfx.setFile(i);
+        sfx.play();
     }
 }

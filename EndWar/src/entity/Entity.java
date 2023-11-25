@@ -18,4 +18,12 @@ public class Entity {
     public int superSlowNum = 120;
     public int spriteCounter = 0;
     public int spriteNum = 1;
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
 }

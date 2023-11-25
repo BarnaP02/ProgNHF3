@@ -11,8 +11,17 @@ public class ImageStore {
     private Map<Class<?>, List<BufferedImage>> galleryShaded;
     private Map<Class<?>, List<BufferedImage>> galleryTeam1;
     private Map<Class<?>, List<BufferedImage>> galleryTeam2;
-    private Map<String, BufferedImage> tileGallery;
-    private Map<String, BufferedImage> tileOutOfRangeGallery;
+    private Map<String, List<BufferedImage>> tileGallery;
+    private Map<String, List<BufferedImage>> tileOutOfRangeGallery;
+    private Map<String, List<BufferedImage>> obstacleGallery;
+    private Map<String, BufferedImage> waterGallery;
+    private Map<String, BufferedImage> waterGalleryShaded;
+    private Map<String, BufferedImage> roadGallery;
+    private Map<String, BufferedImage> structureGallery;
+    private Map<String, BufferedImage> defaultStructureGallery;
+    private Map<String, BufferedImage> defaultStructureGalleryShaded;
+    private Map<String, BufferedImage> structureGalleryTeam1;
+    private Map<String, BufferedImage> structureGalleryTeam2;
     public ImageStore() {
         gallery = new HashMap<>();
         galleryShaded = new HashMap<>();
@@ -20,6 +29,15 @@ public class ImageStore {
         galleryTeam2 = new HashMap<>();
         tileGallery = new HashMap<>();
         tileOutOfRangeGallery = new HashMap<>();
+        obstacleGallery = new HashMap<>();
+        waterGallery = new HashMap<>();
+        waterGalleryShaded = new HashMap<>();
+        roadGallery = new HashMap<>();
+        structureGallery = new HashMap<>();
+        defaultStructureGallery = new HashMap<>();
+        defaultStructureGalleryShaded = new HashMap<>();
+        structureGalleryTeam1 = new HashMap<>();
+        structureGalleryTeam2 = new HashMap<>();
         //AAB
         List<BufferedImage> li = new ArrayList<>();
         try {
@@ -75,6 +93,16 @@ public class ImageStore {
         }
         gallery.put(U_arty_L.class, li);
 
+        //battleship
+        li = new ArrayList<>();
+        try {
+            for (int i = 0;i < 6; ++i){
+                li.add(ImageIO.read(getClass().getResourceAsStream("/units/battleship_"+i+".png")));
+            }} catch (IOException e){
+            e.printStackTrace();
+        }
+        gallery.put(U_battleship.class, li);
+
         //boat
         li = new ArrayList<>();
         try {
@@ -94,6 +122,26 @@ public class ImageStore {
             e.printStackTrace();
         }
         gallery.put(U_bomber.class, li);
+
+        //cargo
+        li = new ArrayList<>();
+        try {
+            for (int i = 0;i < 6; ++i){
+                li.add(ImageIO.read(getClass().getResourceAsStream("/units/cargo_"+i+".png")));
+            }} catch (IOException e){
+            e.printStackTrace();
+        }
+        gallery.put(U_cargo.class, li);
+
+        //carrier
+        li = new ArrayList<>();
+        try {
+            for (int i = 0;i < 6; ++i){
+                li.add(ImageIO.read(getClass().getResourceAsStream("/units/carrier_"+i+".png")));
+            }} catch (IOException e){
+            e.printStackTrace();
+        }
+        gallery.put(U_carrier.class, li);
 
         //fighter
         li = new ArrayList<>();
@@ -239,55 +287,442 @@ public class ImageStore {
             galleryTeam2.put(key,newValue);
         }
 
-        BufferedImage img;
         //Grass
-        img = null;
+        li = new ArrayList<>();
+        //BufferedImage li.add(null;
         try {
-            img = ImageIO.read(getClass().getResourceAsStream("/tiles/grass1.png"));
-            img = ImageIO.read(getClass().getResourceAsStream("/tiles/grass2.png"));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/grass1.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/grass2.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/grass3.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/grass4.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/grass5.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/grass6.png")));
         } catch (IOException e){
             e.printStackTrace();
         }
-        tileGallery.put("grass", img);
-        img = null;
+        tileGallery.put("grass", li);
+        //Woods
+        li = new ArrayList<>();
+        try {
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/woods1.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/woods2.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/woods3.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/woods4.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/woods5.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/woods6.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/woods7.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/woods8.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/woods9.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/woods10.png")));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        tileGallery.put("woods", li);
         //Concrete
+        li = new ArrayList<>();
         try {
-            img = ImageIO.read(getClass().getResourceAsStream("/tiles/concrete1.png"));
-            img = ImageIO.read(getClass().getResourceAsStream("/tiles/concrete2.png"));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/concrete1.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/concrete2.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/concrete3.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/concrete4.png")));
         } catch (IOException e){
             e.printStackTrace();
         }
-        tileGallery.put("concrete", img);
-        //Water
+        tileGallery.put("concrete", li);
+        //PlaceHolder water
+        li = new ArrayList<>();
         try {
-            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water1v2.png"));
-            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water2v2.png"));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/water000000.png")));
         } catch (IOException e){
             e.printStackTrace();
         }
-        tileGallery.put("water", img);
-        //Structure
-        try {
-            img = ImageIO.read(getClass().getResourceAsStream("/tiles/structure.png"));
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        tileGallery.put("structure", img);
-        //Structure door
-        try {
-            img = ImageIO.read(getClass().getResourceAsStream("/tiles/structure_door.png"));
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        tileGallery.put("structure_door", img);
+        tileGallery.put("water", li);
 
-        for (Map.Entry<String, BufferedImage> entry : tileGallery.entrySet()) {
+        //Water
+        BufferedImage img = null;
+        try {
+            //basic
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000000.png"));
+            waterGallery.put("000000", img);
+            //single grass
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water100000.png"));
+            waterGallery.put("100000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water010000.png"));
+            waterGallery.put("010000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water001000.png"));
+            waterGallery.put("001000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000100.png"));
+            waterGallery.put("000100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000010.png"));
+            waterGallery.put("000010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000001.png"));
+            waterGallery.put("000001", img);
+            //2 grass
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water110000.png"));
+            waterGallery.put("110000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water011000.png"));
+            waterGallery.put("011000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water001100.png"));
+            waterGallery.put("001100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000110.png"));
+            waterGallery.put("000110", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000011.png"));
+            waterGallery.put("000011", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water100001.png"));
+            waterGallery.put("100001", img);
+            //3 grass
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water111000.png"));
+            waterGallery.put("111000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water011100.png"));
+            waterGallery.put("011100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water001110.png"));
+            waterGallery.put("001110", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000111.png"));
+            waterGallery.put("000111", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water100011.png"));
+            waterGallery.put("100011", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water110001.png"));
+            waterGallery.put("110001", img);
+            //opposing grass
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water100100.png"));
+            waterGallery.put("100100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water010010.png"));
+            waterGallery.put("010010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water001001.png"));
+            waterGallery.put("001001", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water100100.png"));
+            waterGallery.put("100100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water010010.png"));
+            waterGallery.put("010010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water001001.png"));
+            waterGallery.put("001001", img);
+            //2 opposing grass
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water110110.png"));
+            waterGallery.put("110110", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water011011.png"));
+            waterGallery.put("011011", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water101101.png"));
+            waterGallery.put("101101", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water110110.png"));
+            waterGallery.put("110110", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water011011.png"));
+            waterGallery.put("011011", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water101101.png"));
+            waterGallery.put("101101", img);
+
+            //single concrete
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water200000.png"));
+            waterGallery.put("200000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water020000.png"));
+            waterGallery.put("020000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water002000.png"));
+            waterGallery.put("002000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000200.png"));
+            waterGallery.put("000200", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000020.png"));
+            waterGallery.put("000020", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000002.png"));
+            waterGallery.put("000002", img);
+            //2 concrete
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water220000.png"));
+            waterGallery.put("220000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water022000.png"));
+            waterGallery.put("022000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water002200.png"));
+            waterGallery.put("002200", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000220.png"));
+            waterGallery.put("000220", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000022.png"));
+            waterGallery.put("000022", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water200002.png"));
+            waterGallery.put("200002", img);
+            //3 concrete
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water222000.png"));
+            waterGallery.put("222000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water022200.png"));
+            waterGallery.put("022200", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water002220.png"));
+            waterGallery.put("002220", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000222.png"));
+            waterGallery.put("000222", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water200022.png"));
+            waterGallery.put("200022", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water220002.png"));
+            waterGallery.put("220002", img);
+            //opposing concrete
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water200200.png"));
+            waterGallery.put("200200", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water020020.png"));
+            waterGallery.put("020020", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water002002.png"));
+            waterGallery.put("002002", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water200200.png"));
+            waterGallery.put("200200", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water020020.png"));
+            waterGallery.put("020020", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water002002.png"));
+            waterGallery.put("002002", img);
+            //2 opposing concrete
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water220220.png"));
+            waterGallery.put("220220", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water022022.png"));
+            waterGallery.put("022022", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water202202.png"));
+            waterGallery.put("202202", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water220220.png"));
+            waterGallery.put("220220", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water022022.png"));
+            waterGallery.put("022022", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water202202.png"));
+            waterGallery.put("202202", img);
+            //grass follows concrete
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water120000.png"));
+            waterGallery.put("120000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water012000.png"));
+            waterGallery.put("012000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water001200.png"));
+            waterGallery.put("001200", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000120.png"));
+            waterGallery.put("000120", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000012.png"));
+            waterGallery.put("000012", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water200001.png"));
+            waterGallery.put("200001", img);
+            //concrete follows grass
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water210000.png"));
+            waterGallery.put("210000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water021000.png"));
+            waterGallery.put("021000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water002100.png"));
+            waterGallery.put("002100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000210.png"));
+            waterGallery.put("000210", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water000021.png"));
+            waterGallery.put("000021", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water100002.png"));
+            waterGallery.put("100002", img);
+            //grass oppose concrete
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water100200.png"));
+            waterGallery.put("100200", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water010020.png"));
+            waterGallery.put("010020", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water001002.png"));
+            waterGallery.put("001002", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water200100.png"));
+            waterGallery.put("200100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water020010.png"));
+            waterGallery.put("020010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/tiles/water002001.png"));
+            waterGallery.put("002001", img);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        //Ocean
+        li = new ArrayList<>();
+        try {
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/ocean1.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/ocean2.png")));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        tileGallery.put("ocean", li);
+        //Depot
+        li = new ArrayList<>();
+        try {
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/depot_entrance.png")));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        tileGallery.put("depot", li);
+        //Harbor
+        li = new ArrayList<>();
+        try {
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/harbor_entrance.png")));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        tileGallery.put("harbor", li);
+        //Factory
+        li = new ArrayList<>();
+        try {
+            li.add(ImageIO.read(getClass().getResourceAsStream("/tiles/factory_entrance.png")));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        tileGallery.put("factory", li);
+
+        for (Map.Entry<String, List<BufferedImage>> entry : tileGallery.entrySet()) {
+            String key = entry.getKey();
+            //List<BufferedImage> value = new ArrayList<>();
+            //value.add(entry.getValue());
+            //BufferedImage newValue = changeColor(value,-100,-100,-100,true).get(0);
+            //tileOutOfRangeGallery.put(key,newValue);
+            //BufferedImage newValue = changeColor(value,-100,-100,-100,true).get(0);
+            tileOutOfRangeGallery.put(key,changeColor(entry.getValue(),-100,-100,-100,true));
+        }
+
+        //Grass obstacles
+        li = new ArrayList<>();
+        try {
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/grass_obstacle1.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/grass_obstacle2.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/grass_obstacle3.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/grass_obstacle4.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/grass_obstacle5.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/grass_obstacle6.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/grass_obstacle7.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/grass_obstacle8.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/grass_obstacle9.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/grass_obstacle10.png")));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        obstacleGallery.put("grass", li);
+        //Concrete obstacles
+        li = new ArrayList<>();
+        try {
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/concrete_obstacle1.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/concrete_obstacle2.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/concrete_obstacle3.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/concrete_obstacle4.png")));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        obstacleGallery.put("concrete", li);
+        //Water obstacles
+        li = new ArrayList<>();
+        try {
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/water_obstacle1.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/water_obstacle2.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/water_obstacle3.png")));
+            li.add(ImageIO.read(getClass().getResourceAsStream("/obstacles/water_obstacle4.png")));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        obstacleGallery.put("water", li);
+        obstacleGallery.put("ocean", li);
+
+
+        //Roads
+        try {
+            //img = ImageIO.read(getClass().getResourceAsStream("/roads/road_000000.png"));
+            //roadGallery.put("000000", img);
+            //ending
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_100000.png"));
+            roadGallery.put("100000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_010000.png"));
+            roadGallery.put("010000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_001000.png"));
+            roadGallery.put("001000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_000100.png"));
+            roadGallery.put("000100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_000010.png"));
+            roadGallery.put("000010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_000001.png"));
+            roadGallery.put("000001", img);
+            //|
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_100100.png"));
+            roadGallery.put("100100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_010010.png"));
+            roadGallery.put("010010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_001001.png"));
+            roadGallery.put("001001", img);
+            //bridge
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_100100w.png"));
+            roadGallery.put("100100w", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_010010w.png"));
+            roadGallery.put("010010w", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_001001w.png"));
+            roadGallery.put("001001w", img);
+            //v
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_101000.png"));
+            roadGallery.put("101000", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_010100.png"));
+            roadGallery.put("010100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_001010.png"));
+            roadGallery.put("001010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_000101.png"));
+            roadGallery.put("000101", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_100010.png"));
+            roadGallery.put("100010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_010001.png"));
+            roadGallery.put("010001", img);
+            //y
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_110100.png"));
+            roadGallery.put("110100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_101100.png"));
+            roadGallery.put("101100", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_100110.png"));
+            roadGallery.put("100110", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_100101.png"));
+            roadGallery.put("100101", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_110010.png"));
+            roadGallery.put("110010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_011010.png"));
+            roadGallery.put("011010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_010110.png"));
+            roadGallery.put("010110", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_010011.png"));
+            roadGallery.put("010011", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_101001.png"));
+            roadGallery.put("101001", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_011001.png"));
+            roadGallery.put("011001", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_001101.png"));
+            roadGallery.put("001101", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_001011.png"));
+            roadGallery.put("001011", img);
+            //x
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_011011.png"));
+            roadGallery.put("011011", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_101101.png"));
+            roadGallery.put("101101", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_110110.png"));
+            roadGallery.put("110110", img);
+            //Ultimate crossroad
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_111111.png"));
+            roadGallery.put("111111", img);
+            //Semi-Ultimate crossroad
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_101010.png"));
+            roadGallery.put("101010", img);
+            img = ImageIO.read(getClass().getResourceAsStream("/roads/road_010101.png"));
+            roadGallery.put("010101", img);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        for (Map.Entry<String, BufferedImage> entry : waterGallery.entrySet()) {
             String key = entry.getKey();
             List<BufferedImage> value = new ArrayList<>();
             value.add(entry.getValue());
-            BufferedImage newValue = changeColor(value,-100,-100,-100,true).get(0);
-            tileOutOfRangeGallery.put(key,newValue);
+            List<BufferedImage> newValue = changeColor(value,-100,-100,-100, false);
+            waterGalleryShaded.put(key,newValue.get(0));
         }
+
+        //Depot
+        img = null;
+        try {
+            img = ImageIO.read(getClass().getResourceAsStream("/structures/depot.png"));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        structureGallery.put("depot", img);
+        //Harbor
+        li = new ArrayList<>();
+        try {
+            img = ImageIO.read(getClass().getResourceAsStream("/structures/harbor.png"));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        structureGallery.put("harbor", img);
+        //Factory
+        li = new ArrayList<>();
+        try {
+            img = ImageIO.read(getClass().getResourceAsStream("/structures/factory.png"));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        structureGallery.put("factory", img);
     }
     public List<BufferedImage> changeColor(List<BufferedImage> original, int r, int g, int b, boolean isSelection){
         List<BufferedImage> result = new ArrayList<>();
@@ -349,8 +784,34 @@ public class ImageStore {
             }
             result.add(modifiedImage);
         }
-
         return result;
+    }
+
+    public BufferedImage combineImages(BufferedImage base, BufferedImage upper){
+        BufferedImage modifiedImage = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        // Apply a color change to pixels of base image
+        for (int x = 0; x < base.getWidth(); x++) {
+            for (int y = 0; y < base.getHeight(); y++) {
+                int baseRgb = base.getRGB(x, y);
+                int upperRgb = upper.getRGB(x, y);
+                int alpha = (upperRgb >> 24) & 0xFF;
+                //int baseRed = (baseRgb >> 16) & 0xFF;
+                //int baseGreen = (baseRgb >> 8) & 0xFF;
+                //int baseBlue = baseRgb & 0xFF;
+                //int upperRed = (upperRgb >> 16) & 0xFF;
+                //int upperGreen = (upperRgb >> 8) & 0xFF;
+                //int upperBlue = upperRgb & 0xFF;
+                if (alpha > 0){
+                    // Combine modified color components with original alpha
+                    //int modifiedRGB = (alpha << 24) | (upperRed << 16) | (upperGreen << 8) | upperBlue;
+                    modifiedImage.setRGB(x, y, upperRgb);
+                }
+                else{
+                    modifiedImage.setRGB(x, y, baseRgb);
+                }
+            }
+        }
+        return modifiedImage;
     }
 
     public Map<Class<?>, List<BufferedImage>> getGallery() {
@@ -385,19 +846,51 @@ public class ImageStore {
         this.galleryTeam2 = galleryTeam2;
     }
 
-    public Map<String, BufferedImage> getTileGallery() {
+    public Map<String, List<BufferedImage>> getTileGallery() {
         return tileGallery;
     }
 
-    public void setTileGallery(Map<String, BufferedImage> tileGallery) {
+    public void setTileGallery(Map<String, List<BufferedImage>> tileGallery) {
         this.tileGallery = tileGallery;
     }
 
-    public Map<String, BufferedImage> getTileOutOfRangeGallery() {
+    public Map<String, List<BufferedImage>> getTileOutOfRangeGallery() {
         return tileOutOfRangeGallery;
     }
 
-    public void setTileOutOfRangeGallery(Map<String, BufferedImage> tileOutOfRangeGallery) {
+    public void setTileOutOfRangeGallery(Map<String, List<BufferedImage>> tileOutOfRangeGallery) {
         this.tileOutOfRangeGallery = tileOutOfRangeGallery;
+    }
+
+    public Map<String, List<BufferedImage>> getObstacleGallery() {
+        return obstacleGallery;
+    }
+
+    public void setObstacleGallery(Map<String, List<BufferedImage>> obstacleGallery) {
+        this.obstacleGallery = obstacleGallery;
+    }
+
+    public Map<String, BufferedImage> getWaterGallery() {
+        return waterGallery;
+    }
+
+    public void setWaterGallery(Map<String, BufferedImage> waterGallery) {
+        this.waterGallery = waterGallery;
+    }
+
+    public Map<String, BufferedImage> getRoadGallery() {
+        return roadGallery;
+    }
+
+    public void setRoadGallery(Map<String, BufferedImage> roadGallery) {
+        this.roadGallery = roadGallery;
+    }
+
+    public Map<String, BufferedImage> getStructureGallery() {
+        return structureGallery;
+    }
+
+    public void setStructureGallery(Map<String, BufferedImage> structureGallery) {
+        this.structureGallery = structureGallery;
     }
 }

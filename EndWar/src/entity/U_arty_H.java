@@ -24,14 +24,18 @@ public class U_arty_H extends SuperUnit implements SUInterface {
     public U_arty_H(){}
 
     public U_arty_H(GamePanel gp, int tileX, int tileY){
-        imgList = new ArrayList<>();
+        //imgList = new ArrayList<>();
         type = "artyH";
         setCurrentTile(gp,tileX,tileY);
+        setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
         direction = 3;
         isArtyAbleToFire = true;
         movementRange = 2;
         traverseSpeed = new double[]{1.5,10,10,1,10,10};
+        selectedSound.setFile(13);
+        moveSound.setFile(2);
+        attackSound.setFile(0);
     }
 }

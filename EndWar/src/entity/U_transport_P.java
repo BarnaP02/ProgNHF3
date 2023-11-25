@@ -26,14 +26,18 @@ public class U_transport_P extends SuperUnit implements SUInterface {
     public U_transport_P(){}
 
     public U_transport_P(GamePanel gp, int tileX, int tileY){
-        imgList = new ArrayList<>();
+        //imgList = new ArrayList<>();
         type = "transportP";
         setCurrentTile(gp,tileX,tileY);
+        setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
         direction = 3;
         isAvian = true;
         movementRange = 5;
         traverseSpeed = new double[]{1,1,1,1,1,1};
+        selectedSound.setFile(13);
+        moveSound.setFile(18);
+        attackSound.setFile(0);
     }
 }

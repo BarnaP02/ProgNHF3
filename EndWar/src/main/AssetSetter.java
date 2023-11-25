@@ -47,6 +47,12 @@ public class AssetSetter {
         map.put("16", c);
         c = new U_sub(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]));
         map.put("17", c);
+        c = new U_carrier(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]));
+        map.put("18", c);
+        c = new U_battleship(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]));
+        map.put("19", c);
+        c = new U_cargo(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]));
+        map.put("20", c);
         //c = new U_infantry_L();
         //map.put("1", c);
 

@@ -1,17 +1,13 @@
 
-n
-java:S1104"QMake image a static final constant or non-public and provide accessors if needed.(“×ªé8ıïœÊ½1
 t
-java:S1104"RMake worldX a static final constant or non-public and provide accessors if needed.(áúÃÕùÿÿÿÿ8ıïœÊ½1
+java:S1104"RMake worldX a static final constant or non-public and provide accessors if needed.(áúÃÕùÿÿÿÿ8²Ö­ì¿1
 o
-java:S1104"RMake worldY a static final constant or non-public and provide accessors if needed.(ïğÅØ8ıïœÊ½1
+java:S1104"RMake worldY a static final constant or non-public and provide accessors if needed.(ïğÅØ8²Ö­ì¿1
 L
-java:S1197"*Move the array designators [] to the type.(Ÿ“Ëùÿÿÿÿ8ğœÊ½1
-L
-java:S1197	"*Move the array designators [] to the type.(£’¤Êûÿÿÿÿ8ğœÊ½1
+java:S1197	"*Move the array designators [] to the type.(Ÿ“Ëùÿÿÿÿ8µÖ­ì¿1
 L
 java:S1197
-"*Move the array designators [] to the type.(Ü•äÎşÿÿÿÿ8ğœÊ½1
-]	java:S125"<This block of commented-out lines of code should be removed.(Ûìšÿúÿÿÿÿ8ğœÊ½1
-I
-java:S1481:",Remove this unused "counter" local variable.(ŒÂëó8‚ğœÊ½1
+"*Move the array designators [] to the type.(£’¤Êûÿÿÿÿ8µÖ­ì¿1
+L
+java:S1197"*Move the array designators [] to the type.(Ü•äÎşÿÿÿÿ8µÖ­ì¿1
+]	java:S125"<This block of commented-out lines of code should be removed.(Ûìšÿúÿÿÿÿ8µÖ­ì¿1

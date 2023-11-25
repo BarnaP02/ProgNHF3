@@ -20,13 +20,17 @@ public class U_jeep extends SuperUnit implements SUInterface {
         }
     }
     public U_jeep(GamePanel gp, int tileX, int tileY){
-        imgList = new ArrayList<>();
+        //imgList = new ArrayList<>();
         type = "jeep";
         setCurrentTile(gp,tileX,tileY);
+        setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
         direction = 4;
         movementRange = 3;
         traverseSpeed = new double[]{1,10,10,0.7,10,10};
+        selectedSound.setFile(13);
+        moveSound.setFile(5);
+        attackSound.setFile(0);
     }
 }
