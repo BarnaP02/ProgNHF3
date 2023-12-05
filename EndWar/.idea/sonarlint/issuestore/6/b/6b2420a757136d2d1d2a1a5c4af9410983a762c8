@@ -1,33 +1,28 @@
 
-f
-java:S1192"HDefine a constant instead of duplicating this literal "factory" 4 times.(¦½³8ªøƒ”À1
+e
+java:S1192"HDefine a constant instead of duplicating this literal "factory" 4 times.(¦½³8“ºò•Ã1
 h
-java:S1192s"FDefine a constant instead of duplicating this literal "depot" 4 times.(°«×—ÿÿÿÿÿ8ªøƒ”À1
+java:S1192q"FDefine a constant instead of duplicating this literal "depot" 4 times.(°«×—ÿÿÿÿÿ8”ºò•Ã1
 i
-java:S1192z"GDefine a constant instead of duplicating this literal "harbor" 4 times.(¹ëÊôüÿÿÿÿ8ªøƒ”À1
+java:S1192x"GDefine a constant instead of duplicating this literal "harbor" 4 times.(¹ëÊôüÿÿÿÿ8”ºò•Ã1
 c
-java:S1192ˆ"FDefine a constant instead of duplicating this literal "water" 3 times.(äçêE8ªøƒ”À1
-X	java:S125"<This block of commented-out lines of code should be removed.(¹œ¢ï8öùƒ”À1
-X	java:S125"<This block of commented-out lines of code should be removed.(•„œË8÷ùƒ”À1
-X	java:S125"<This block of commented-out lines of code should be removed.(›…8÷ùƒ”À1
+java:S1192†"FDefine a constant instead of duplicating this literal "water" 3 times.(äçêE8”ºò•Ã1
+X	java:S125"<This block of commented-out lines of code should be removed.(¹œ¢ï8ú»ò•Ã1
+X	java:S125"<This block of commented-out lines of code should be removed.(•„œË8ú»ò•Ã1
+X	java:S125"<This block of commented-out lines of code should be removed.(›…8ú»ò•Ã1
 o
-java:S37762"RRefactor this method to reduce its Cognitive Complexity from 80 to the 15 allowed.(É¶éÙ8øùƒ”À1
-X	java:S125<"<This block of commented-out lines of code should be removed.(Ç¢ÚÅ8ıùƒ”À1
-]	java:S125J"<This block of commented-out lines of code should be removed.(§¬ŸÏúÿÿÿÿ8şùƒ”À1
-^	java:S125 "<This block of commented-out lines of code should be removed.(Ôè®Îşÿÿÿÿ8„úƒ”À1
-^	java:S125É"<This block of commented-out lines of code should be removed.(ĞÛÕÙùÿÿÿÿ8†úƒ”À1
-^	java:S125Î"<This block of commented-out lines of code should be removed.(õºÆÿÿÿÿÿ8†úƒ”À1
-^	java:S125Ñ"<This block of commented-out lines of code should be removed.(Î‹‚ûÿÿÿÿ8†úƒ”À1
-^	java:S125Ò"<This block of commented-out lines of code should be removed.(ä¦Æùÿÿÿÿ8†úƒ”À1
-^	java:S125ß"<This block of commented-out lines of code should be removed.(›Ö¶ùÿÿÿÿ8‡úƒ”À1
-Y	java:S125â"<This block of commented-out lines of code should be removed.(îçº—8‡úƒ”À1
-Y	java:S125ä"<This block of commented-out lines of code should be removed.(ŸˆàÒ8‡úƒ”À1
-O
-java:S1128"2Remove this unused import 'javax.imageio.ImageIO'.(‘çÔû8­¸…”À1
-R
-java:S1128
-"0Remove this unused import 'java.io.IOException'.(ªº»Úıÿÿÿÿ8­¸…”À1
-O
-java:S1128"-Remove this unused import 'java.util.Random'.(èøÉ›ùÿÿÿÿ8­¸…”À1
+java:S3776/"RRefactor this method to reduce its Cognitive Complexity from 80 to the 15 allowed.(É¶éÙ8û»ò•Ã1
+X	java:S1259"<This block of commented-out lines of code should be removed.(Ç¢ÚÅ8ÿ»ò•Ã1
+]	java:S125G"<This block of commented-out lines of code should be removed.(§¬ŸÏúÿÿÿÿ8ÿ»ò•Ã1
+^	java:S125"<This block of commented-out lines of code should be removed.(Ôè®Îşÿÿÿÿ8†¼ò•Ã1
+p
+java:S3776Ã"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(‡å¿Ô8ˆ¼ò•Ã1
+^	java:S125Ç"<This block of commented-out lines of code should be removed.(ĞÛÕÙùÿÿÿÿ8Š¼ò•Ã1
+^	java:S125Ì"<This block of commented-out lines of code should be removed.(õºÆÿÿÿÿÿ8Š¼ò•Ã1
+^	java:S125Ï"<This block of commented-out lines of code should be removed.(Î‹‚ûÿÿÿÿ8Š¼ò•Ã1
+^	java:S125Ğ"<This block of commented-out lines of code should be removed.(ä¦Æùÿÿÿÿ8Š¼ò•Ã1
+^	java:S125İ"<This block of commented-out lines of code should be removed.(›Ö¶ùÿÿÿÿ8Š¼ò•Ã1
+Y	java:S125á"<This block of commented-out lines of code should be removed.(îçº—8‹¼ò•Ã1
+Y	java:S125æ"<This block of commented-out lines of code should be removed.(ŸˆàÒ8‹¼ò•Ã1
 ä
-java:S65412"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 139 to 64, Complexity from 35 to 14, Nesting Level from 6 to 2, Number of Variables from 34 to 6.(É¶éÙ8ˆúƒ”À1
+java:S6541/"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 140 to 64, Complexity from 35 to 14, Nesting Level from 6 to 2, Number of Variables from 34 to 6.(É¶éÙ8Œ¼ò•Ã1

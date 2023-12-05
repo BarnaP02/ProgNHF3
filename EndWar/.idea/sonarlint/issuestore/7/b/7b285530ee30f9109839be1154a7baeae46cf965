@@ -1,11 +1,18 @@
 
 f
-java:S25837"DChange this condition so that it does not always evaluate to "false"(®«ž–ùÿÿÿÿ8µé†•À1
-]	java:S125 "<This block of commented-out lines of code should be removed.(îÚÎüÿÿÿÿ8¢Û¦”À1
-]	java:S125)"<This block of commented-out lines of code should be removed.(”ãËòýÿÿÿÿ8£Û¦”À1
-]	java:S1253"<This block of commented-out lines of code should be removed.(”ãËòýÿÿÿÿ8¤Û¦”À1
-F	java:S1068"+Replace this use of System.out by a logger.(ºåÊ8¤Û¦”À1
-I
-java:S1128"-Remove this unused import 'entity.SuperUnit'.(ƒÿ»'8çÎÊ”À1
+java:S2583M"DChange this condition so that it does not always evaluate to "false"(®«ž–ùÿÿÿÿ8ß«Ê”Ã1
+]	java:S125"<This block of commented-out lines of code should be removed.(¡çœÛúÿÿÿÿ8Û÷¯Ã1
+X	java:S125"<This block of commented-out lines of code should be removed.(»­ôƒ8Û÷¯Ã1
+X	java:S125#"<This block of commented-out lines of code should be removed.(÷«òÆ8òÒÍ”Ã1
+X	java:S125)"<This block of commented-out lines of code should be removed.(€÷ž8Ö©Í”Ã1
+]	java:S125/"<This block of commented-out lines of code should be removed.(îÚÎüÿÿÿÿ8Ý÷¯Ã1
+]	java:S1258"<This block of commented-out lines of code should be removed.(”ãËòýÿÿÿÿ8Ý÷¯Ã1
+X	java:S125A"<This block of commented-out lines of code should be removed.(°„Ìº8Þ÷¯Ã1
+]	java:S125C"<This block of commented-out lines of code should be removed.(Ü¦¬°üÿÿÿÿ8Þ÷¯Ã1
+]	java:S125I"<This block of commented-out lines of code should be removed.(”ãËòýÿÿÿÿ8Þ÷¯Ã1
+F	java:S106N"+Replace this use of System.out by a logger.(ºåÊ8Þ÷¯Ã1
+X	java:S125m"<This block of commented-out lines of code should be removed.(ã»†8á÷¯Ã1
+E	java:S106}"+Replace this use of System.out by a logger.(þÄp8á÷¯Ã1
+^	java:S125”"<This block of commented-out lines of code should be removed.(Ü¦¬°üÿÿÿÿ8ã÷¯Ã1
 M
-java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8çÎÊ”À1
+java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8é«Ê”Ã1

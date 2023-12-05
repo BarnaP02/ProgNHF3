@@ -1,14 +1,14 @@
 
-i	java:S101"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(…÷µþ8¹à¢©½1
-X	java:S125"<This block of commented-out lines of code should be removed.(Ê¨žè8¾à¢©½1
-]	java:S125"<This block of commented-out lines of code should be removed.(…ÔÝëúÿÿÿÿ8ØóÍò¿1
+i	java:S101"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(…÷µþ8´ã¹îÁ1
+X	java:S125"<This block of commented-out lines of code should be removed.(Ê¨žè8½ã¹îÁ1
+]	java:S125"<This block of commented-out lines of code should be removed.(…ÔÝëúÿÿÿÿ8¿ã¹îÁ1
 H
-java:S1128"&Remove this unused import 'tile.Tile'.(¼ÖÂÇúÿÿÿÿ8ØóÍò¿1
+java:S1128"&Remove this unused import 'tile.Tile'.(¼ÖÂÇúÿÿÿÿ8æÞ®ÛÂ1
 O
-java:S1128"2Remove this unused import 'javax.imageio.ImageIO'.(‘çÔû8ØóÍò¿1
+java:S1128"2Remove this unused import 'javax.imageio.ImageIO'.(‘çÔû8æÞ®ÛÂ1
 J
-java:S1128"(Remove this unused import 'javax.swing'.(Ìí¿Üüÿÿÿÿ8ØóÍò¿1
+java:S1128"(Remove this unused import 'javax.swing'.(Ìí¿Üüÿÿÿÿ8æÞ®ÛÂ1
 R
-java:S1128"0Remove this unused import 'java.io.IOException'.(ªº»Úýÿÿÿÿ8ØóÍò¿1
+java:S1128"0Remove this unused import 'java.io.IOException'.(ªº»Úýÿÿÿÿ8æÞ®ÛÂ1
 M
-java:S1128	"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8ØóÍò¿1
+java:S1128	"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8æÞ®ÛÂ1

@@ -1,5 +1,8 @@
 package timeline;
 
+import entity.SuperStructure;
+import entity.SuperUnit;
+import entity.U_arty_H;
 import main.GamePanel;
 import main.KeyHandler;
 import main.Sound;
@@ -11,18 +14,26 @@ import java.util.List;
 
 public class OrderManager {
     GamePanel gp;
-    ArrayList<Order>timeline;
-    ArrayList<Order>processing;
-    String newOrderUnitSide;
+    private ArrayList<Order>timeline;
+    private ArrayList<Order>processing;
+    private ArrayList<Order>tempMove;
+    private ArrayList<Order>tempAttack;
+    List<SuperUnit> newOrderUnitSide;
     int newOrderUnitIndex;
+    SuperUnit ordered;
     int slowCounter = 0;
     int slowNum = 6;
+    private boolean gotNewIndex = false;
+    private int newIndex = 0;
+    public boolean unitFromStructure = false;
 
     public OrderManager(GamePanel gp){
-        newOrderUnitSide = "";
+        newOrderUnitSide = null;
         this.gp = gp;
         timeline = new ArrayList<>();
         processing = new ArrayList<>();
+        tempMove = new ArrayList<>();
+        tempAttack = new ArrayList<>();
     }
     public void giveOrder(Order o){
         o.complete(gp);
@@ -33,68 +44,337 @@ public class OrderManager {
         slowCounter++;
         if (slowCounter!=slowNum) { return; }
         slowCounter = 0;
-        if (keyH.spacePressed) {
-            if (newOrderUnitSide.isEmpty()) {
-                for (int i = 0; i < gp.ally.size(); ++i) {
-                    if (gp.getTileFromWorldCoords(gp.ally.get(i).worldX, gp.ally.get(i).worldY) == gp.cruser.getHover()){
-                        newOrderUnitSide = "ally";
-                        newOrderUnitIndex = i;
-                        gp.rFinder.findMovementRange(gp, gp.ally.get(i));
+        if (keyH.spacePressed || gotNewIndex) {
+            if (newOrderUnitSide == null) {
+                if (gp.getCycleState() == GamePanel.Cycle.T1MOVE){
+                    for (int i = 0; i < gp.structures.size();++i){
+                        if (gp.structures.get(i).getTile() == gp.cruser.getHover() && gp.structures.get(i).getSide() == 0 &&
+                                !gp.structures.get(i).getInventory().isEmpty() && !gp.structures.get(i).getInventory().get(0).isActed() &&
+                                gotNewIndex){
+                            //gp.structures.get(i).getInventory().get(0).setVisible(true);
+                            unitFromStructure = true;
+                            gp.structures.get(i).deployUnit(gp.structures.get(i).getInventory().get(newIndex), 0);
+                            System.out.println("SIDENUM 0");
+                            gotNewIndex = false;
+                            //newOrderUnitSide = gp.structures.get(i).getInventory();
+                            //newOrderUnitIndex = 0;
+                        }
+                    }
+                    for (int i = 0; i < gp.ally.size(); ++i) {
+                        if ((gp.ally.get(i).getCurrentTile() == gp.cruser.getHover() || gp.ally.get(i).getOtherCurrentTile() == gp.cruser.getHover()) &&
+                                (!gp.ally.get(i).isActed() && !gp.ally.get(i).isDestroyed() && !gp.ally.get(i).isMoving() && gp.ally.get(i).isVisible())){
+                            newOrderUnitSide = gp.ally;
+                            newOrderUnitIndex = i;
+                            ordered = newOrderUnitSide.get(newOrderUnitIndex);
+                        }
+                    }
+                    if (newOrderUnitSide != null){
+                        gp.rFinder.findMovementRange(gp, newOrderUnitSide.get(newOrderUnitIndex), false);
                         slowCounter = -20;
-                        gp.ally.get(newOrderUnitIndex).getSelectedSound().play();
+                        newOrderUnitSide.get(newOrderUnitIndex).getSelectedSound().play();
+                        //slowCounter = 0;
                     }
                 }
-                //ez később nem kell
-                for (int i = 0; i < gp.enemy.size(); ++i) {
-                    if (gp.getTileFromWorldCoords(gp.enemy.get(i).worldX, gp.enemy.get(i).worldY) == gp.cruser.getHover()){
-                        newOrderUnitSide = "enemy";
-                        newOrderUnitIndex = i;
+                if (gp.getCycleState() == GamePanel.Cycle.T2MOVE && !gp.isPvE){
+                    for (int i = 0; i < gp.structures.size();++i){
+                        if (gp.structures.get(i).getTile() == gp.cruser.getHover() && gp.structures.get(i).getSide() == 1 &&
+                                !gp.structures.get(i).getInventory().isEmpty() && !gp.structures.get(i).getInventory().get(0).isActed() &&
+                                gotNewIndex){
+                            //gp.structures.get(i).getInventory().get(0).setVisible(true);
+                            unitFromStructure = true;
+                            gp.structures.get(i).deployUnit(gp.structures.get(i).getInventory().get(newIndex), 1);
+                            System.out.println("SIDENUM 1");
+                            gotNewIndex = false;
+                            //newOrderUnitSide = gp.structures.get(i).getInventory();
+                            //newOrderUnitIndex = 0;
+                        }
+                    }
+                    for (int i = 0; i < gp.enemy.size(); ++i) {
+                        if ((gp.enemy.get(i).getCurrentTile() == gp.cruser.getHover() || gp.enemy.get(i).getOtherCurrentTile() == gp.cruser.getHover()) &&
+                                (!gp.enemy.get(i).isActed() && !gp.enemy.get(i).isDestroyed() && !gp.enemy.get(i).isMoving() && gp.enemy.get(i).isVisible())){
+                            newOrderUnitSide = gp.enemy;
+                            newOrderUnitIndex = i;
+                            ordered = newOrderUnitSide.get(newOrderUnitIndex);
+                        }
+                        /*if (gp.getTileFromWorldCoords(gp.enemy.get(i).getWorldX(), gp.enemy.get(i).getWorldY()) == gp.cruser.getHover()){
+                            newOrderUnitSide = gp.enemy;
+                            newOrderUnitIndex = i;
+                        }*/
+                    }
+                    if (newOrderUnitSide != null){
+                        gp.rFinder.findMovementRange(gp, newOrderUnitSide.get(newOrderUnitIndex), false);
                         slowCounter = -20;
+                        newOrderUnitSide.get(newOrderUnitIndex).getSelectedSound().play();
+                        //slowCounter = 0;
                     }
                 }
-                //slowCounter = 0;
+                if (gp.getCycleState() == GamePanel.Cycle.T1ATTACK){
+                    for (int i = 0; i < gp.ally.size(); ++i) {
+                        boolean artyCantFire = gp.ally.get(i).getClass() == U_arty_H.class && !gp.ally.get(i).isArtyAbleToFire();
+                        if ((gp.ally.get(i).getCurrentTile() == gp.cruser.getHover() || gp.ally.get(i).getOtherCurrentTile() == gp.cruser.getHover()) &&
+                                (!gp.ally.get(i).isActed() && !gp.ally.get(i).isDestroyed() && !gp.ally.get(i).isMoving() && !artyCantFire && gp.ally.get(i).isVisible())){
+                            newOrderUnitSide = gp.ally;
+                            newOrderUnitIndex = i;
+                            ordered = newOrderUnitSide.get(newOrderUnitIndex);
+                        }
+                    }
+                    if (newOrderUnitSide != null){
+                        gp.rFinder.findAttackRange(gp, newOrderUnitSide.get(newOrderUnitIndex));
+                        slowCounter = -20;
+                        newOrderUnitSide.get(newOrderUnitIndex).getSelectedSound().play();
+                        //slowCounter = 0;
+                    }
+                }
+                if ((gp.getCycleState() == GamePanel.Cycle.T2ATTACK && !gp.isPvE)){
+                    for (int i = 0; i < gp.enemy.size(); ++i) {
+                        boolean artyCantFire = gp.enemy.get(i).getClass() == U_arty_H.class && !gp.enemy.get(i).isArtyAbleToFire();
+                        if ((gp.enemy.get(i).getCurrentTile() == gp.cruser.getHover() || gp.enemy.get(i).getOtherCurrentTile() == gp.cruser.getHover()) &&
+                                (!gp.enemy.get(i).isActed() && !gp.enemy.get(i).isDestroyed() && !gp.enemy.get(i).isMoving()) && !artyCantFire && gp.enemy.get(i).isVisible()){
+                            newOrderUnitSide = gp.enemy;
+                            newOrderUnitIndex = i;
+                            ordered = newOrderUnitSide.get(newOrderUnitIndex);
+                        }
+                    }
+                    if (newOrderUnitSide != null){
+                        gp.rFinder.findAttackRange(gp, newOrderUnitSide.get(newOrderUnitIndex));
+                        slowCounter = -20;
+                        newOrderUnitSide.get(newOrderUnitIndex).getSelectedSound().play();
+                        //slowCounter = 0;
+                    }
+                }
             }
             else {
-                if (newOrderUnitSide.equals("ally")) {
-                    if (gp.cruser.getHover() != gp.ally.get(newOrderUnitIndex).getCurrentTile()){
-                        //gp.ally.get(newOrderUnitIndex).currentTile = gp.cruser.getHover();
-                        //gp.ally.get(newOrderUnitIndex).worldX = gp.ally.get(newOrderUnitIndex).currentTile.worldX;
-                        //gp.ally.get(newOrderUnitIndex).worldY = gp.ally.get(newOrderUnitIndex).currentTile.worldY;
-                        List<Tile> path = gp.rFinder.findMovementPath(gp,gp.ally.get(newOrderUnitIndex), gp.cruser.getHover());
+                if (gp.getCycleState() == GamePanel.Cycle.T1MOVE || (gp.getCycleState() == GamePanel.Cycle.T2MOVE && !gp.isPvE)){
+                    if (gp.cruser.getHover() != ordered.getCurrentTile() &&
+                            gp.cruser.getHover() != ordered.getOtherCurrentTile() &&
+                            gp.cruser.getHover().isHighlighted() && ordered.isVisible()){
+                        if (unitFromStructure){
+                            //search for structure with the chosen unit
+                            for (int i = 0; i < gp.structures.size();++i){
+                                if (gp.structures.get(i).getInventory().contains(ordered)){
+                                    /*if (gp.getCycleState() == GamePanel.Cycle.T1MOVE){
+                                        //gp.structures.get(i).deployUnit(newOrderUnitSide.get(newOrderUnitIndex),0);
+                                    }
+                                    else {
+                                        //gp.structures.get(i).deployUnit(newOrderUnitSide.get(newOrderUnitIndex),1);
+                                    }*/
+                                    //unitFromStructure = false;
+                                }
+                            }
+                        }
+                        else {
+                            //capture or store in structure
+                            for (int i = 0; i < gp.structures.size();++i){
+                                if (gp.structures.get(i).getTile() == gp.cruser.getHover()){
+                                    //capture structure
+                                    if (newOrderUnitSide == gp.ally) gp.structures.get(i).setSide(0);
+                                    if (newOrderUnitSide == gp.enemy) gp.structures.get(i).setSide(1);
+                                    gp.structures.get(i).storeUnit(ordered);
+                                    //newOrderUnitSide.get(newOrderUnitIndex).setVisible(false);
+                                }
+                            }
+
+                        }
+                        unitFromStructure = false;
+                        List<Tile> path = gp.rFinder.findMovementPath(gp,ordered, gp.cruser.getHover());
                         for (Tile t : path){
                             System.out.println(t.getCoords()[0]+","+t.getCoords()[1]);
                         }
-                        gp.ally.get(newOrderUnitIndex).getMoveSound().play();
-                        timeline.add(new Move("ally", newOrderUnitIndex, gp.cruser.getHover(), path));
-                        processing.add(new Move("ally", newOrderUnitIndex, gp.cruser.getHover(), path));
-                        //timeline.get(timeline.size()-1).complete(gp);
+                        ordered.getMoveSound().play();
+                        ordered.setMoving(true);
+                        timeline.add(new Move(gp, ordered, gp.cruser.getHover(), path));
+                        tempMove.add(timeline.get(timeline.size()-1));
+                        processing.add(timeline.get(timeline.size()-1));//(new Move(newOrderUnitSide, newOrderUnitIndex, gp.cruser.getHover(), path));
                     }
                     //end of selection
+                    if (unitFromStructure){
+                        gp.getStructureFromTile(gp.cruser.getHover()).storeUnit(ordered);
+                        gp.getStructureFromTile(gp.cruser.getHover()).unitArrived(ordered);
+                        unitFromStructure = false;
+                        //gp.structures.get()
+                    }
                     for (int i = 0; i < gp.maxWorldCol; ++i){
                         for (int j = 0; j < gp.maxWorldRow; j++) {
                             gp.Grid[i][j].setIsHighlighted(true);
                         }
                     }
                     slowCounter = -40;
-                    newOrderUnitSide = "";
+                    newOrderUnitSide = null;
                 }
-                /*
-                for (int i = 0; i < gp.enemy.size(); ++i) {
-                    if (gp.getTileFromWorldCoords(gp.enemy.get(i).worldX, gp.enemy.get(i).worldY) == gp.cruser.getHover()){
-                        newOrderUnitSide = "enemy";
-                        newOrderUnitIndex = i;
+                else {
+                    if (gp.cruser.getHover() != ordered.getCurrentTile() &&
+                            gp.cruser.getHover() != ordered.getOtherCurrentTile() &&
+                            ((gp.getCycleState() == GamePanel.Cycle.T2ATTACK && !gp.isPvE) || gp.getCycleState() == GamePanel.Cycle.T1ATTACK) &&
+                            ordered.isVisible()){
+                        //gp.rFinder.findAttackRange(gp,newOrderUnitSide.get(newOrderUnitIndex));
+                        //List<Tile> path = gp.rFinder.findMovementPath(gp,newOrderUnitSide.get(newOrderUnitIndex), gp.cruser.getHover());
+                        ArrayList<SuperUnit> otherSide;
+                        if (ordered.getTeamNum()==0){
+                            otherSide = gp.enemy;
+                        }
+                        else {
+                            otherSide = gp.ally;
+                        }
+                        for (SuperUnit target : otherSide){
+                            if(target.getCurrentTile() == gp.cruser.getHover() && target.isInRange() || target.getOtherCurrentTile() == gp.cruser.getHover() &&
+                                    target.isInRange() && target.isVisible()){
+                                ordered.getAttackSound().play();
+                                //newOrderUnitSide.get(newOrderUnitIndex).setMoving(true);
+                                timeline.add(new Attack(gp, ordered, target));
+                                tempAttack.add(timeline.get(timeline.size()-1));
+                                //processing.add(timeline.get(timeline.size()-1));
+                            }
+                        }
+                        //timeline.add(new Move(newOrderUnitSide, newOrderUnitIndex, gp.cruser.getHover(), path));
+                        //processing.add(new Move(newOrderUnitSide, newOrderUnitIndex, gp.cruser.getHover(), path));
                     }
-                }*/
+                    //end of selection
+                    for (int i = 0; i < gp.maxWorldCol; ++i){
+                        for (int j = 0; j < gp.maxWorldRow; j++) {
+                            gp.Grid[i][j].setIsHighlighted(true);
+                            gp.Grid[i][j].setInRange(false);
+                        }
+                    }
+                    slowCounter = -40;
+                    newOrderUnitSide = null;
+                }
             }
+        }
+        else if (gp.getCycleState() == GamePanel.Cycle.T2MOVE && gp.isPvE){
+            for (int i = 0; i < gp.enemy.size(); ++i){
+                gp.rFinder.findTargetUnit(gp, gp.enemy, gp.ally, i);
+                gp.rFinder.findAttackRange(gp, gp.enemy.get(i));
+                List<Tile> aiPath = gp.rFinder.findMovementPathToUnit(gp, gp.enemy.get(i), gp.enemy.get(i).getTargetUnit());
+                if (!aiPath.isEmpty()){
+                    timeline.add(new Move(gp, gp.enemy.get(i), aiPath.get(0), aiPath));
+                    tempMove.add(timeline.get(timeline.size()-1));
+                    processing.add(timeline.get(timeline.size()-1));
+                }
+            }
+        }
+        else if (gp.getCycleState() == GamePanel.Cycle.T2ATTACK && gp.isPvE){
+            for (int i = 0; i < gp.enemy.size(); ++i){
+                //first round
+                if (gp.enemy.get(i).getTargetUnit() == null){
+                    //gp.rFinder.findMovementRange(gp, gp.enemy.get(i));
+                    gp.rFinder.findTargetUnit(gp, gp.enemy, gp.ally, i);
+                }
+                if(gp.enemy.get(i).getTargetUnit().isInRange()){
+                    timeline.add(new Attack(gp, gp.enemy.get(i), gp.enemy.get(i).getTargetUnit()));
+                    tempAttack.add(timeline.get(timeline.size()-1));
+                }
+            }
+
+        }
+        gotNewIndex = false;
+        if (keyH.enterPressed || (gp.isPvE && (gp.getCycleState() == GamePanel.Cycle.T2MOVE || gp.getCycleState() == GamePanel.Cycle.T2ATTACK))){// && keyH.ctrlPressed){
+            //end of selection
+            for (int i = 0; i < gp.maxWorldCol; ++i){
+                for (int j = 0; j < gp.maxWorldRow; j++) {
+                    gp.Grid[i][j].setIsHighlighted(true);
+                    gp.Grid[i][j].setInRange(false);
+                }
+            }
+            slowCounter = -40;
+            newOrderUnitSide = null;
+            if (gp.getCycleState() == GamePanel.Cycle.T1MOVE || (gp.getCycleState() == GamePanel.Cycle.T2MOVE && !gp.isPvE) ||
+                    (gp.getCycleState() == GamePanel.Cycle.T2ATTACK && gp.isPvE)){
+                for (SuperStructure supture : gp.structures){
+                    //repair stored units at the end of their movement round
+                    if (supture.getSide() == 0 && gp.getCycleState() == GamePanel.Cycle.T1MOVE){
+                        supture.repairInventory();
+                    }
+                    if (supture.getSide() == 1 && gp.getCycleState() == GamePanel.Cycle.T2MOVE){
+                        supture.repairInventory();
+                    }
+                }
+                for (Order o : processing){
+                    if (!o.isCompleted()){
+                        o.forceFinish(gp);
+                    }
+                }
+                for (Order o : tempMove){
+                    o.reverse(gp);
+                }
+                tempAttack = new ArrayList<>();
+                gp.nextCycleState();
+            }
+            else {
+                for (SuperUnit un : gp.ally){
+                    if (!un.isArtyAbleToFire() && un.getClass() == U_arty_H.class){
+                        un.setArtyCounter(un.getArtyCounter()+1);
+                        if (un.getArtyCounter()==2){
+                            un.setArtyAbleToFire(true);
+                            un.setArtyCounter(0);
+                        }
+                        //un.setArtyNotAbleToFire(false);
+                    }
+                }
+                for (SuperUnit un : gp.enemy){
+                    if (!un.isArtyAbleToFire() && un.getClass() == U_arty_H.class){
+                        //un.setArtyAbleToFire(true);
+                        un.setArtyCounter(un.getArtyCounter()+1);
+                        if (un.getArtyCounter()==2){
+                            un.setArtyAbleToFire(true);
+                            un.setArtyCounter(0);
+                        }
+                        //un.setArtyNotAbleToFire(false);
+                    }
+                }
+                for (Order o : tempAttack){
+                    //o.complete(gp);
+                }
+                gp.attacksNeedResolving = true;
+                //gp.resolveAttackOrders();
+                gp.nextCycleState();
+                /*for (Order o : tempMove){
+                    o.forceFinish(gp);
+                }
+                tempMove = new ArrayList<>();*/
+            }
+            slowCounter = -30;
+            return;
         }
         for (Order o : processing){
             if (!o.isCompleted()){
                 o.complete(gp);
+            }
+            else {
+
+                //processing.get(processing.indexOf(o)) = null;
             }
         }
     }
 
     public ArrayList<Order> getTimeline() {
         return timeline;
+    }
+
+    public ArrayList<Order> getTempMove() {
+        return tempMove;
+    }
+
+    public void setTempMove(ArrayList<Order> tempMove) {
+        this.tempMove = tempMove;
+    }
+
+    public ArrayList<Order> getTempAttack() {
+        return tempAttack;
+    }
+
+    public boolean isGotNewIndex() {
+        return gotNewIndex;
+    }
+
+    public void setGotNewIndex(boolean gotNewIndex) {
+        this.gotNewIndex = gotNewIndex;
+    }
+
+    public int getNewIndex() {
+        return newIndex;
+    }
+
+    public void setNewIndex(int newIndex) {
+        this.newIndex = newIndex;
     }
 }

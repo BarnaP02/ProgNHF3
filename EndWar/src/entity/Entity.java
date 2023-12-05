@@ -5,7 +5,8 @@ import java.nio.Buffer;
 import java.util.List;
 
 public class Entity {
-    public int worldX,worldY;
+    protected int worldX;
+    protected int worldY;
     boolean isVisible;
 
     //public BufferedImage sprite1;
@@ -25,5 +26,21 @@ public class Entity {
 
     public void setDirection(int direction) {
         this.direction = direction;
+    }
+
+    public int getWorldX() {
+        return worldX;
+    }
+
+    public void setWorldX(int worldX) {
+        this.worldX = worldX;
+    }
+
+    public int getWorldY() {
+        return worldY;
+    }
+
+    public void setWorldY(int worldY) {
+        this.worldY = worldY;
     }
 }

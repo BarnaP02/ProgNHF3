@@ -1,18 +1,22 @@
 
-v	java:S116"URename this field "last_hover" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ª°þˆÿÿÿÿÿ8º†µšÀ1
-]	java:S125."<This block of commented-out lines of code should be removed.(Þƒµïùÿÿÿÿ8½†µšÀ1
-o
-java:S37764"RRefactor this method to reduce its Cognitive Complexity from 36 to the 15 allowed.(Ö×õÄ8½†µšÀ1
-]	java:S125?"<This block of commented-out lines of code should be removed.(Îòùÿÿÿÿ8¾†µšÀ1
-W	java:S125E"<This block of commented-out lines of code should be removed.(Ê¤Œ/8¾†µšÀ1
-X	java:S125Z"<This block of commented-out lines of code should be removed.(¦™8¾†µšÀ1
-]	java:S125`"<This block of commented-out lines of code should be removed.(ú¶¸Éÿÿÿÿÿ8¾†µšÀ1
-W	java:S125r"<This block of commented-out lines of code should be removed.(Ìå×8¿†µšÀ1
-]	java:S125}"<This block of commented-out lines of code should be removed.(ÒŽÔ…øÿÿÿÿ8¿†µšÀ1
-Y	java:S125…"<This block of commented-out lines of code should be removed.(²œŸ¹8À†µšÀ1
-D	java:S131""Add a default case to this switch.(Æóõµýÿÿÿÿ8Á†µšÀ1
-k	java:S100¾"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Üì‚ý8Â†µšÀ1
-Y	java:S125Ï"<This block of commented-out lines of code should be removed.(‘õûž8Â†µšÀ1
-^	java:S125Ò"<This block of commented-out lines of code should be removed.(µ‹¾øÿÿÿÿ8Â†µšÀ1
-^	java:S125á"<This block of commented-out lines of code should be removed.(ë¦ñŸùÿÿÿÿ8Ã†µšÀ1
-Y	java:S125ä"<This block of commented-out lines of code should be removed.(Ðòå‰8Ã†µšÀ1
+v	java:S116"URename this field "last_hover" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ª°þˆÿÿÿÿÿ8º†µšÀ1
+]	java:S125@"<This block of commented-out lines of code should be removed.(Žò¾Éþÿÿÿÿ8¬ëœØÂ1
+X	java:S125M"<This block of commented-out lines of code should be removed.(”ïÉŽ8°ëœØÂ1
+X	java:S125i"<This block of commented-out lines of code should be removed.(·ÿ§É8²ëœØÂ1
+Y	java:S125…"<This block of commented-out lines of code should be removed.(±ð“ú8À†µšÀ1
+^	java:S125‘"<This block of commented-out lines of code should be removed.(°¼š²ÿÿÿÿÿ8´ëœØÂ1
+Y	java:S125œ"<This block of commented-out lines of code should be removed.(²œŸ¹8µëœØÂ1
+^	java:S125§"<This block of commented-out lines of code should be removed.(Îòùÿÿÿÿ8¾†µšÀ1
+X	java:S125­"<This block of commented-out lines of code should be removed.(Ê¤Œ/8¾†µšÀ1
+Y	java:S125Â"<This block of commented-out lines of code should be removed.(¦™8¾†µšÀ1
+^	java:S125È"<This block of commented-out lines of code should be removed.(ú¶¸Éÿÿÿÿÿ8¾†µšÀ1
+X	java:S125Ú"<This block of commented-out lines of code should be removed.(Ìå×8¿†µšÀ1
+^	java:S125å"<This block of commented-out lines of code should be removed.(ÒŽÔ…øÿÿÿÿ8¿†µšÀ1
+^	java:S125û"<This block of commented-out lines of code should be removed.(Ü¤ÖÄýÿÿÿÿ8¿ëœØÂ1
+k	java:S100¨"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Üì‚ý8Â†µšÀ1
+Y	java:S125¹"<This block of commented-out lines of code should be removed.(‘õûž8Â†µšÀ1
+^	java:S125¼"<This block of commented-out lines of code should be removed.(µ‹¾øÿÿÿÿ8Â†µšÀ1
+^	java:S125Ë"<This block of commented-out lines of code should be removed.(ë¦ñŸùÿÿÿÿ8Ã†µšÀ1
+Y	java:S125Î"<This block of commented-out lines of code should be removed.(Ðòå‰8Ã†µšÀ1
+Z
+java:S1128"8Remove this unused import 'javax.swing.plaf.ViewportUI'.(¯’¨‚ùÿÿÿÿ8ÉëœØÂ1

@@ -5,10 +5,11 @@ import java.awt.image.BufferedImage;
 public class Tile {
     private BufferedImage image;
     private BufferedImage imageShaded;
+    private BufferedImage red;
     String type;
-    int coords[];
-    Tile border[];
-    private int borders[];
+    int[] coords;
+    Tile[] border;
+    private final int[] borders;
     public int worldX;
     public int worldY;
     //public int screenX;
@@ -21,8 +22,9 @@ public class Tile {
     boolean isHighlighted;
     boolean isOnScreen;
     boolean isVisited;
+    boolean isInRange;
     int currentMoveRange;
-    Tile cameFrom;
+    //Tile cameFrom;
     Tile(String type){
         image = null;
         this.type = type;
@@ -80,6 +82,14 @@ public class Tile {
         this.imageShaded = imageShaded;
     }
 
+    public BufferedImage getRed() {
+        return red;
+    }
+
+    public void setRed(BufferedImage red) {
+        this.red = red;
+    }
+
     public String getType() {
         return type;
     }
@@ -95,4 +105,11 @@ public class Tile {
         isHighlighted = h;
     }
 
+    public boolean isInRange() {
+        return isInRange;
+    }
+
+    public void setInRange(boolean inRange) {
+        isInRange = inRange;
+    }
 }

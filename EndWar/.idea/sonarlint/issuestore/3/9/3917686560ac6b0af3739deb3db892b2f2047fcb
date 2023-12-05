@@ -1,6 +1,8 @@
 
 t
-java:S3776)"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(·èÁÿÿÿÿÿ8ÁÑ¸ŸÀ1
-X	java:S125N"<This block of commented-out lines of code should be removed.(ş“Éœ8ÂÑ¸ŸÀ1
-]	java:S125^"<This block of commented-out lines of code should be removed.(õº‚òùÿÿÿÿ8ÃÑ¸ŸÀ1
-^	java:S125Š"<This block of commented-out lines of code should be removed.(‡¯ÓÁøÿÿÿÿ8ÄÑ¸ŸÀ1
+java:S37761"RRefactor this method to reduce its Cognitive Complexity from 39 to the 15 allowed.(·èÁÿÿÿÿÿ8Ë²¨—Ã1
+]	java:S125>"<This block of commented-out lines of code should be removed.(âé×óıÿÿÿÿ8Ì²¨—Ã1
+X	java:S125X"<This block of commented-out lines of code should be removed.(ş“Éœ8Í²¨—Ã1
+]	java:S125q"<This block of commented-out lines of code should be removed.(õº‚òùÿÿÿÿ8Ï²¨—Ã1
+]	java:S125y"<This block of commented-out lines of code should be removed.(øÊŞ¾ùÿÿÿÿ8Ï²¨—Ã1
+^	java:S125"<This block of commented-out lines of code should be removed.(‡¯ÓÁøÿÿÿÿ8Ğ²¨—Ã1

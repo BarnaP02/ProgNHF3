@@ -1,3 +1,13 @@
 
 
-java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ãİ„Ñ8¿òãº1
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ãİ„Ñ8ëÖëÁ1
+
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¨ˆ—Ş8ëÖëÁ1
+£
+java:S1186*"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(–·û–ùÿÿÿÿ8ëÖëÁ1
+H
+java:S1128"&Remove this unused import 'tile.Tile'.(¼ÖÂÇúÿÿÿÿ8ñš“ëÁ1
+M
+java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8íÖëÁ1
+@
+java:S1128	"Remove this duplicated import.(Õë±Äøÿÿÿÿ8íÖëÁ1

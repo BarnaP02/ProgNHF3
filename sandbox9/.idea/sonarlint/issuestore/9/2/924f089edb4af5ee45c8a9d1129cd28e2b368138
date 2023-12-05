@@ -1,0 +1,17 @@
+
+C
+java:S1604j"(Make this anonymous inner class a lambda(ÏğšÃıÿÿÿÿ
+0
+java:S1220""Move this file to a named package.
+A
+java:S1659"&Declare "square2X" on a separate line.(«Øıÿÿÿÿ
+d
+java:S3252"IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(Õû»öşÿÿÿÿ
+V	java:S125+"<This block of commented-out lines of code should be removed.(ª¥êØşÿÿÿÿ
+Q	java:S125:"<This block of commented-out lines of code should be removed.(®êéæ
+V	java:S125B"<This block of commented-out lines of code should be removed.(Üş‘ÿÿÿÿÿÿ
+E	java:S106X"+Replace this use of System.out by a logger.(Ğıêûÿÿÿÿ
+V	java:S125Y"<This block of commented-out lines of code should be removed.(¢ûà¿øÿÿÿÿ
+Q	java:S125^"<This block of commented-out lines of code should be removed.(¾©ÕĞ
+@
+java:S3398i"*Move this method into "AnimationListener".(–²™°

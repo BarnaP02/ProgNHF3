@@ -14,7 +14,7 @@ public class U_amphibian extends SuperUnit implements SUInterface {
     public void create(GamePanel gp, String[] params) {
         direction = 3;
         //String[] init = line.split(",");
-        U_amphibian unit = new U_amphibian(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]));
+        U_amphibian unit = new U_amphibian(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]), Integer.parseInt(params[3]));
         if (Integer.parseInt(params[3])==0) {
             gp.ally.add(unit);
         }
@@ -24,18 +24,23 @@ public class U_amphibian extends SuperUnit implements SUInterface {
     }
     public U_amphibian(){}
 
-    public U_amphibian(GamePanel gp, int tileX, int tileY){
+    public U_amphibian(GamePanel gp, int tileX, int tileY, int teamNum){
         //imgList = new ArrayList<>();
         type = "amphibian";
+        this.teamNum = teamNum;
         setCurrentTile(gp,tileX,tileY);
         setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
-        direction = 3;
-        movementRange = 2;
+        direction = (3+teamNum*4)%6;
+        movementRange = 6;
         traverseSpeed = new double[]{1,10,10,0.6,1.5,10};
+        attackRange = new int[]{1, 1, 1, 1, 1, 1};
+        defense = 20;
+        attackDamage = new int[]{10, 8, 10};
         selectedSound.setFile(13);
         moveSound.setFile(5);
         attackSound.setFile(11);
+        fireSound.setFile(26);
     }
 }

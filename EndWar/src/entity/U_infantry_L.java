@@ -14,7 +14,7 @@ public class U_infantry_L extends SuperUnit implements SUInterface {
     public void create(GamePanel gp, String[] params) {
         direction = 3;
         //String[] init = line.split(",");
-        U_infantry_L unit = new U_infantry_L(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]));
+        U_infantry_L unit = new U_infantry_L(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]), Integer.parseInt(params[3]));
         if (Integer.parseInt(params[3])==0) {
             gp.ally.add(unit);
         }
@@ -24,18 +24,24 @@ public class U_infantry_L extends SuperUnit implements SUInterface {
     }
     public U_infantry_L(){}
 
-    public U_infantry_L(GamePanel gp, int tileX, int tileY){
+    public U_infantry_L(GamePanel gp, int tileX, int tileY, int teamNum){
         //imgList = new ArrayList<>();
         type = "infantryL";
+        this.teamNum = teamNum;
         setCurrentTile(gp,tileX,tileY);
         setOtherCurrentTile(getCurrentTile());
         worldX = gp.getCoordsFromTile(currentTile)[0];
         worldY = gp.getCoordsFromTile(currentTile)[1];
-        direction = 3;
-        movementRange = 1;
+        direction = (3+teamNum*4)%6;
+        isInfantry = true;
+        movementRange = 3;
         traverseSpeed = new double[]{1,1.5,1,1,10,10};
+        attackRange = new int[]{1, 1, 1, 1, 1, 1};
+        defense = 5;
+        attackDamage = new int[]{10, 8, 10};
         selectedSound.setFile(13);
         moveSound.setFile(12);
         attackSound.setFile(11);
+        fireSound.setFile(30);
     }
 }

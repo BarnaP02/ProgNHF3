@@ -1,18 +1,15 @@
 package tile;
 
-import entity.Structure;
+import entity.SuperStructure;
 import main.GamePanel;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class TileManager {
     GamePanel gp;
@@ -89,6 +86,7 @@ public class TileManager {
                         gp.Grid[col][row].isObstacle = true;
                     }
                     gp.Grid[col][row].setImage(image);
+                    gp.Grid[col][row].setRed(gp.imagS.getTileGallery().get("in_range").get(0));
                     ++col;
                 }
                 if (col == gp.maxWorldCol) {
@@ -102,11 +100,11 @@ public class TileManager {
                         int newCol;
                         int newRow;
                         if (r % 2 == 0) {
-                            newCol = c + GamePanel.neighborOffsetEven[i][0];
-                            newRow = r + GamePanel.neighborOffsetEven[i][1];
+                            newCol = c + GamePanel.getNeighborOffsetEven()[i][0];
+                            newRow = r + GamePanel.getNeighborOffsetEven()[i][1];
                         } else {
-                            newCol = c + GamePanel.neighborOffsetOdd[i][0];
-                            newRow = r + GamePanel.neighborOffsetOdd[i][1];
+                            newCol = c + GamePanel.getNeighborOffsetOdd()[i][0];
+                            newRow = r + GamePanel.getNeighborOffsetOdd()[i][1];
                         }
                         if (isValidHexagon(newCol, newRow)) {
                             gp.Grid[c][r].setBorder(i, gp.Grid[newCol][newRow]);
@@ -117,21 +115,21 @@ public class TileManager {
                         gp.Grid[c][r].getBorder(0).isStructure = true;
                         gp.Grid[c][r].getBorder(5).isStructure = true;
                         gp.Grid[c][r].getBorder(0).getBorder(5).isStructure = true;
-                        gp.structures.add(new Structure(gp,"depot",gp.Grid[c][r], 0));
+                        gp.structures.add(new SuperStructure(gp,"depot",gp.Grid[c][r], 2));
                     }
                     if (gp.Grid[c][r].type.equals("harbor")){
                         gp.Grid[c][r].isStructureDoor = true;
                         gp.Grid[c][r].getBorder(0).isStructure = true;
                         gp.Grid[c][r].getBorder(5).isStructure = true;
                         gp.Grid[c][r].getBorder(0).getBorder(5).isStructure = true;
-                        gp.structures.add(new Structure(gp,"harbor",gp.Grid[c][r], 0));
+                        gp.structures.add(new SuperStructure(gp,"harbor",gp.Grid[c][r], 2));
                     }
                     if (gp.Grid[c][r].type.equals("factory")){
                         gp.Grid[c][r].isStructureDoor = true;
                         gp.Grid[c][r].getBorder(0).isStructure = true;
                         gp.Grid[c][r].getBorder(5).isStructure = true;
                         gp.Grid[c][r].getBorder(0).getBorder(5).isStructure = true;
-                        gp.structures.add(new Structure(gp,"factory",gp.Grid[c][r], 0));
+                        gp.structures.add(new SuperStructure(gp,"factory",gp.Grid[c][r], 2));
                     }
                     if (gp.Grid[c][r].type.equals("water")){
                         StringBuilder waterCode = new StringBuilder();
@@ -213,8 +211,8 @@ public class TileManager {
             }
             int screenX;
             int screenY;
-            screenX = worldX - gp.cruser.worldX + gp.cruser.getScreenX();
-            screenY = worldY - gp.cruser.worldY + gp.cruser.getScreenY();
+            screenX = worldX - gp.cruser.getWorldX() + gp.cruser.getScreenX();
+            screenY = worldY - gp.cruser.getWorldY() + gp.cruser.getScreenY();
             if (screenX > - gp.tileWidth &&
                     screenX <  gp.screenWidth + gp.tileWidth &&
                     screenY > - gp.tileHeight &&
@@ -222,8 +220,12 @@ public class TileManager {
                 if (gp.Grid[worldCol][worldRow].isHighlighted){
                     g2.drawImage(gp.Grid[worldCol][worldRow].getImage(), screenX, screenY,null);// gp.tileWidth, gp.tileHeight, null);
                 }
+                //else
                 else {
                     g2.drawImage(gp.Grid[worldCol][worldRow].getImageShaded(), screenX, screenY,null);// gp.tileWidth, gp.tileHeight, null);
+                }
+                if (gp.Grid[worldCol][worldRow].isInRange){
+                    g2.drawImage(gp.Grid[worldCol][worldRow].getRed(), screenX, screenY,null);
                 }
                 //gp.Grid[worldCol][worldRow].worldX = worldX;
                 //gp.Grid[worldCol][worldRow].worldY = worldY;

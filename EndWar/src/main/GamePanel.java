@@ -1,12 +1,10 @@
 package main;
 
-import entity.Cruser;
-import entity.ImageStore;
-import entity.Structure;
+import entity.*;
+import menu.PanelManager;
 import tile.RangeFinder;
 import tile.Tile;
 import tile.TileManager;
-import entity.SuperUnit;
 import timeline.Order;
 import timeline.OrderManager;
 
@@ -26,6 +24,13 @@ public class GamePanel  extends JPanel implements Runnable{
     public final int screenWidth = tileWidth * maxScreenCol + tileWidth/2;
     public final int screenHeight = (tileHeight * (maxScreenRow - 1)) / 4*3 + tileHeight;
 
+    public CycleInfoPanel cycleInfoPanel;
+    public InfoPanel infoPanel;
+    private int cycleNumber = 1;
+    private String team1Name = "Ferenciek";
+    private String team2Name = "Apátok";
+
+
     //FPS
     int FPS = 60;
 
@@ -33,10 +38,10 @@ public class GamePanel  extends JPanel implements Runnable{
     public static final int[][] neighborOffsetEvenOld = {                              //Offset in even rows
             {0, -1}, {-1, 0}, {0, 1}, {1, 1}, {1, 0}, {1, -1}
     };
-    public static final int[][] neighborOffsetEven = {                              //Offset in even rows
+    protected static final int[][] neighborOffsetEven = {                              //Offset in even rows
             {0, -1}, {-1, 0}, {0, 1}, {1, 1}, {1, 0}, {1, -1}
     };
-    public static final int[][] neighborOffsetOdd = {                              //Offset in odd rows
+    protected static final int[][] neighborOffsetOdd = {                              //Offset in odd rows
             {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 0}, {0, -1}
     };
     public final int[][] twoTileShift = {
@@ -47,41 +52,92 @@ public class GamePanel  extends JPanel implements Runnable{
     //WORLD SETTINGS
     public int maxWorldCol;
     public int maxWorldRow;
-    public ImageStore imagS = new ImageStore();
+    //jo kis feheres
+    //public int[] team1Color = new int[]{-50,-50,200};
+    public int[] team2Color = new int[]{+250,-100,+200};
+    //ez szep kek
+    public int[] team1Color = new int[]{-250,-100,+200};
+
+    //for easy access for info panel
+    //public HashMap<SuperUnit, Tile> easyAccessUnitLocation = new HashMap<>();
+    //public HashMap<SuperUnit, Tile> easyAccessUnitLocationOther = new HashMap<>();
+
+    public ImageStore imagS = new ImageStore(this);
     public ArrayList<SuperUnit> ally = new ArrayList<>();
     public ArrayList<SuperUnit> enemy = new ArrayList<>();
-    public ArrayList<Structure> structures = new ArrayList<>();
+    public ArrayList<SuperStructure> structures = new ArrayList<>();
     public AssetSetter aSetter = new AssetSetter(this);
     TileManager tileM = new TileManager(this);
-    Sound sound = new Sound();
+    Sound music = new Sound();
     Sound sfx = new Sound();
+    Sound pauseMenuMusic = new Sound();
     public final int worldWidth = tileWidth * maxWorldCol + tileWidth/2;
     public final int worldHeight = (tileHeight * (maxWorldRow - 1)) / 4*3 + tileHeight;
-    KeyHandler keyH = new KeyHandler(this);
+    public KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
     public Cruser cruser = new Cruser(this, keyH);
     public RangeFinder rFinder = new RangeFinder(this, Grid);
     public OrderManager timeL = new OrderManager(this);
+    protected ArrayList<SuperUnit> recentlyDamaged = new ArrayList<>();
     //public SuperUnit testUnit;
 
     //GAME STATE
-    protected  int gameState;
+    public enum Cycle {
+        T1MOVE,
+        T2ATTACK,
+        T2MOVE,
+        T1ATTACK
+    }
+    protected Cycle cycleState = Cycle.T1MOVE;
+    public boolean attacksNeedResolving = false;
+    public int gameState;
     public static final int playState = 1;
     public static final int pauseState = 2;
+    public static final int resolvingAttacksState = 3;
 
 
-    public GamePanel(){
+    //GAME SETTINGS
+    public boolean isPvE = false;
+
+
+    public GamePanel(PanelManager panM){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        cycleInfoPanel = new CycleInfoPanel(screenWidth, panM);
+        cycleInfoPanel.update(1, team1Name, "MOVE");
+        infoPanel = new InfoPanel(this, panM, screenHeight + cycleInfoPanel.getHeight());
         gameState = playState;
     }
 
     public void setupGame(){
         playMusic(1);
-        //aSetter.setUnit();
+        playPauseMenuMusic(21);
+        pauseMenuMusic.freeze();
+        for (int i = 0; i < maxWorldRow; ++i){
+            for (int j = 0; j < maxWorldCol; ++j){
+                Grid[j][i].setIsHighlighted(false);
+            }
+        }
+
+        update();
+        repaint();
+        for (int i = 0; i < maxWorldRow; ++i){
+            for (int j = 0; j < maxWorldCol; ++j){
+                Grid[j][i].setIsHighlighted(true);
+            }
+        }
+        update();
+        repaint();
+        //rFinder.findMovementRange(this, ally.get(0));
+        update();
+        repaint();
+        //SuperUnit superUnit = new fixer(this);
+        //rFinder.findMovementRange(this,superUnit);
+        update();
+        repaint();
     }
     public void startGameThread() {
 
@@ -102,7 +158,8 @@ public class GamePanel  extends JPanel implements Runnable{
         while (gameThread != null) {
 
             if (gameState == playState){
-                sound.resume();
+                music.resume();
+                pauseMenuMusic.freeze();
 
                 currentTime = System.nanoTime();
 
@@ -141,44 +198,58 @@ public class GamePanel  extends JPanel implements Runnable{
                 }
                 System.out.println();*/
                     for (int i = 0; i < 6; ++i){
-                        System.out.print(cruser.getHover().borders()[i]+" ");
+                        //System.out.print(cruser.getHover().borders()[i]+" ");
                     }
-                /*System.out.println("["+cruser.getHover().getCoords()[0]+":"+cruser.getHover().getCoords()[1]+"]  ["+
-                        cruser.getLast_hover().getCoords()[0]+":"+cruser.getLast_hover().getCoords()[1]+"]  [" +
-                        cruser.getScreenX()+":"+cruser.getScreenY()+"]  s:"+cruser.isNotNearScreenEdge()+" e:"+cruser.isNotNearEdge()+"  t:"+
-                        cruser.nearTopEdge()+" b:"+cruser.nearBotEdge()+" l:"+cruser.nearLeftEdge()+" r:"+cruser.nearRightEdge()+"  st:"+
-                        cruser.nearScreenTop()+" sb:"+cruser.nearScreenBot()+" sl:"+cruser.nearScreenLeft()+" sr:"+cruser.nearScreenRight()+" ["+
-                        getCoordsFromTile(cruser.getHover())[0]+","+getCoordsFromTile(cruser.getHover())[1]+"]   ["+
-                        getCoordsFromTile(getTileFromWorldCoords(cruser.worldX,cruser.worldY))[0]+","+
-                        getCoordsFromTile(getTileFromWorldCoords(cruser.worldX,cruser.worldY))[1]+"]  ["+
-                        cruser.getHover().worldX+":"+
-                        cruser.getHover().worldY+"]  ["+
-                        cruser.getHover().screenX+":"+
-                        cruser.getHover().screenY+"] ");*/
-                    for (SuperUnit su : ally){
-                        //System.out.print("["+su.worldX+":"+su.worldY+"] ");
-                    }
-                    //System.out.println();
                     for (Order o : timeL.getTimeline()){
-                        System.out.print(", "+o.getSide()+"["+o.getIndex()+"] ");
+                        //System.out.print(", "+o.getSide().get(o.getIndex()));
                     }
                     System.out.println();
                 }
             }
-            else {
-                sound.freeze();
+            else if (gameState == pauseState){
+                music.freeze();
+                pauseMenuMusic.resume();
             }
+            else if (gameState == resolvingAttacksState){
+
+                currentTime = System.nanoTime();
+
+                delta += (currentTime - lastTime) / drawInterval;
+                timer += (currentTime - lastTime);
+                lastTime = currentTime;
+                if (delta >= 1){
+                    update();
+                    repaint();
+                    delta--;
+                    drawCount++;
+                }
+                if (!attacksNeedResolving){
+                    for (Order o : timeL.getTempMove()){
+                        o.forceFinish(this);
+                    }
+                    timeL.setTempMove(new ArrayList<>());
+                    gameState = playState;
+                }
+            }
+
         }
     }
     public void update() {
         if (gameState == playState){
             cruser.update();
             timeL.update(this, keyH);
+            infoPanel.update(this, getUnitFromTile(cruser.getHover()));
         }
         if (gameState == pauseState){
             //nothing yet
         }
+        if (attacksNeedResolving){
+            gameState = resolvingAttacksState;
+            resolveAttackOrders();
+        }
     }
+
+    @Override
     public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
@@ -191,7 +262,7 @@ public class GamePanel  extends JPanel implements Runnable{
         }
 
         tileM.draw(g2);
-        for (Structure struct : structures){
+        for (SuperStructure struct : structures){
             if (struct != null) {
                 struct.draw(g2, this);
             }
@@ -211,12 +282,50 @@ public class GamePanel  extends JPanel implements Runnable{
         if (keyH.checkDrawTime){
             long drawEnd = System.nanoTime();
             long passed = drawEnd-drawStart;
-            g2.setColor(Color.white);
+            g2.setColor(Color.WHITE);
             g2.drawString("Draw Time: " + passed, 10, 400);
-            System.out.println("Draw Time: " + passed);
+            g2.drawString("Cycle State: " + cycleState, 10, 360);
+            g2.drawString("Ally size: " + ally.size(), 10, 440);
+            g2.drawString("Enemy size: " + enemy.size(), 10, 480);
+            for (SuperUnit u : recentlyDamaged){
+                g2.setColor(Color.WHITE);
+                g2.drawString("" + u.getHp(), u.getWorldX(), u.getWorldY());
+                g2.setColor(Color.MAGENTA);
+                g2.drawString("" + u.getXp(), u.getWorldX()+tileWidth/4*3, u.getWorldY());
+            }
+            //System.out.println("Draw Time: " + passed);
+        }
+        if (keyH.showTileCoords){
+            for (Tile[] tiles : Grid) {
+                for (Tile tile : tiles) {
+                    g2.setColor(Color.WHITE);
+                    g2.drawString((tile.getCoords()[0]+1) + ":" + (tile.getCoords()[1]+1), tile.worldX, tile.worldY+tileHeight/2);
+
+                }
+            }
         }
 
         g2.dispose();
+    }
+    public void recievedDamage(SuperUnit unit){
+        recentlyDamaged.add(unit);
+    }
+    public void resolveAttackOrders(){
+        //attacksNeedResolving
+        boolean needTemp = false;
+        for (int i = 0; i < timeL.getTempAttack().size(); ++i){
+            if (!timeL.getTempAttack().get(i).isCompleted()){
+                needTemp = true;
+                timeL.getTempAttack().get(i).complete(this);
+                break;
+            }
+            //System.out.println("UUUU");
+        }
+        //while (!timeL.getTempAttack().get(i).isCompleted()){
+        //}
+        attacksNeedResolving = needTemp;
+        //phaseTransition();
+
     }
     public Tile getTileFromWorldCoords(int searchedWorldX, int searchedWorldY){
         int worldCol = 0;
@@ -253,16 +362,118 @@ public class GamePanel  extends JPanel implements Runnable{
         }
         return result;
     }
+    public SuperUnit getUnitFromTile(Tile t){
+        for (SuperUnit su : ally){
+            if (su.getCurrentTile() == t || su.getOtherCurrentTile() == t){
+                return su;
+            }
+        }
+        for (SuperUnit su : enemy){
+            if (su.getCurrentTile() == t || su.getOtherCurrentTile() == t){
+                return su;
+            }
+        }
+        for (SuperStructure supstr : structures){
+            for (SuperUnit suni : supstr.getInventory()){
+                if (suni.getCurrentTile() == t){
+                    return suni;
+                }
+            }
+        }
+        return null;
+    }
+    public SuperStructure getStructureFromTile(Tile t){
+        for (SuperStructure ss : structures){
+            if (ss.getTile() == t){
+                return ss;
+            }
+        }
+        return null;
+    }
     public void playMusic(int i){
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
+        music.setFile(i);
+        music.play();
+        music.loop();
+    }
+    public void playPauseMenuMusic(int i){
+        pauseMenuMusic.setFile(i);
+        pauseMenuMusic.play();
+        pauseMenuMusic.loop();
     }
     public void stopMusic(){
-        sound.stop();
+        music.stop();
     }
     public void playSFX(int i){
         sfx.setFile(i);
         sfx.play();
+    }
+
+    public static int[][] getNeighborOffsetEven() {
+        return neighborOffsetEven;
+    }
+
+    public static int[][] getNeighborOffsetOdd() {
+        return neighborOffsetOdd;
+    }
+
+    public Cycle getCycleState() {
+        return cycleState;
+    }
+    public void nextCycleState(){
+        boolean isSet = false;
+        boolean isAttack = false;
+        boolean isTeam1 = false;
+        if (cycleState == Cycle.T1MOVE){
+            cycleState = Cycle.T2ATTACK;
+            playSFX(19);
+            cycleInfoPanel.update(cycleNumber, team2Name, "ATTACK");
+            recentlyDamaged = new ArrayList<>();
+            return;
+        }
+        if (cycleState == Cycle.T2ATTACK){
+            cycleState = Cycle.T2MOVE;
+            playSFX(20);
+            cycleInfoPanel.update(cycleNumber, team2Name, "MOVE");
+            return;
+        }
+        if (cycleState == Cycle.T2MOVE){
+            cycleState = Cycle.T1ATTACK;
+            playSFX(19);
+            cycleInfoPanel.update(cycleNumber, team1Name, "ATTACK");
+            recentlyDamaged = new ArrayList<>();
+            return;
+        }
+        if (cycleState == Cycle.T1ATTACK){
+            cycleState = Cycle.T1MOVE;
+            playSFX(20);
+            cycleInfoPanel.update(cycleNumber, team1Name, "MOVE");
+            cycleNumber++;
+        }
+        /*cycleNumberField.setText("" + gp.getCycleNumber());
+        if (gp.cycleState == GamePanel.Cycle.T1MOVE || gp.cycleState == GamePanel.Cycle.T1ATTACK){
+            currentTeamField.setText(gp.getTeam1Name());
+        }
+        else {
+            currentTeamField.setText(gp.getTeam2Name());
+        }
+        if (gp.cycleState == GamePanel.Cycle.T1MOVE || gp.cycleState == GamePanel.Cycle.T2MOVE){
+            currentPhaseField.setText("MOVE");
+        }
+        else {
+            currentPhaseField.setText("ATTACK");
+        }
+        cycleInfoPanel.update(cycleNumber, );*/
+    }
+
+    public int getCycleNumber() {
+        return cycleNumber;
+    }
+
+    public String getTeam1Name() {
+        return team1Name;
+    }
+
+    public String getTeam2Name() {
+        return team2Name;
     }
 }

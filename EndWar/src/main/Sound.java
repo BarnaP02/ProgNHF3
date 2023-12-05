@@ -14,7 +14,7 @@ public class Sound {
     int currentFramePosition = 0;
     boolean mute;
     FloatControl fc;
-    URL soundURL[] = new URL[30];
+    URL soundURL[] = new URL[50];
     public Sound(){
         clip = null;
         soundURL[0] = getClass().getResource("/sound/attack_confirmed_sound.wav");
@@ -26,7 +26,7 @@ public class Sound {
         soundURL[6] = getClass().getResource("/sound/fire_at_target_sound.wav");
         soundURL[7] = getClass().getResource("/sound/footstep_sound.wav");
         soundURL[8] = getClass().getResource("/sound/helicopter_sound.wav");
-        soundURL[9] = getClass().getResource("/sound/next_phaze_sound.wav");
+        soundURL[9] = getClass().getResource("/sound/next_phase_sound.wav");
         soundURL[10] = getClass().getResource("/sound/selected_sound.wav");
         soundURL[11] = getClass().getResource("/sound/selected_to_attack_sound.wav");
         soundURL[12] = getClass().getResource("/sound/selected_to_move_sound.wav");
@@ -36,6 +36,20 @@ public class Sound {
         soundURL[16] = getClass().getResource("/sound/sub_sound.wav");
         soundURL[17] = getClass().getResource("/sound/Undertale - Megalovania.wav");
         soundURL[18] = getClass().getResource("/sound/jet_sound.wav");
+        soundURL[19] = getClass().getResource("/sound/control_transition1.wav");
+        soundURL[20] = getClass().getResource("/sound/control_transition2.wav");
+        soundURL[21] = getClass().getResource("/sound/pause_menu_music.wav");
+        soundURL[22] = getClass().getResource("/sound/victory_music.wav");
+        soundURL[23] = getClass().getResource("/sound/defeat_music.wav");
+        soundURL[24] = getClass().getResource("/sound/missile_sound.wav");
+        soundURL[25] = getClass().getResource("/sound/high_caliber_cannon_sound.wav");
+        soundURL[26] = getClass().getResource("/sound/machine_gun_sound.wav");
+        soundURL[27] = getClass().getResource("/sound/explosion_sound.wav");
+        soundURL[28] = getClass().getResource("/sound/medium_caliber_cannon_sound.wav");
+        soundURL[29] = getClass().getResource("/sound/jet_sound2.wav");
+        soundURL[30] = getClass().getResource("/sound/auto_handgun_sound.wav");
+        soundURL[31] = getClass().getResource("/sound/battleship_salvo_sound.wav");
+        soundURL[32] = getClass().getResource("/sound/machine_gun_with_missile_sound.wav");
     }
     public void setFile(int i){
         try {
@@ -72,7 +86,7 @@ public class Sound {
         fc.setValue(currentVolume);
     }
     public void volumeMute(){
-        if (mute == false){
+        if (!mute){
             previousVolume = currentVolume;
             currentVolume = -80.0f;
             fc.setValue(currentVolume);

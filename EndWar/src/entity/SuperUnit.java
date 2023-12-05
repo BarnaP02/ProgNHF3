@@ -16,15 +16,20 @@ public class SuperUnit extends Entity{
     protected double[] traverseSpeed = new double[5];
     //ground, air, water
     protected int[] attackDamage = new int[2];
-    protected int[] attackRange = new int[2];
+    //ground min-max air min-max water min-max
+    protected int[] attackRange = new int[5];
+    protected int defense;
     protected int hp = 6;
     protected int xp = 0;
-    boolean acted = false;
+    protected boolean acted = false;
+    protected boolean moving = false;
+    protected boolean destroyed = false;
     protected int currentImgIndex = 0;
     protected int lastImgIndex = 0;
+    protected SuperUnit targetUnit = null;
     protected boolean isHeli = false;
     protected boolean isArtyAbleToFire = false;
-    protected boolean isArtyNotAbleToFire = false;
+    protected int artyCounter = 0;
     protected boolean isAvian = false;
     protected boolean isNavy = false;
     protected boolean is2tile = false;
@@ -34,12 +39,16 @@ public class SuperUnit extends Entity{
     protected boolean isInRange = false;
     protected int movementRange;
     protected boolean wasHighlighted = true;
+    protected boolean visible = true;
+    protected int teamNum = 0;
     Sound selectedSound = new Sound();
     Sound moveSound = new Sound();
     Sound attackSound = new Sound();
+    Sound fireSound = new Sound();
 
     public void draw(Graphics2D g2, GamePanel gp){
 
+        if (destroyed || !visible) return;
         int screenX;
         int screenY;
         ++slowCounter;
@@ -49,10 +58,11 @@ public class SuperUnit extends Entity{
         if(isHeli){
             currentImgIndex = direction*3+(slowCounter)/2;
         }
-        else if (isArtyAbleToFire){
+        else if (getClass() == U_arty_H.class && isArtyAbleToFire()){
+            //boolean artyCantFire = gp.ally.get(i).getClass() == U_arty_H.class && !gp.ally.get(i).isArtyAbleToFire();
             currentImgIndex = direction*2;
         }
-        else if(isArtyNotAbleToFire){
+        else if(getClass() == U_arty_H.class && !isArtyAbleToFire()){
             currentImgIndex = direction*2+1;
         } else if (isSub) {
             currentImgIndex = direction*2;
@@ -78,11 +88,20 @@ public class SuperUnit extends Entity{
             //gp.testUnit = this;
             if (currentImgIndex != lastImgIndex || wasHighlighted != getCurrentTile().isHighlighted()) {
                 wasHighlighted = getCurrentTile().isHighlighted();
-                if (getCurrentTile().isHighlighted()){
-                    lastImage = gp.imagS.getGalleryTeam1().get(this.getClass()).get(currentImgIndex);
+                if (teamNum == 0){
+                    if (getCurrentTile().isHighlighted() && !acted){
+                        lastImage = gp.imagS.getGalleryTeam1().get(this.getClass()).get(currentImgIndex);
+                    }
+                    else{
+                        lastImage = gp.imagS.getGalleryTeam1Shaded().get(this.getClass()).get(currentImgIndex);
+                    }
                 }
-                else{
-                    lastImage = gp.imagS.getGalleryShaded().get(this.getClass()).get(currentImgIndex);
+                else {
+                    if (getCurrentTile().isHighlighted() && !acted) {
+                        lastImage = gp.imagS.getGalleryTeam2().get(this.getClass()).get(currentImgIndex);
+                    } else {
+                        lastImage = gp.imagS.getGalleryTeam2Shaded().get(this.getClass()).get(currentImgIndex);
+                    }
                 }
             }
             if (isAvian){
@@ -99,13 +118,13 @@ public class SuperUnit extends Entity{
         currentTile = gp.Grid[x-1][y-1];
     }
     public void moveUnit(GamePanel gp, Tile t){
-        currentTile = t;
-        if (is2tile){
+        //currentTile = t;
+        /*if (is2tile){
             setOtherCurrentTile(direction);
         }
         else {
             otherCurrentTile = currentTile;
-        }
+        }*/
         worldX = gp.getCoordsFromTile(t)[0];
         worldY = gp.getCoordsFromTile(t)[1];
     }
@@ -175,4 +194,140 @@ public class SuperUnit extends Entity{
     public Sound getAttackSound() {
         return attackSound;
     }
+
+    public Sound getFireSound() {
+        return fireSound;
+    }
+
+    public SuperUnit getTargetUnit() {
+        return targetUnit;
+    }
+
+    public void setTargetUnit(SuperUnit targetUnit) {
+        this.targetUnit = targetUnit;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    public void setXp(int xp) {
+        this.xp = xp;
+    }
+
+    public int[] getAttackDamage() {
+        return attackDamage;
+    }
+
+    public void setAttackDamage(int[] attackDamage) {
+        this.attackDamage = attackDamage;
+    }
+
+    public int getDefense() {
+        return defense;
+    }
+
+    public void setDefense(int defense) {
+        this.defense = defense;
+    }
+
+    public int getTeamNum() {
+        return teamNum;
+    }
+    public void setTeamNum(int teamNum) {
+        this.teamNum = teamNum;
+    }
+
+    public boolean isInRange() {
+        return isInRange;
+    }
+
+    public void setInRange(boolean inRange) {
+        isInRange = inRange;
+    }
+
+    public int[] getAttackRange() {
+        return attackRange;
+    }
+
+    public void setAttackRange(int[] attackRange) {
+        this.attackRange = attackRange;
+    }
+
+    public boolean is2tile() {
+        return is2tile;
+    }
+
+    public boolean isActed() {
+        return acted;
+    }
+
+    public void setActed(boolean acted) {
+        this.acted = acted;
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
+    public void setDestroyed(boolean destroyed) {
+        this.destroyed = destroyed;
+    }
+
+    public int getLastImgIndex() {
+        return lastImgIndex;
+    }
+
+    public void setLastImgIndex(int lastImgIndex) {
+        this.lastImgIndex = lastImgIndex;
+    }
+
+    public boolean isArtyAbleToFire() {
+        return isArtyAbleToFire;
+    }
+
+    public void setArtyAbleToFire(boolean artyAbleToFire) {
+        isArtyAbleToFire = artyAbleToFire;
+    }
+
+    public int getArtyCounter() {
+        return artyCounter;
+    }
+
+    public void setArtyCounter(int artyCounter) {
+        this.artyCounter = artyCounter;
+    }
+
+    public boolean isIs2tile() {
+        return is2tile;
+    }
+
+    public void setIs2tile(boolean is2tile) {
+        this.is2tile = is2tile;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
 }
