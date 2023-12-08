@@ -10,22 +10,25 @@ import timeline.OrderManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 
-public class GamePanel  extends JPanel implements Runnable{
+public class GamePanel  extends JPanel implements Runnable, Serializable {
+    //SAVE
+    private static final long serialVersionUID = 1123581321;
+
     // SCREEN SETTINGS
     final int originalTileHeight = 40;
     final int originalTileWidth = 42;
-    //final int scale = 2;
-    public final int tileHeight = 40;//originalTileHeight * scale;
-    public final int tileWidth = 42;//originalTileWidth * scale;
+    public final int tileHeight = 40;
+    public final int tileWidth = 42;
     public final int maxScreenCol = 21;
     public final int maxScreenRow = 19;
     public final int screenWidth = tileWidth * maxScreenCol + tileWidth/2;
     public final int screenHeight = (tileHeight * (maxScreenRow - 1)) / 4*3 + tileHeight;
 
-    public CycleInfoPanel cycleInfoPanel;
-    public InfoPanel infoPanel;
+    public transient CycleInfoPanel cycleInfoPanel;
+    public transient InfoPanel infoPanel;
     private int cycleNumber = 1;
     private String team1Name = "Ferenciek";
     private String team2Name = "Apátok";
@@ -57,29 +60,23 @@ public class GamePanel  extends JPanel implements Runnable{
     public int[] team2Color = new int[]{+250,-100,+200};
     //ez szep kek
     public int[] team1Color = new int[]{-250,-100,+200};
-
-    //for easy access for info panel
-    //public HashMap<SuperUnit, Tile> easyAccessUnitLocation = new HashMap<>();
-    //public HashMap<SuperUnit, Tile> easyAccessUnitLocationOther = new HashMap<>();
-
-    public ImageStore imagS = new ImageStore(this);
-    public ArrayList<SuperUnit> ally = new ArrayList<>();
-    public ArrayList<SuperUnit> enemy = new ArrayList<>();
-    public ArrayList<SuperStructure> structures = new ArrayList<>();
-    public AssetSetter aSetter = new AssetSetter(this);
-    TileManager tileM = new TileManager(this);
-    Sound music = new Sound();
-    Sound sfx = new Sound();
-    Sound pauseMenuMusic = new Sound();
+    public transient ImageStore imagS = new ImageStore(this);
+    public ArrayList<SuperUnit> ally;
+    public ArrayList<SuperUnit> enemy;
+    public ArrayList<SuperStructure> structures;
+    public transient AssetSetter aSetter = new AssetSetter(this);
+    protected transient TileManager tileM;
+    protected transient Sound music = new Sound();
+    protected transient Sound sfx = new Sound();
+    protected transient Sound pauseMenuMusic = new Sound();
     public final int worldWidth = tileWidth * maxWorldCol + tileWidth/2;
     public final int worldHeight = (tileHeight * (maxWorldRow - 1)) / 4*3 + tileHeight;
-    public KeyHandler keyH = new KeyHandler(this);
-    Thread gameThread;
-    public Cruser cruser = new Cruser(this, keyH);
-    public RangeFinder rFinder = new RangeFinder(this, Grid);
-    public OrderManager timeL = new OrderManager(this);
-    protected ArrayList<SuperUnit> recentlyDamaged = new ArrayList<>();
-    //public SuperUnit testUnit;
+    public transient KeyHandler keyH;
+    transient Thread gameThread;
+    public Cruser cruser;
+    public transient RangeFinder rFinder;
+    public OrderManager timeL;
+    protected ArrayList<SuperUnit> recentlyDamaged;
 
     //GAME STATE
     public enum Cycle {
@@ -99,20 +96,38 @@ public class GamePanel  extends JPanel implements Runnable{
     //GAME SETTINGS
     public boolean isPvE = false;
 
-
+    /***
+     * constructor for GamePanel
+     * @param panM its methods are used in the info panels
+     */
     public GamePanel(PanelManager panM){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
+        ally = new ArrayList<>();
+        enemy = new ArrayList<>();
+        structures = new ArrayList<>();
+        tileM = new TileManager(this);
+        tileM.loadMap("/maps/map03.txt");
+        keyH = new KeyHandler(this);
+        cruser = new Cruser(this, keyH);
         this.addKeyListener(keyH);
-        this.setFocusable(true);
+        rFinder = new RangeFinder(this, Grid);
+        timeL = new OrderManager(this);
+        recentlyDamaged = new ArrayList<>();
         cycleInfoPanel = new CycleInfoPanel(screenWidth, panM);
         cycleInfoPanel.update(1, team1Name, "MOVE");
-        infoPanel = new InfoPanel(this, panM, screenHeight + cycleInfoPanel.getHeight());
+        infoPanel = new InfoPanel(this, panM, screenHeight + 40);
         gameState = playState;
     }
 
+    /***
+     * this is called before starting the game
+     * this starts the background music and sets every tile to not be dark
+     */
     public void setupGame(){
+        this.setFocusable(true);
+        requestFocus();
         playMusic(1);
         playPauseMenuMusic(21);
         pauseMenuMusic.freeze();
@@ -129,22 +144,62 @@ public class GamePanel  extends JPanel implements Runnable{
                 Grid[j][i].setIsHighlighted(true);
             }
         }
-        update();
-        repaint();
-        //rFinder.findMovementRange(this, ally.get(0));
-        update();
-        repaint();
-        //SuperUnit superUnit = new fixer(this);
-        //rFinder.findMovementRange(this,superUnit);
+    }
+
+    /***
+     * after loading a save, this needs to be called to initialise everything that couldn't be serialized like Sounds or BufferedImages
+     * @param panM needed for the info panels
+     */
+    public void reloadGame(PanelManager panM){
+        imagS = new ImageStore(this);
+        cycleInfoPanel = new CycleInfoPanel(screenWidth, panM);
+        infoPanel = new InfoPanel(this, panM, screenHeight + 40);
+        aSetter = new AssetSetter(this);
+        tileM = new TileManager(this);
+        tileM.loadMapFromSave();
+        music = new Sound();
+        sfx = new Sound();
+        pauseMenuMusic = new Sound();
+        keyH = new KeyHandler(this);
+        cruser = new Cruser(this, keyH);
+        addKeyListener(keyH);
+        rFinder = new RangeFinder(this, Grid);
+        gameState = playState;
+        for (SuperUnit su : ally){
+            su.reloadSounds();
+        }
+        for (SuperUnit su : enemy){
+            su.reloadSounds();
+        }
+        for (SuperStructure supstr : structures){
+            for (SuperUnit su : supstr.getInventory()){
+                su.reloadSounds();
+            }
+        }
+
+        for (int i = 0; i < maxWorldRow; ++i){
+            for (int j = 0; j < maxWorldCol; ++j){
+                Grid[j][i].setIsHighlighted(true);
+            }
+        }
+
         update();
         repaint();
     }
+
+    /***
+     * starts the Thread what the game runs on
+     */
     public void startGameThread() {
 
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    /***
+     * needed for implementing Runnable
+     * also this is what runs the game
+     */
     @Override
     public void run() {
         double drawInterval = 1000000000/FPS;
@@ -154,6 +209,9 @@ public class GamePanel  extends JPanel implements Runnable{
         long timer = 0;
         int drawCount = 0;
 
+        if (gameThread == null){
+            System.out.println("UJUJ");
+        }
 
         while (gameThread != null) {
 
@@ -175,35 +233,8 @@ public class GamePanel  extends JPanel implements Runnable{
 
                 if (timer >= 1000000000) {
                     System.out.println("FPS:" + drawCount + " " + gameState);
-                    //System.out.println("x:" + cursorX + " y:" + cursorY);
                     drawCount = 0;
                     timer = 0;
-
-                    //DEBUG PRINTF
-                /*for (int i = 0; i < maxScreenRow;++i){
-                    for (int j = 0; j < maxScreenCol;++j){
-                        System.out.print(Grid[j][i].numOfBorder()+Grid[j][i].getType()+" ");
-                    }
-                    System.out.print("..........");
-                    for (int j = 0; j < maxScreenCol;++j) {
-                        for (int m = 0; m < 6; ++m){
-                            if (Grid[j][i].getBorder(m)!=null){
-                                System.out.print(Grid[j][i].getBorder(m).getCoords()[0]+","+Grid[j][i].getBorder(m).getCoords()[1]+" ");
-                            }
-                            System.out.print(" | ");
-                        }
-                        System.out.print("/|/ ");
-                    }
-                    System.out.println();
-                }
-                System.out.println();*/
-                    for (int i = 0; i < 6; ++i){
-                        //System.out.print(cruser.getHover().borders()[i]+" ");
-                    }
-                    for (Order o : timeL.getTimeline()){
-                        //System.out.print(", "+o.getSide().get(o.getIndex()));
-                    }
-                    System.out.println();
                 }
             }
             else if (gameState == pauseState){
@@ -219,7 +250,7 @@ public class GamePanel  extends JPanel implements Runnable{
                 lastTime = currentTime;
                 if (delta >= 1){
                     update();
-                    repaint();
+                    SwingUtilities.invokeLater(this::repaint); // Trigger repaint on the EDT
                     delta--;
                     drawCount++;
                 }
@@ -233,12 +264,23 @@ public class GamePanel  extends JPanel implements Runnable{
             }
 
         }
+
     }
+
+    /***
+     * updates the old values usually based on keyboard input
+     */
     public void update() {
         if (gameState == playState){
             cruser.update();
             timeL.update(this, keyH);
-            infoPanel.update(this, getUnitFromTile(cruser.getHover()));
+            SuperUnit unit = getUnitFromTile(cruser.getHover());
+            if (unit != null && unit.isVisible() && !unit.isDestroyed()){
+                infoPanel.update(this, unit);
+            }
+            else {
+                infoPanel.update(this, null);
+            }
         }
         if (gameState == pauseState){
             //nothing yet
@@ -247,8 +289,15 @@ public class GamePanel  extends JPanel implements Runnable{
             gameState = resolvingAttacksState;
             resolveAttackOrders();
         }
+        if (keyH.ctrlPressed && keyH.sPressed){
+            saveGame();
+        }
     }
 
+    /***
+     * calls draw for the components
+     * @param g the <code>Graphics</code> object to protect
+     */
     @Override
     public void paintComponent(Graphics g) {
 
@@ -293,7 +342,6 @@ public class GamePanel  extends JPanel implements Runnable{
                 g2.setColor(Color.MAGENTA);
                 g2.drawString("" + u.getXp(), u.getWorldX()+tileWidth/4*3, u.getWorldY());
             }
-            //System.out.println("Draw Time: " + passed);
         }
         if (keyH.showTileCoords){
             for (Tile[] tiles : Grid) {
@@ -307,9 +355,19 @@ public class GamePanel  extends JPanel implements Runnable{
 
         g2.dispose();
     }
+
+    /***
+     * in debug mode (toggled by pressing t) shows the hp and xp for recently damaged units
+     * @param unit unit that is put on the recently damaged list
+     */
     public void recievedDamage(SuperUnit unit){
         recentlyDamaged.add(unit);
     }
+
+    /***
+     * takes the list of unresolved attacks and resolves the first one it finds
+     * if no more attacks need resolving, it lets the game continue
+     */
     public void resolveAttackOrders(){
         //attacksNeedResolving
         boolean needTemp = false;
@@ -319,14 +377,17 @@ public class GamePanel  extends JPanel implements Runnable{
                 timeL.getTempAttack().get(i).complete(this);
                 break;
             }
-            //System.out.println("UUUU");
         }
-        //while (!timeL.getTempAttack().get(i).isCompleted()){
-        //}
         attacksNeedResolving = needTemp;
-        //phaseTransition();
 
     }
+
+    /***
+     * gets world X and Y coordinates and if a tile has those coordinates, returns that tile
+     * @param searchedWorldX the worldX coordinate of the searched tile
+     * @param searchedWorldY the worldX coordinate of the searched tile
+     * @return the searched tile if it exists, null otherwise
+     */
     public Tile getTileFromWorldCoords(int searchedWorldX, int searchedWorldY){
         int worldCol = 0;
         int worldRow = 0;
@@ -352,6 +413,12 @@ public class GamePanel  extends JPanel implements Runnable{
         }
         return null;
     }
+
+    /***
+     * the reverse of getTileFromCoords
+     * @param t the tile that we want to find the coordinates for
+     * @return the coordinates of that tile in the form of an int array
+     */
     public int[] getCoordsFromTile(Tile t){
         int[] result = new int[2];
 
@@ -362,6 +429,13 @@ public class GamePanel  extends JPanel implements Runnable{
         }
         return result;
     }
+
+    /***
+     * units store their tiles, but the tiles don't know if a unit stands on them or not
+     * this returns the unit standing on t
+     * @param t the tile of waht we want to find out if it has a unit
+     * @return the unit standing on it, otherwise null
+     */
     public SuperUnit getUnitFromTile(Tile t){
         for (SuperUnit su : ally){
             if (su.getCurrentTile() == t || su.getOtherCurrentTile() == t){
@@ -382,6 +456,12 @@ public class GamePanel  extends JPanel implements Runnable{
         }
         return null;
     }
+
+    /***
+     * returns the structure that is on tile t
+     * @param t the tile that we want to find a structure on
+     * @return the structure on that tile or null
+     */
     public SuperStructure getStructureFromTile(Tile t){
         for (SuperStructure ss : structures){
             if (ss.getTile() == t){
@@ -390,19 +470,38 @@ public class GamePanel  extends JPanel implements Runnable{
         }
         return null;
     }
+
+    /***
+     * plays the music with the index i
+     * @param i the index of the sound we want to play
+     */
     public void playMusic(int i){
         music.setFile(i);
         music.play();
         music.loop();
     }
+
+    /***
+     * plays the pause menu music (it is great) with the index i
+     * @param i the index of sound we want to play
+     */
     public void playPauseMenuMusic(int i){
         pauseMenuMusic.setFile(i);
         pauseMenuMusic.play();
         pauseMenuMusic.loop();
     }
+
+    /***
+     * stops the music
+     */
     public void stopMusic(){
         music.stop();
     }
+
+    /***
+     * plays the sound effect with the index i
+     * @param i the index of the sound effect
+     */
     public void playSFX(int i){
         sfx.setFile(i);
         sfx.play();
@@ -419,10 +518,12 @@ public class GamePanel  extends JPanel implements Runnable{
     public Cycle getCycleState() {
         return cycleState;
     }
+
+    /***
+     * sets everything up for the next cycle
+     * also refreshes the values in the cycle info panel
+     */
     public void nextCycleState(){
-        boolean isSet = false;
-        boolean isAttack = false;
-        boolean isTeam1 = false;
         if (cycleState == Cycle.T1MOVE){
             cycleState = Cycle.T2ATTACK;
             playSFX(19);
@@ -449,20 +550,27 @@ public class GamePanel  extends JPanel implements Runnable{
             cycleInfoPanel.update(cycleNumber, team1Name, "MOVE");
             cycleNumber++;
         }
-        /*cycleNumberField.setText("" + gp.getCycleNumber());
-        if (gp.cycleState == GamePanel.Cycle.T1MOVE || gp.cycleState == GamePanel.Cycle.T1ATTACK){
-            currentTeamField.setText(gp.getTeam1Name());
+    }
+
+    /***
+     * this saves the game to "res/last_save.ser" and outputs if it was successful or not
+     */
+    public void saveGame(){
+
+        // File path to save serialized data
+        String filePath = "res/last_save.ser";
+
+        try (FileOutputStream fileOut = new FileOutputStream(filePath);
+             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
+
+            // Serialize and write the GamePanel object to the file
+            objectOut.writeObject(this);
+            System.out.println("GamePanel object has been serialized and saved.");
+
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the object: " + e.getMessage());
         }
-        else {
-            currentTeamField.setText(gp.getTeam2Name());
-        }
-        if (gp.cycleState == GamePanel.Cycle.T1MOVE || gp.cycleState == GamePanel.Cycle.T2MOVE){
-            currentPhaseField.setText("MOVE");
-        }
-        else {
-            currentPhaseField.setText("ATTACK");
-        }
-        cycleInfoPanel.update(cycleNumber, );*/
+
     }
 
     public int getCycleNumber() {

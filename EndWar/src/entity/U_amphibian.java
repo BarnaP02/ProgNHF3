@@ -1,6 +1,7 @@
 package entity;
 
 import main.GamePanel;
+import main.Sound;
 import tile.Tile;
 
 import javax.imageio.ImageIO;
@@ -13,7 +14,6 @@ public class U_amphibian extends SuperUnit implements SUInterface {
     @Override
     public void create(GamePanel gp, String[] params) {
         direction = 3;
-        //String[] init = line.split(",");
         U_amphibian unit = new U_amphibian(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]), Integer.parseInt(params[3]));
         if (Integer.parseInt(params[3])==0) {
             gp.ally.add(unit);
@@ -25,7 +25,6 @@ public class U_amphibian extends SuperUnit implements SUInterface {
     public U_amphibian(){}
 
     public U_amphibian(GamePanel gp, int tileX, int tileY, int teamNum){
-        //imgList = new ArrayList<>();
         type = "amphibian";
         this.teamNum = teamNum;
         setCurrentTile(gp,tileX,tileY);
@@ -38,6 +37,17 @@ public class U_amphibian extends SuperUnit implements SUInterface {
         attackRange = new int[]{1, 1, 1, 1, 1, 1};
         defense = 20;
         attackDamage = new int[]{10, 8, 10};
+        selectedSound.setFile(13);
+        moveSound.setFile(5);
+        attackSound.setFile(11);
+        fireSound.setFile(26);
+    }
+    @Override
+    public void reloadSounds(){
+        selectedSound = new Sound();
+        moveSound = new Sound();
+        attackSound = new Sound();
+        fireSound = new Sound();
         selectedSound.setFile(13);
         moveSound.setFile(5);
         attackSound.setFile(11);

@@ -75,13 +75,27 @@ G
 src/entity/U_cargo.java,5\2\526c021b88fd9b10a33980f3be416177c075ab7e
 C
 src/main/Sound.java,4\0\40b07cb713f9534671f9b7ad0f9fe764dae17d6f
-E
-src/entity/fixer.java,e\8\e88b4ffce63ec85833fd44c84d69cb338a3c88a6
 L
 src/main/CycleInfoPanel.java,e\e\ee86328c9a00a26ba5f01d49b0d5d28ac55d4eee
 G
 src/main/InfoPanel.java,a\e\ae89f5bfd1c9286329ca8e643fae1546db3b29bc
-G
-src/entity/S_depot.java,8\6\86e2f3c4dbac0cbed72824d07ccb97b88faf0cc6
 N
 src/entity/SuperStructure.java,d\6\d6ab5d9ada997b8d6f25d420f53d265ed1fd132e
+L
+Test/main/GamePanelTest.java,2\2\22d0c9f0b1c980faf73fb82e6718facc06753aa0
+S
+#Test/entity/SuperStructureTest.java,2\b\2b6c384695e6dfbdcf00d4fda226ecc81b047d41
+K
+Test/entity/CruserTest.java,b\d\bd7f36bd31b7f102352388d9f2103eed03fd79d1
+I
+src/main/FontGallery.java,c\1\c1beab2ec0f0c3482af374c4dd29351f4d77a190
+J
+src/menu/PanelManager.java,d\1\d1672a716e7337aa9700574f4d71fcc810feb123
+Q
+!src/menu/GameContainingPanel.java,f\6\f674fbd5cf82142cd75abf05aea9460128d40005
+G
+src/menu/MainFrame.java,9\4\94a11ff2d4853955edba330725180868d051f29b
+Z
+*src/entity/U_bomber_reloadSounds_flow.puml,d\e\de5478ae96ddf9832a60ee4facccaca271ed1d2f
+P
+ src/entity/Cruser_structure.puml,4\2\425f95ca84ae992c452509a87d707ff8b0e10372

@@ -1,0 +1,11 @@
+
+D
+java:S1604"(Make this anonymous inner class a lambda(Áø¤Z8¾ÄÓıÃ1
+0
+java:S1220""Move this file to a named package.
+k
+java:S3252"IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(Õû»öşÿÿÿÿ8ÇÄÓıÃ1
+X
+java:S1612*"6Replace this lambda with method reference 'Main::new'.(«˜èÌÿÿÿÿÿ8ËÄÓıÃ1
+B
+java:S1128"%Remove this unused import 'java.awt'.(ï´µ©8¶ÀÔıÃ1

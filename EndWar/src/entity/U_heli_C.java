@@ -1,6 +1,7 @@
 package entity;
 
 import main.GamePanel;
+import main.Sound;
 import tile.Tile;
 
 import javax.imageio.ImageIO;
@@ -14,7 +15,6 @@ public class U_heli_C extends SuperUnit implements SUInterface {
     @Override
     public void create(GamePanel gp, String[] params) {
         direction = 3;
-        //String[] init = line.split(",");
         U_heli_C unit = new U_heli_C(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]), Integer.parseInt(params[3]));
         if (Integer.parseInt(params[3])==0) {
             gp.ally.add(unit);
@@ -26,8 +26,6 @@ public class U_heli_C extends SuperUnit implements SUInterface {
     public U_heli_C(){}
 
     public U_heli_C(GamePanel gp, int tileX, int tileY, int teamNum){
-        //slowNum = 59;
-        //imgList = new ArrayList<>();
         type = "heliC";
         this.teamNum = teamNum;
         setCurrentTile(gp,tileX,tileY);
@@ -42,6 +40,17 @@ public class U_heli_C extends SuperUnit implements SUInterface {
         attackRange = new int[]{1, 1, 1, 1, 1, 1};
         defense = 15;
         attackDamage = new int[]{25, 15, 40};
+        selectedSound.setFile(13);
+        moveSound.setFile(8);
+        attackSound.setFile(0);
+        fireSound.setFile(32);
+    }
+    @Override
+    public void reloadSounds(){
+        selectedSound = new Sound();
+        moveSound = new Sound();
+        attackSound = new Sound();
+        fireSound = new Sound();
         selectedSound.setFile(13);
         moveSound.setFile(8);
         attackSound.setFile(0);

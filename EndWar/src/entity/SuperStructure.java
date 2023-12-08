@@ -5,16 +5,25 @@ import tile.Tile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SuperStructure {
-    GamePanel gp;
-    protected BufferedImage image;
+public class SuperStructure implements Serializable {
+    private GamePanel gp;
+    protected transient BufferedImage image;
     protected String type;
     protected Tile tile;
     protected int worldX,worldY,trueWorldX,trueWorldY;
     int side;
     private ArrayList<SuperUnit> inventory = new ArrayList<>();
+
+    /***
+     * this is the centralised structure, every kind of structure can be stored as this
+     * @param gp needed for accessing information
+     * @param type the type of the structure, in reality this changes what kind of units can be stored in it
+     * @param tile the tile that this structure occupies
+     * @param side this sets what side this structure is on
+     */
     public SuperStructure(GamePanel gp, String type, Tile tile, int side){
         this.gp = gp;
         this.type = type;
@@ -26,6 +35,11 @@ public class SuperStructure {
         worldY = trueWorldY - (int)(gp.tileHeight*1.5);
     }
 
+    /***
+     * this paints this unit on the screen
+     * @param g2 for drawing
+     * @param gp to figure out the correct coordinates
+     */
     public void draw(Graphics2D g2, GamePanel gp){
 
         int screenX;
@@ -58,59 +72,68 @@ public class SuperStructure {
             g2.drawImage(image, screenX, screenY,null);
         }
     }
+
+    /***
+     * this puts a unit into the inventory of the structure
+     * @param unitToStore this unit gets stored
+     */
     public void storeUnit(SuperUnit unitToStore){
         for (SuperUnit sunit : inventory){
             sunit.setTeamNum(unitToStore.getTeamNum());
         }
         inventory.add(unitToStore);
-        System.out.println("STORED: "+unitToStore);
     }
+
+    /***
+     * this visually makes the arrived unit stored and also removes it from its team list
+     * @param arrivedUnit the unit that gets removed from a team list
+     */
     public void unitArrived(SuperUnit arrivedUnit){
         ArrayList<SuperUnit> unitSide;
         arrivedUnit.setVisible(false);
         if (arrivedUnit.getTeamNum() == 0){
             unitSide = gp.ally;
-            System.out.println("ARRIVED: "+arrivedUnit +" from: ally");
         }
         else {
             unitSide = gp.enemy;
-            System.out.println("ARRIVED: "+arrivedUnit +" from: enemy");
         }
         arrivedUnit.teamNum = 2;
         unitSide.remove(arrivedUnit);
-        //System.out.println("REMOVED: "+arrivedUnit +" from: "+unitSide);
 
     }
+
+    /***
+     * this makes the selected unit visible and also puts it on the team's list
+     * @param unitToDeploy unit that is put back on a team list
+     * @param sideNum the number of the side of which this unit is being deployed
+     */
     public void deployUnit(SuperUnit unitToDeploy, int sideNum){
         unitToDeploy.setVisible(true);
-        //ArrayList<SuperUnit> unitSide;
         if (sideNum == 0){
-            //unitSide = gp.ally;
             for (int i = 0; i <inventory.size(); ++i){
                 if (inventory.get(i) == unitToDeploy){
                     gp.ally.add(unitToDeploy);
-                    System.out.println("DEPLOYED: "+unitToDeploy +" to: ally");
                     inventory.remove(unitToDeploy);
-                    System.out.println("REMOVED: "+unitToDeploy +" from: "+type);
                     unitToDeploy.teamNum = sideNum;
                     break;
                 }
             }
         }
         else {
-            //unitSide = gp.enemy;
             for (int i = 0; i <inventory.size(); ++i){
                 if (inventory.get(i) == unitToDeploy){
                     gp.enemy.add(unitToDeploy);
-                    System.out.println("DEPLOYED: "+unitToDeploy +" to: enemy");
                     inventory.remove(unitToDeploy);
-                    System.out.println("REMOVED: "+unitToDeploy +" from: "+type);
                     unitToDeploy.teamNum = sideNum;
                     break;
                 }
             }
         }
     }
+
+    /***
+     * this heals all the units in the inventory by 2 until that unit doesn't have 6 hp
+     */
     public void repairInventory(){
         for (SuperUnit supu : inventory){
             //heal 2 until hp = 6
@@ -122,6 +145,10 @@ public class SuperStructure {
         }
     }
 
+    /***
+     * checks if there is still place for one more unit in the inventory
+     * @return the answer
+     */
     public boolean thereIsStillSpace(){
         return  inventory.size()<6;
     }

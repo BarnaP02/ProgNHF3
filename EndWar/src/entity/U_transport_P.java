@@ -1,6 +1,7 @@
 package entity;
 
 import main.GamePanel;
+import main.Sound;
 import tile.Tile;
 
 import javax.imageio.ImageIO;
@@ -14,7 +15,6 @@ public class U_transport_P extends SuperUnit implements SUInterface {
     @Override
     public void create(GamePanel gp, String[] params) {
         direction = 3;
-        //String[] init = line.split(",");
         U_transport_P unit = new U_transport_P(gp, Integer.parseInt(params[0]), Integer.parseInt(params[1]), Integer.parseInt(params[3]));
         if (Integer.parseInt(params[3])==0) {
             gp.ally.add(unit);
@@ -26,7 +26,6 @@ public class U_transport_P extends SuperUnit implements SUInterface {
     public U_transport_P(){}
 
     public U_transport_P(GamePanel gp, int tileX, int tileY, int teamNum){
-        //imgList = new ArrayList<>();
         type = "transportP";
         this.teamNum = teamNum;
         setCurrentTile(gp,tileX,tileY);
@@ -40,6 +39,17 @@ public class U_transport_P extends SuperUnit implements SUInterface {
         attackRange = new int[]{0, 0, 0, 0, 0, 0};
         defense = 10;
         attackDamage = new int[]{0, 0, 0};
+        selectedSound.setFile(13);
+        moveSound.setFile(29);
+        attackSound.setFile(0);
+        fireSound.setFile(30);
+    }
+    @Override
+    public void reloadSounds(){
+        selectedSound = new Sound();
+        moveSound = new Sound();
+        attackSound = new Sound();
+        fireSound = new Sound();
         selectedSound.setFile(13);
         moveSound.setFile(29);
         attackSound.setFile(0);

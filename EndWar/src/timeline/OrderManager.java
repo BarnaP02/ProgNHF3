@@ -9,24 +9,29 @@ import main.Sound;
 import tile.RangeFinder;
 import tile.Tile;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderManager {
+public class OrderManager implements Serializable {
     GamePanel gp;
     private ArrayList<Order>timeline;
     private ArrayList<Order>processing;
     private ArrayList<Order>tempMove;
     private ArrayList<Order>tempAttack;
-    List<SuperUnit> newOrderUnitSide;
-    int newOrderUnitIndex;
-    SuperUnit ordered;
-    int slowCounter = 0;
-    int slowNum = 6;
+    private List<SuperUnit> newOrderUnitSide;
+    private int newOrderUnitIndex;
+    private SuperUnit ordered;
+    private int slowCounter = 0;
+    private int slowNum = 6;
     private boolean gotNewIndex = false;
     private int newIndex = 0;
     public boolean unitFromStructure = false;
 
+    /***
+     * the purpose of this class is to create and manage all the orders
+     * @param gp for context
+     */
     public OrderManager(GamePanel gp){
         newOrderUnitSide = null;
         this.gp = gp;
@@ -35,11 +40,12 @@ public class OrderManager {
         tempMove = new ArrayList<>();
         tempAttack = new ArrayList<>();
     }
-    public void giveOrder(Order o){
-        o.complete(gp);
-        timeline.add(o);
-    }
 
+    /***
+     * this gets called every time update() is called in gp, this is what creates the orders that move or destroy units
+     * @param gp for context
+     * @param keyH the KeyHandler that is used to create the orders
+     */
     public void update(GamePanel gp, KeyHandler keyH){
         slowCounter++;
         if (slowCounter!=slowNum) { return; }
@@ -49,17 +55,13 @@ public class OrderManager {
                 if (gp.getCycleState() == GamePanel.Cycle.T1MOVE){
                     for (int i = 0; i < gp.structures.size();++i){
                         if (gp.structures.get(i).getTile() == gp.cruser.getHover() && gp.structures.get(i).getSide() == 0 &&
-                                !gp.structures.get(i).getInventory().isEmpty() && !gp.structures.get(i).getInventory().get(0).isActed() &&
-                                gotNewIndex){
-                            //gp.structures.get(i).getInventory().get(0).setVisible(true);
+                                !gp.structures.get(i).getInventory().isEmpty() && gotNewIndex && !gp.structures.get(i).getInventory().get(newIndex).isActed() &&
+                                !gp.structures.get(i).getInventory().get(newIndex).isMoving()){
                             unitFromStructure = true;
                             gp.structures.get(i).deployUnit(gp.structures.get(i).getInventory().get(newIndex), 0);
-                            System.out.println("SIDENUM 0");
-                            gotNewIndex = false;
-                            //newOrderUnitSide = gp.structures.get(i).getInventory();
-                            //newOrderUnitIndex = 0;
                         }
                     }
+                    gotNewIndex = false;
                     for (int i = 0; i < gp.ally.size(); ++i) {
                         if ((gp.ally.get(i).getCurrentTile() == gp.cruser.getHover() || gp.ally.get(i).getOtherCurrentTile() == gp.cruser.getHover()) &&
                                 (!gp.ally.get(i).isActed() && !gp.ally.get(i).isDestroyed() && !gp.ally.get(i).isMoving() && gp.ally.get(i).isVisible())){
@@ -72,23 +74,18 @@ public class OrderManager {
                         gp.rFinder.findMovementRange(gp, newOrderUnitSide.get(newOrderUnitIndex), false);
                         slowCounter = -20;
                         newOrderUnitSide.get(newOrderUnitIndex).getSelectedSound().play();
-                        //slowCounter = 0;
                     }
                 }
                 if (gp.getCycleState() == GamePanel.Cycle.T2MOVE && !gp.isPvE){
                     for (int i = 0; i < gp.structures.size();++i){
                         if (gp.structures.get(i).getTile() == gp.cruser.getHover() && gp.structures.get(i).getSide() == 1 &&
-                                !gp.structures.get(i).getInventory().isEmpty() && !gp.structures.get(i).getInventory().get(0).isActed() &&
-                                gotNewIndex){
-                            //gp.structures.get(i).getInventory().get(0).setVisible(true);
+                                !gp.structures.get(i).getInventory().isEmpty() && gotNewIndex && !gp.structures.get(i).getInventory().get(newIndex).isActed() &&
+                                !gp.structures.get(i).getInventory().get(newIndex).isMoving()){
                             unitFromStructure = true;
                             gp.structures.get(i).deployUnit(gp.structures.get(i).getInventory().get(newIndex), 1);
-                            System.out.println("SIDENUM 1");
-                            gotNewIndex = false;
-                            //newOrderUnitSide = gp.structures.get(i).getInventory();
-                            //newOrderUnitIndex = 0;
                         }
                     }
+                    gotNewIndex = false;
                     for (int i = 0; i < gp.enemy.size(); ++i) {
                         if ((gp.enemy.get(i).getCurrentTile() == gp.cruser.getHover() || gp.enemy.get(i).getOtherCurrentTile() == gp.cruser.getHover()) &&
                                 (!gp.enemy.get(i).isActed() && !gp.enemy.get(i).isDestroyed() && !gp.enemy.get(i).isMoving() && gp.enemy.get(i).isVisible())){
@@ -96,16 +93,11 @@ public class OrderManager {
                             newOrderUnitIndex = i;
                             ordered = newOrderUnitSide.get(newOrderUnitIndex);
                         }
-                        /*if (gp.getTileFromWorldCoords(gp.enemy.get(i).getWorldX(), gp.enemy.get(i).getWorldY()) == gp.cruser.getHover()){
-                            newOrderUnitSide = gp.enemy;
-                            newOrderUnitIndex = i;
-                        }*/
                     }
                     if (newOrderUnitSide != null){
                         gp.rFinder.findMovementRange(gp, newOrderUnitSide.get(newOrderUnitIndex), false);
                         slowCounter = -20;
                         newOrderUnitSide.get(newOrderUnitIndex).getSelectedSound().play();
-                        //slowCounter = 0;
                     }
                 }
                 if (gp.getCycleState() == GamePanel.Cycle.T1ATTACK){
@@ -122,7 +114,6 @@ public class OrderManager {
                         gp.rFinder.findAttackRange(gp, newOrderUnitSide.get(newOrderUnitIndex));
                         slowCounter = -20;
                         newOrderUnitSide.get(newOrderUnitIndex).getSelectedSound().play();
-                        //slowCounter = 0;
                     }
                 }
                 if ((gp.getCycleState() == GamePanel.Cycle.T2ATTACK && !gp.isPvE)){
@@ -139,7 +130,6 @@ public class OrderManager {
                         gp.rFinder.findAttackRange(gp, newOrderUnitSide.get(newOrderUnitIndex));
                         slowCounter = -20;
                         newOrderUnitSide.get(newOrderUnitIndex).getSelectedSound().play();
-                        //slowCounter = 0;
                     }
                 }
             }
@@ -148,21 +138,7 @@ public class OrderManager {
                     if (gp.cruser.getHover() != ordered.getCurrentTile() &&
                             gp.cruser.getHover() != ordered.getOtherCurrentTile() &&
                             gp.cruser.getHover().isHighlighted() && ordered.isVisible()){
-                        if (unitFromStructure){
-                            //search for structure with the chosen unit
-                            for (int i = 0; i < gp.structures.size();++i){
-                                if (gp.structures.get(i).getInventory().contains(ordered)){
-                                    /*if (gp.getCycleState() == GamePanel.Cycle.T1MOVE){
-                                        //gp.structures.get(i).deployUnit(newOrderUnitSide.get(newOrderUnitIndex),0);
-                                    }
-                                    else {
-                                        //gp.structures.get(i).deployUnit(newOrderUnitSide.get(newOrderUnitIndex),1);
-                                    }*/
-                                    //unitFromStructure = false;
-                                }
-                            }
-                        }
-                        else {
+                        if (!unitFromStructure){
                             //capture or store in structure
                             for (int i = 0; i < gp.structures.size();++i){
                                 if (gp.structures.get(i).getTile() == gp.cruser.getHover()){
@@ -170,7 +146,6 @@ public class OrderManager {
                                     if (newOrderUnitSide == gp.ally) gp.structures.get(i).setSide(0);
                                     if (newOrderUnitSide == gp.enemy) gp.structures.get(i).setSide(1);
                                     gp.structures.get(i).storeUnit(ordered);
-                                    //newOrderUnitSide.get(newOrderUnitIndex).setVisible(false);
                                 }
                             }
 
@@ -184,14 +159,13 @@ public class OrderManager {
                         ordered.setMoving(true);
                         timeline.add(new Move(gp, ordered, gp.cruser.getHover(), path));
                         tempMove.add(timeline.get(timeline.size()-1));
-                        processing.add(timeline.get(timeline.size()-1));//(new Move(newOrderUnitSide, newOrderUnitIndex, gp.cruser.getHover(), path));
+                        processing.add(timeline.get(timeline.size()-1));
                     }
                     //end of selection
                     if (unitFromStructure){
                         gp.getStructureFromTile(gp.cruser.getHover()).storeUnit(ordered);
                         gp.getStructureFromTile(gp.cruser.getHover()).unitArrived(ordered);
                         unitFromStructure = false;
-                        //gp.structures.get()
                     }
                     for (int i = 0; i < gp.maxWorldCol; ++i){
                         for (int j = 0; j < gp.maxWorldRow; j++) {
@@ -206,8 +180,6 @@ public class OrderManager {
                             gp.cruser.getHover() != ordered.getOtherCurrentTile() &&
                             ((gp.getCycleState() == GamePanel.Cycle.T2ATTACK && !gp.isPvE) || gp.getCycleState() == GamePanel.Cycle.T1ATTACK) &&
                             ordered.isVisible()){
-                        //gp.rFinder.findAttackRange(gp,newOrderUnitSide.get(newOrderUnitIndex));
-                        //List<Tile> path = gp.rFinder.findMovementPath(gp,newOrderUnitSide.get(newOrderUnitIndex), gp.cruser.getHover());
                         ArrayList<SuperUnit> otherSide;
                         if (ordered.getTeamNum()==0){
                             otherSide = gp.enemy;
@@ -219,14 +191,10 @@ public class OrderManager {
                             if(target.getCurrentTile() == gp.cruser.getHover() && target.isInRange() || target.getOtherCurrentTile() == gp.cruser.getHover() &&
                                     target.isInRange() && target.isVisible()){
                                 ordered.getAttackSound().play();
-                                //newOrderUnitSide.get(newOrderUnitIndex).setMoving(true);
                                 timeline.add(new Attack(gp, ordered, target));
                                 tempAttack.add(timeline.get(timeline.size()-1));
-                                //processing.add(timeline.get(timeline.size()-1));
                             }
                         }
-                        //timeline.add(new Move(newOrderUnitSide, newOrderUnitIndex, gp.cruser.getHover(), path));
-                        //processing.add(new Move(newOrderUnitSide, newOrderUnitIndex, gp.cruser.getHover(), path));
                     }
                     //end of selection
                     for (int i = 0; i < gp.maxWorldCol; ++i){
@@ -256,7 +224,6 @@ public class OrderManager {
             for (int i = 0; i < gp.enemy.size(); ++i){
                 //first round
                 if (gp.enemy.get(i).getTargetUnit() == null){
-                    //gp.rFinder.findMovementRange(gp, gp.enemy.get(i));
                     gp.rFinder.findTargetUnit(gp, gp.enemy, gp.ally, i);
                 }
                 if(gp.enemy.get(i).getTargetUnit().isInRange()){
@@ -307,30 +274,19 @@ public class OrderManager {
                             un.setArtyAbleToFire(true);
                             un.setArtyCounter(0);
                         }
-                        //un.setArtyNotAbleToFire(false);
                     }
                 }
                 for (SuperUnit un : gp.enemy){
                     if (!un.isArtyAbleToFire() && un.getClass() == U_arty_H.class){
-                        //un.setArtyAbleToFire(true);
                         un.setArtyCounter(un.getArtyCounter()+1);
                         if (un.getArtyCounter()==2){
                             un.setArtyAbleToFire(true);
                             un.setArtyCounter(0);
                         }
-                        //un.setArtyNotAbleToFire(false);
                     }
                 }
-                for (Order o : tempAttack){
-                    //o.complete(gp);
-                }
                 gp.attacksNeedResolving = true;
-                //gp.resolveAttackOrders();
                 gp.nextCycleState();
-                /*for (Order o : tempMove){
-                    o.forceFinish(gp);
-                }
-                tempMove = new ArrayList<>();*/
             }
             slowCounter = -30;
             return;
@@ -338,10 +294,6 @@ public class OrderManager {
         for (Order o : processing){
             if (!o.isCompleted()){
                 o.complete(gp);
-            }
-            else {
-
-                //processing.get(processing.indexOf(o)) = null;
             }
         }
     }

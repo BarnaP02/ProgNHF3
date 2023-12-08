@@ -9,8 +9,12 @@ import java.util.List;
 
 public class FontGallery {
     private HashMap<Integer, ArrayList<Font>> fontMap = new HashMap<>();
+
+    /***
+     * this stores the fonts that have or would have been used in this project
+     */
     public FontGallery(){
-        int[] sizes = new int[]{12,16,20,30,40,50,60};
+        int[] sizes = new int[]{12,16,20,30,40,50,60, 180};
         ArrayList<String> fontPaths = new ArrayList<>();
         fontPaths.add("res/fonts/Megrim-Regular.ttf");
         fontPaths.add("res/fonts/DotGothic16-Regular.ttf");
@@ -25,59 +29,14 @@ public class FontGallery {
             fontMap.put(counter, newFontList);
             counter++;
         }
-/*
-        fonts = new Font[20];
-        fonts[0]=loadFont("res/fonts/Megrim-Regular.ttf",12);
-        fonts[1]=loadFont("res/fonts/Megrim-Regular.ttf",20);
-        fonts[2]=loadFont("res/fonts/Megrim-Regular.ttf",30);
-        fonts[3]=loadFont("res/fonts/DotGothic16-Regular.ttf",12);
-        fonts[4]=loadFont("res/fonts/DotGothic16-Regular.ttf",20);
-        fonts[5]=loadFont("res/fonts/DotGothic16-Regular.ttf",30);
-        fonts[6]=loadFont("res/fonts/PressStart2P-Regular.ttf",12);
-        fonts[7]=loadFont("res/fonts/PressStart2P-Regular.ttf",20);
-        fonts[8]=loadFont("res/fonts/PressStart2P-Regular.ttf",30);
-        fonts[9]=loadFont("res/fonts/Orbitron-VariableFont_wght.ttf",12);
-        fonts[10]=loadFont("res/fonts/Orbitron-VariableFont_wght.ttf",20);
-        fonts[11]=loadFont("res/fonts/Orbitron-VariableFont_wght.ttf",30);
-        */
-
-        /*try {
-            // Load the custom pixelated font from the extracted folder
-            Font pixelFont = Font.createFont(Font.TRUETYPE_FONT, new File("Megrim-Regular.ttf")).deriveFont(20f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(pixelFont);
-
-            fonts[0] = pixelFont;
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
-            // If there's an error loading the font, use the default font
-            fonts[0] = new Font("Times New Roman", Font.BOLD, 20);
-        }
-        try {
-            // Load the custom pixelated font from the extracted folder
-            Font pixelFont = Font.createFont(Font.TRUETYPE_FONT, new File("DotGothic16-Regular.ttf")).deriveFont(20f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(pixelFont);
-
-            fonts[1] = pixelFont;
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
-            // If there's an error loading the font, use the default font
-            fonts[1] = new Font("Times New Roman", Font.BOLD, 20);
-        }
-        try {
-            // Load the custom pixelated font from the extracted folder
-            Font pixelFont = Font.createFont(Font.TRUETYPE_FONT, new File("PressStart2P-Regular.ttf")).deriveFont(20f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(pixelFont);
-
-            fonts[2] = pixelFont;
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
-            // If there's an error loading the font, use the default font
-            fonts[2] = new Font("Times New Roman", Font.BOLD, 20);
-        }*/
     }
+
+    /***
+     * loads a font for fontFilePath with a size of size
+     * @param fontFilePath the path to the font file
+     * @param size the size of the expected font
+     * @return the font with the correct size
+     */
     private static Font loadFont(String fontFilePath, float size) {
         try {
             // Create a Font object from the TrueType Font file

@@ -9,19 +9,21 @@ import java.util.List;
 
 public class Attack extends Order{
     private SuperUnit targetUnit;
-    boolean isRangedAttack;
+    private boolean isRangedAttack;
     private int slowcounter = 20;
     private int slowNum = 0;
     private int iter = 0;
-    private int bonus = 0;
-    //ArrayList<SuperUnit> side;
-    ArrayList<SuperUnit> otherSide;
+    private ArrayList<SuperUnit> otherSide;
     private int ogAttackerHp = 0;
     private int ogDefenderHp = 0;
 
+    /***
+     * this is the order type that stores attacks
+     * @param gp for context
+     * @param striker the unit that is attacking another unit
+     * @param targetUnit the unit that is being attacked
+     */
     public Attack(GamePanel gp, SuperUnit striker, SuperUnit targetUnit){
-        //this.side = side;
-        //this.index = index;
         this.targetUnit = targetUnit;
         isRangedAttack = true;
         actor = striker;
@@ -49,6 +51,11 @@ public class Attack extends Order{
         striker.setActed(true);
     }
 
+    /***
+     * this gets called when attacks need resolving in gp
+     * this is what completes an attack
+     * @param gp for context
+     */
     @Override
     public void complete(GamePanel gp) {
         slowNum++;
@@ -74,8 +81,6 @@ public class Attack extends Order{
                 }
                 side.get(index).setDirection((defaultDirection+3)%6);
                 if (targetUnit.getCurrentTile().borders()[(defaultDirection+iter-3)%6] != 0) {
-                    //if (targetUnit.getCurrentTile().borders()[iter-3] != 0) {
-                    //System.out.println(Arrays.toString(targetUnit.getCurrentTile().borders()) +" so target: "+);
                     gp.cruser.moveTo(targetUnit.getCurrentTile().getBorder((defaultDirection+iter-3)%6));
                 }
                 return;
@@ -137,11 +142,6 @@ public class Attack extends Order{
                 gp.recievedDamage(targetUnit);
                 return;
             }
-            if (iter < 5){
-                //side.get(index).getFireSound().play();
-                //resolveConflict(side.get(index), targetUnit);
-                //gp.recievedDamage(targetUnit);
-            }
             if (iter > 6){
                 gp.cruser.moveTo(targetUnit.getCurrentTile());
                 setCompleted(true);
@@ -157,19 +157,15 @@ public class Attack extends Order{
                     targetUnit.setDestroyed(true);
                 }
                 if (targetUnit.isDestroyed()) gp.playSFX(27);
-
-                /*if (ogAttackerHp > side.get(index).getHp() && targetUnit.getXp() < 6){
-                    targetUnit.setXp(targetUnit.getXp()+1);
-                }
-                if (side.get(index).getHp() < 1 && targetUnit.getXp() < 6){
-                    targetUnit.setXp(targetUnit.getXp()+1);
-                }*/
             }
         }
-
-
-        //System.out.println(side.get(index)+" attacked " + targetUnit + " for " + (ogDefenderHp - targetUnit.getHp()));
     }
+
+    /***
+     * this is what calculates how much damage the attacker deals to the defender
+     * @param attacker the attacker unit
+     * @param defender the defender unit
+     */
     public void resolveConflict(SuperUnit attacker, SuperUnit defender){
         int conflictType;
         if (defender.isAvian()){
@@ -185,7 +181,6 @@ public class Attack extends Order{
             int damage = attacker.getHp() * attacker.getAttackDamage()[conflictType] + attacker.getXp()/2 * attacker.getAttackDamage()[conflictType];
             int defense = defender.getHp() * defender.getDefense() + defender.getXp()/2 * defender.getDefense();
             int damageInHP = (damage-defense)/defender.getDefense();
-            System.out.println(side.get(index)+" attacks "+defender+" for "+damageInHP);
             if (damageInHP > 0) defender.setHp(defender.getHp()-damageInHP);
         }
     }

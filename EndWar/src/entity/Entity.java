@@ -1,17 +1,14 @@
 package entity;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.nio.Buffer;
 import java.util.List;
 
-public class Entity {
+public class Entity implements Serializable {
     protected int worldX;
     protected int worldY;
     boolean isVisible;
-
-    //public BufferedImage sprite1;
-    //public BufferedImage sprite2;
-    protected List<BufferedImage> imgList;
     public int direction;
     public int slowCounter = 0;
     public int slowNum = 5;

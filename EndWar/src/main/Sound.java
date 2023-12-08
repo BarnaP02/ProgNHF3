@@ -7,14 +7,18 @@ import javax.sound.sampled.FloatControl;
 import java.net.URL;
 
 public class Sound {
-    Clip clip;
-    float previousVolume = 0;
-    float currentVolume = 0;
-    boolean stopped = false;
-    int currentFramePosition = 0;
-    boolean mute;
-    FloatControl fc;
-    URL soundURL[] = new URL[50];
+    private Clip clip;
+    private float previousVolume = 0;
+    private float currentVolume = 0;
+    private boolean stopped = false;
+    private int currentFramePosition = 0;
+    private boolean mute;
+    private FloatControl fc;
+    public URL soundURL[] = new URL[50];
+
+    /***
+     * this is where I store the sounds
+     */
     public Sound(){
         clip = null;
         soundURL[0] = getClass().getResource("/sound/attack_confirmed_sound.wav");
@@ -51,6 +55,11 @@ public class Sound {
         soundURL[31] = getClass().getResource("/sound/battleship_salvo_sound.wav");
         soundURL[32] = getClass().getResource("/sound/machine_gun_with_missile_sound.wav");
     }
+
+    /***
+     * sets the file for this sound to the file with the index i
+     * @param i th index
+     */
     public void setFile(int i){
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
@@ -61,16 +70,32 @@ public class Sound {
         }
 
     }
+
+    /***
+     * plays this sound from the beginning
+     */
     public void play(){
         clip.setFramePosition(0);
         clip.start();
     }
+
+    /***
+     * loops this sound
+     */
     public void loop(){
         clip.loop((Clip.LOOP_CONTINUOUSLY));
     }
+
+    /***
+     * stops this sound
+     */
     public void stop(){
         clip.stop();
     }
+
+    /***
+     * turns up the volume of this sound
+     */
     public void volumeUp(){
         currentVolume += 1.0f;
         if (currentVolume > 6.0f){
@@ -78,6 +103,10 @@ public class Sound {
         }
         fc.setValue(currentVolume);
     }
+
+    /***
+     * turns the volume down for this sound
+     */
     public void volumeDown(){
         currentVolume -= 1.0f;
         if (currentVolume < -80.0f){
@@ -85,6 +114,10 @@ public class Sound {
         }
         fc.setValue(currentVolume);
     }
+
+    /***
+     * mutes this sound
+     */
     public void volumeMute(){
         if (!mute){
             previousVolume = currentVolume;
@@ -92,17 +125,25 @@ public class Sound {
             fc.setValue(currentVolume);
             mute = true;
         }
-        else if (mute){
+        else {
             currentVolume = previousVolume;
             fc.setValue(currentVolume);
             mute = false;
         }
     }
+
+    /***
+     * stops this sound but saves its frame position
+     */
     public void freeze(){
         currentFramePosition = clip.getFramePosition();
         clip.stop();
         stopped = true;
     }
+
+    /***
+     * plays this sound but instead of the beginning it starts from the saved frame position
+     */
     public void resume(){
         if (stopped){
             clip.setFramePosition(currentFramePosition);

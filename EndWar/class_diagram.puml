@@ -1,0 +1,882 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 6,
+    "backwardDepth": 6,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "menu.MainFrame",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_1298275357 { 
+   	label=entity
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   Cruser1298275357[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Cruser</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   fromLeft: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gp: GamePanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   hover: Tile [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   imgList: List&lt;BufferedImage&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   keyH: KeyHandler [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   last_hover: Tile [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   screenX: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   screenY: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ draw(g2: Graphics2D)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getCruserImage()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ moveDown()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ moveLeft()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ moveRight()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ moveTo(destination: Tile)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ moveUp()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ nearBotEdge(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ nearLeftEdge(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ nearRightEdge(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ nearScreenBot(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ nearScreenLeft(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ nearScreenRight(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ nearScreenTop(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ nearTopEdge(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Entity1298275357[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Entity</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   direction: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   isVisible: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   slowCounter: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   slowNum: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   spriteCounter: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   spriteNum: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   superSlowCounter: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   superSlowNum: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   worldX: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   worldY: int [1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ImageStore1298275357[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ImageStore</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   gallery: Map&lt;Class&lt;?&gt;, List&lt;BufferedImage&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   galleryTeam1: Map&lt;Class&lt;?&gt;, List&lt;BufferedImage&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   galleryTeam1BigIcon: Map&lt;Class&lt;?&gt;, ImageIcon&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   galleryTeam1Icon: Map&lt;Class&lt;?&gt;, ImageIcon&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   galleryTeam1IconShaded: Map&lt;Class&lt;?&gt;, ImageIcon&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   galleryTeam1Shaded: Map&lt;Class&lt;?&gt;, List&lt;BufferedImage&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   galleryTeam2: Map&lt;Class&lt;?&gt;, List&lt;BufferedImage&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   galleryTeam2BigIcon: Map&lt;Class&lt;?&gt;, ImageIcon&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   galleryTeam2Icon: Map&lt;Class&lt;?&gt;, ImageIcon&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   galleryTeam2IconShaded: Map&lt;Class&lt;?&gt;, ImageIcon&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   galleryTeam2Shaded: Map&lt;Class&lt;?&gt;, List&lt;BufferedImage&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gp: GamePanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   obstacleGallery: Map&lt;String, List&lt;BufferedImage&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   roadGallery: Map&lt;String, BufferedImage&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   structureGallery: Map&lt;String, BufferedImage&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   structureGalleryNatural: Map&lt;String, BufferedImage&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   structureGalleryNaturalShaded: Map&lt;String, BufferedImage&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   structureGalleryTeam1: Map&lt;String, BufferedImage&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   structureGalleryTeam1Shaded: Map&lt;String, BufferedImage&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   structureGalleryTeam2: Map&lt;String, BufferedImage&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   structureGalleryTeam2Shaded: Map&lt;String, BufferedImage&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tileGallery: Map&lt;String, List&lt;BufferedImage&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tileOutOfRangeGallery: Map&lt;String, List&lt;BufferedImage&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   waterGallery: Map&lt;String, BufferedImage&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   waterGalleryShaded: Map&lt;String, BufferedImage&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ changeColor(original: List&lt;BufferedImage&gt;, r: int, g: int, b: int, isSelection: boolean): List&lt;BufferedImage&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ combineImages(base: BufferedImage, upper: BufferedImage): BufferedImage</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+SuperStructure1298275357[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)SuperStructure</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   gp: GamePanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   image: BufferedImage [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   inventory: ArrayList&lt;SuperUnit&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   side: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   tile: Tile [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   trueWorldX: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   trueWorldY: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   type: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   worldX: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   worldY: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deployUnit(unitToDeploy: SuperUnit, sideNum: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ draw(g2: Graphics2D, gp: GamePanel)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ repairInventory()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ storeUnit(unitToStore: SuperUnit)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ thereIsStillSpace(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ unitArrived(arrivedUnit: SuperUnit)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+SuperUnit1298275357[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)SuperUnit</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   acted: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   artyCounter: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   attackDamage: int[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   attackRange: int[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   attackSound: Sound [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   currentImgIndex: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   currentTile: Tile [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   defense: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   destroyed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   fireSound: Sound [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   hp: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   is2tile: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   isArtyAbleToFire: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   isAvian: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   isHeli: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   isInRange: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   isInfantry: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   isNavy: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   isSub: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   lastImage: BufferedImage [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   lastImgIndex: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   moveSound: Sound [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   movementRange: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   moving: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   otherCurrentTile: Tile [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   selectedSound: Sound [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   targetUnit: SuperUnit [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   teamNum: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   traverseSpeed: double[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   type: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   visible: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   wasHighlighted: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   xp: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ draw(g2: Graphics2D, gp: GamePanel)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ moveUnit(gp: GamePanel, t: Tile)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reloadSounds()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_2076650431 { 
+   	label=timeline
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   Attack2076650431[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Attack</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   isRangedAttack: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   iter: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ogAttackerHp: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ogDefenderHp: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   otherSide: ArrayList&lt;SuperUnit&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slowNum: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slowcounter: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   targetUnit: SuperUnit [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ complete(gp: GamePanel)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resolveConflict(attacker: SuperUnit, defender: SuperUnit)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Move2076650431[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Move</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   beginX: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   beginY: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   counter: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   current: Tile [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   destinationTile: Tile [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   endX: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   endY: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   incrementX: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   incrementY: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   origin: Tile [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   originalTeamNum: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   path: List&lt;Tile&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   startingTile: Tile [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ complete(gp: GamePanel)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ forceFinish(gp: GamePanel)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reverse(gp: GamePanel)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Order2076650431[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Order</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   actor: SuperUnit [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   completed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   index: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   side: List&lt;SuperUnit&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ complete(gp: GamePanel)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ forceFinish(gp: GamePanel)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reverse(gp: GamePanel)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+OrderManager2076650431[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)OrderManager</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   gotNewIndex: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   gp: GamePanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   newIndex: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   newOrderUnitIndex: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   newOrderUnitSide: List&lt;SuperUnit&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ordered: SuperUnit [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   processing: ArrayList&lt;Order&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slowCounter: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slowNum: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tempAttack: ArrayList&lt;Order&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tempMove: ArrayList&lt;Order&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   timeline: ArrayList&lt;Order&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   unitFromStructure: boolean [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ update(gp: GamePanel, keyH: KeyHandler)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_3343801 { 
+   	label=main
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   AssetSetter3343801[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)AssetSetter</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   gp: GamePanel [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+CycleInfoPanel3343801[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)CycleInfoPanel</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   currentPhaseField: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   currentTeamField: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   cycleNumberField: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   panM: PanelManager [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ update(cycleNumber: int, teamName: String, cyclePhase: String)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+GamePanel3343801[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GamePanel</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   FPS: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   Grid: Tile[][] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   aSetter: AssetSetter [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   ally: ArrayList&lt;SuperUnit&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   attacksNeedResolving: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cruser: Cruser [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cycleInfoPanel: CycleInfoPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   cycleNumber: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   cycleState: Cycle [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   enemy: ArrayList&lt;SuperUnit&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   gameState: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   gameThread: Thread [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   imagS: ImageStore [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   infoPanel: InfoPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   isPvE: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   keyH: KeyHandler [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   maxScreenCol: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   maxScreenRow: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   maxWorldCol: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   maxWorldRow: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   music: Sound [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   originalTileHeight: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   originalTileWidth: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   pauseMenuMusic: Sound [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   rFinder: RangeFinder [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   recentlyDamaged: ArrayList&lt;SuperUnit&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   screenHeight: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   screenWidth: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   sfx: Sound [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   structures: ArrayList&lt;SuperStructure&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   team1Color: int[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   team1Name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   team2Color: int[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   team2Name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tileHeight: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   tileM: TileManager [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tileWidth: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   timeL: OrderManager [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   twoTileShift: int[][] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   worldHeight: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   worldWidth: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getCoordsFromTile(t: Tile): int[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getStructureFromTile(t: Tile): SuperStructure</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTileFromWorldCoords(searchedWorldX: int, searchedWorldY: int): Tile</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getUnitFromTile(t: Tile): SuperUnit</TD></TR>
+<TR><TD ALIGN="LEFT" >+ nextCycleState()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ paintComponent(g: Graphics)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ playMusic(i: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ playPauseMenuMusic(i: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ playSFX(i: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ recievedDamage(unit: SuperUnit)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ reloadGame(panM: PanelManager)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resolveAttackOrders()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ run()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ saveGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ startGameThread()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ stopMusic()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+InfoPanel3343801[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)InfoPanel</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   currentActed: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentHighlighted: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentMoving: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentPhaseField: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentTeamField: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   cycleNumberField: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   inspectedUnit: SuperUnit [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   oldT1Air: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   oldT1Ground: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   oldT1Sea: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   oldT2Air: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   oldT2Ground: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   oldT2Sea: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   panM: PanelManager [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   prev1Icon: ImageIcon [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   prev2Icon: ImageIcon [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   prev3Icon: ImageIcon [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   prev4Icon: ImageIcon [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   prev5Icon: ImageIcon [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   prev6Icon: ImageIcon [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot1: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot1Label: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot2: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot2Label: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot3: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot3Label: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot4: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot4Label: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot5: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot5Label: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot6: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   slot6Label: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   t1Air: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   t1Ground: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   t1Sea: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   t2Air: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   t2Ground: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   t2Sea: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   team1AirStats: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   team1GroundStats: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   team1SeaStats: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   team1Stats: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   team2AirStats: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   team2GroundStats: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   team2SeaStats: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   team2Stats: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitARair: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitARgrd: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitARsea: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitDair: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitDgrd: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitDsea: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitHP: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitIcon: ImageIcon [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitIconPrev: ImageIcon [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitImageLabel: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unitXP: JLabel [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ refreshTeamStats()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update(gp: GamePanel, unit: SuperUnit)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+KeyHandler3343801[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)KeyHandler</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   a: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   checkDrawTime: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   ctrlPressed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   d: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   downPressed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ee: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   enterPressed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gp: GamePanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   l: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   leftPressed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   n: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   rightPressed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   sPressed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   showTileCoords: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   spacePressed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   t: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   u: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   upPressed: boolean [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ keyPressed(e: KeyEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ keyReleased(e: KeyEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ keyTyped(e: KeyEvent)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Sound3343801[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Sound</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   clip: Clip [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentFramePosition: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentVolume: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   fc: FloatControl [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mute: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   previousVolume: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   soundURL: URL[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   stopped: boolean [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ freeze()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ loop()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ play()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resume()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ stop()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ volumeDown()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ volumeMute()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ volumeUp()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_3347807 { 
+   	label=menu
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   GameContainingPanel3347807[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GameContainingPanel</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   centerGamePanel: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cycleInfoPanel: CycleInfoPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   gamePanel: GamePanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   height: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   infoPanel: InfoPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   keyH: KeyHandler [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   maxScreenCol: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   maxScreenRow: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   panM: PanelManager [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   screenHeight: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   screenWidth: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tileHeight: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tileWidth: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   width: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ loadGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ newGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ newGameLoaded()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+MainFrame3347807[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)MainFrame</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   canLoad: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   conflictSettingsPanel: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gaCoPa: GameContainingPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gaCoPaPlaceFiller: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mainTitle: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mainTitle2: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mainTitle3: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   menuPanel: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   settingsPanel: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   teamSettingPanel: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   universe: JLayeredPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   universeState: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ universeStateChange()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+PanelManager3347807[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PanelManager</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ createLabel(text: String, font: Font, textColor: Color): JLabel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createPlaceHolder(color: Color): JPanel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createPlaceHolder(color: Color, text: String, font: Font, textColor: Color): JPanel</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createPlaceHolder(img: ImageIcon, color: Color): JPanel</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_3560110 { 
+   	label=tile
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   RangeFinder3560110[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)RangeFinder</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   Grid: Tile[][] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   cameFromGrid: Tile[][] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   movementSpeedCost: double[][] [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ findAttackRange(gp: GamePanel, u: SuperUnit)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findMovementPath(gp: GamePanel, u: SuperUnit, dst: Tile): List&lt;Tile&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findMovementPathToUnit(gp: GamePanel, u: SuperUnit, target: SuperUnit): List&lt;Tile&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findMovementRange(gp: GamePanel, u: SuperUnit, ai: boolean)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findTargetUnit(gp: GamePanel, allyOfThis: List&lt;SuperUnit&gt;, enemyOfThis: List&lt;SuperUnit&gt;, index: int)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Tile3560110[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Tile</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   border: Tile[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   borders: int[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   coords: int[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentMoveRange: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   image: BufferedImage [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   imageShaded: BufferedImage [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isHighlighted: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isInRange: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isObstacle: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isOnScreen: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isRoad: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isSelected: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isStructure: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isStructureDoor: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isVisited: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   red: BufferedImage [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   type: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   worldX: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   worldY: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ borders(): int[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getBorder(i: int): Tile</TD></TR>
+<TR><TD ALIGN="LEFT" >+ numOfBorder(): int</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TileManager3560110[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TileManager</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   gp: GamePanel [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ draw(g2: Graphics2D)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTileNum(key: String): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTileType(tileNum: int): String</TD></TR>
+<TR><TD ALIGN="LEFT" >- isValidHexagon(col: int, row: int): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ loadMap(filePath: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ loadMapFromSave()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+'edges    
+AssetSetter3343801 -> GamePanel3343801[label="gp
+[0..1]"];
+Attack2076650431 -> RangeFinder3560110[label="complete() -> findAttackRange()"];
+Attack2076650431 -> SuperUnit1298275357[label="otherSide
+[0..*]"];
+Attack2076650431 -> SuperUnit1298275357[label="targetUnit
+[0..1]"];
+Cruser1298275357 -> GamePanel3343801[label="gp
+[0..1]"];
+Cruser1298275357 -> KeyHandler3343801[label="keyH
+[0..1]"];
+Cruser1298275357 -> Tile3560110[label="hover
+[0..1]"];
+Cruser1298275357 -> Tile3560110[label="last_hover
+[0..1]"];
+CycleInfoPanel3343801 -> PanelManager3347807[label="panM
+[0..1]"];
+Entity1298275357 -> Cruser1298275357[arrowhead=none, arrowtail=empty, dir=both];
+Entity1298275357 -> SuperUnit1298275357[arrowhead=none, arrowtail=empty, dir=both];
+GameContainingPanel3347807 -> CycleInfoPanel3343801[label="cycleInfoPanel
+[0..1]"];
+GameContainingPanel3347807 -> GamePanel3343801[label="gamePanel
+[0..1]"];
+GameContainingPanel3347807 -> InfoPanel3343801[label="infoPanel
+[0..1]"];
+GameContainingPanel3347807 -> KeyHandler3343801[label="keyH
+[0..1]"];
+GameContainingPanel3347807 -> PanelManager3347807[label="panM
+[0..1]"];
+GamePanel3343801 -> AssetSetter3343801[label="aSetter
+[0..1]"];
+GamePanel3343801 -> Cruser1298275357[label="cruser
+[0..1]"];
+GamePanel3343801 -> CycleInfoPanel3343801[label="cycleInfoPanel
+[0..1]"];
+GamePanel3343801 -> ImageStore1298275357[label="imagS
+[0..1]"];
+GamePanel3343801 -> InfoPanel3343801[label="infoPanel
+[0..1]"];
+GamePanel3343801 -> KeyHandler3343801[label="keyH
+[0..1]"];
+GamePanel3343801 -> OrderManager2076650431[label="timeL
+[0..1]"];
+GamePanel3343801 -> RangeFinder3560110[label="rFinder
+[0..1]"];
+GamePanel3343801 -> Sound3343801[label="music
+[0..1]"];
+GamePanel3343801 -> Sound3343801[label="pauseMenuMusic
+[0..1]"];
+GamePanel3343801 -> Sound3343801[label="sfx
+[0..1]"];
+GamePanel3343801 -> SuperStructure1298275357[label="structures
+[0..*]"];
+GamePanel3343801 -> SuperUnit1298275357[label="ally
+[0..*]"];
+GamePanel3343801 -> SuperUnit1298275357[label="enemy
+[0..*]"];
+GamePanel3343801 -> SuperUnit1298275357[label="recentlyDamaged
+[0..*]"];
+GamePanel3343801 -> Tile3560110[label="Grid
+[0..*]"];
+GamePanel3343801 -> TileManager3560110[label="tileM
+[0..1]"];
+ImageStore1298275357 -> GamePanel3343801[label="gp
+[0..1]"];
+InfoPanel3343801 -> PanelManager3347807[label="panM
+[0..1]"];
+InfoPanel3343801 -> SuperUnit1298275357[label="inspectedUnit
+[0..1]"];
+KeyHandler3343801 -> GamePanel3343801[label="gp
+[0..1]"];
+MainFrame3347807 -> GameContainingPanel3347807[label="gaCoPa
+[0..1]"];
+MainFrame3347807 -> GamePanel3343801[label="universeStateChange() -> startGameThread()"];
+Move2076650431 -> SuperUnit1298275357[label="complete() -> moveUnit()"];
+Move2076650431 -> Tile3560110[label="current
+[0..1]"];
+Move2076650431 -> Tile3560110[label="destinationTile
+[0..1]"];
+Move2076650431 -> Tile3560110[label="origin
+[0..1]"];
+Move2076650431 -> Tile3560110[label="path
+[0..*]"];
+Move2076650431 -> Tile3560110[label="startingTile
+[0..1]"];
+Order2076650431 -> Attack2076650431[arrowhead=none, arrowtail=empty, dir=both];
+Order2076650431 -> Move2076650431[arrowhead=none, arrowtail=empty, dir=both];
+Order2076650431 -> SuperUnit1298275357[label="actor
+[0..1]"];
+Order2076650431 -> SuperUnit1298275357[label="side
+[0..*]"];
+OrderManager2076650431 -> GamePanel3343801[label="gp
+[0..1]"];
+OrderManager2076650431 -> Order2076650431[label="processing
+[0..*]"];
+OrderManager2076650431 -> Order2076650431[label="tempAttack
+[0..*]"];
+OrderManager2076650431 -> Order2076650431[label="tempMove
+[0..*]"];
+OrderManager2076650431 -> Order2076650431[label="timeline
+[0..*]"];
+OrderManager2076650431 -> SuperUnit1298275357[label="newOrderUnitSide
+[0..*]"];
+OrderManager2076650431 -> SuperUnit1298275357[label="ordered
+[0..1]"];
+RangeFinder3560110 -> SuperStructure1298275357[label="findMovementRange() -> thereIsStillSpace()"];
+RangeFinder3560110 -> Tile3560110[label="Grid
+[0..*]"];
+RangeFinder3560110 -> Tile3560110[label="cameFromGrid
+[0..*]"];
+SuperStructure1298275357 -> GamePanel3343801[label="gp
+[0..1]"];
+SuperStructure1298275357 -> SuperUnit1298275357[label="inventory
+[0..*]"];
+SuperStructure1298275357 -> Tile3560110[label="tile
+[0..1]"];
+TileManager3560110 -> GamePanel3343801[label="gp
+[0..1]"];
+    
+}
+@enduml

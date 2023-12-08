@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class SuperUnit extends Entity{
-    protected BufferedImage lastImage;
+    protected transient BufferedImage lastImage;
     protected String type;
     protected Tile currentTile;
     protected Tile otherCurrentTile;
@@ -41,11 +41,17 @@ public class SuperUnit extends Entity{
     protected boolean wasHighlighted = true;
     protected boolean visible = true;
     protected int teamNum = 0;
-    Sound selectedSound = new Sound();
-    Sound moveSound = new Sound();
-    Sound attackSound = new Sound();
-    Sound fireSound = new Sound();
+    protected transient Sound selectedSound = new Sound();
+    protected transient Sound moveSound = new Sound();
+    protected transient Sound attackSound = new Sound();
+    protected transient Sound fireSound = new Sound();
 
+    /***
+     * needed to draw this unit on the screen
+     * @param g2 the grafics for the drawing
+     * @param gp contains the needed information for painting to the correct coordinates
+     *           or not painting at all if the unit is not on the screen
+     */
     public void draw(Graphics2D g2, GamePanel gp){
 
         if (destroyed || !visible) return;
@@ -59,7 +65,6 @@ public class SuperUnit extends Entity{
             currentImgIndex = direction*3+(slowCounter)/2;
         }
         else if (getClass() == U_arty_H.class && isArtyAbleToFire()){
-            //boolean artyCantFire = gp.ally.get(i).getClass() == U_arty_H.class && !gp.ally.get(i).isArtyAbleToFire();
             currentImgIndex = direction*2;
         }
         else if(getClass() == U_arty_H.class && !isArtyAbleToFire()){
@@ -85,7 +90,6 @@ public class SuperUnit extends Entity{
                 screenX <  gp.screenWidth + gp.tileWidth &&
                 screenY > - gp.tileHeight &&
                 screenY < gp.screenHeight + gp.tileHeight){
-            //gp.testUnit = this;
             if (currentImgIndex != lastImgIndex || wasHighlighted != getCurrentTile().isHighlighted()) {
                 wasHighlighted = getCurrentTile().isHighlighted();
                 if (teamNum == 0){
@@ -114,21 +118,32 @@ public class SuperUnit extends Entity{
             lastImgIndex = currentImgIndex;
         }
     }
+
+    /***
+     * sets the current tile for this unit to the tile at the x:y coordinates of the Grid
+     * @param gp contains the needed information
+     * @param x x coordinate of the tile
+     * @param y y coordinate of the tile
+     */
     public void setCurrentTile(GamePanel gp, int x, int y){
         currentTile = gp.Grid[x-1][y-1];
     }
+
+    /***
+     * moves this unit to the worldX and worldY coordinates to the given tile
+     * @param gp contains needed information
+     * @param t the target tile
+     */
     public void moveUnit(GamePanel gp, Tile t){
-        //currentTile = t;
-        /*if (is2tile){
-            setOtherCurrentTile(direction);
-        }
-        else {
-            otherCurrentTile = currentTile;
-        }*/
         worldX = gp.getCoordsFromTile(t)[0];
         worldY = gp.getCoordsFromTile(t)[1];
     }
 
+    /***
+     * needed for units to remake the sounds and set their files after loading a save
+     * sounds can't be saved, so this is essential for loading a game properly
+     */
+    public void reloadSounds(){}
     public String getType() {
         return type;
     }
@@ -152,12 +167,13 @@ public class SuperUnit extends Entity{
     public void setOtherCurrentTile(Tile otherCurrentTile) {
         this.otherCurrentTile = otherCurrentTile;
     }
+
+    /***
+     * needed to calculate what the other tile is based on the direction of a two tile unit
+     * @param direction this is the direction of the unit so the otherCurrent tile is the opposite neighbor of the current tile of this unit
+     */
     public void setOtherCurrentTile(int direction) {
         int otherDirection = (direction+3)%6;
-        //if ((otherDirection + 1) % 6 == 1){
-        //    otherDirection -= 6;
-        //}
-        //otherDirection = (otherDirection + 1) % 6 - 1;
         setOtherCurrentTile(getCurrentTile().getBorder(otherDirection));
     }
 

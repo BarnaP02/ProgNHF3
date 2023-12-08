@@ -4,9 +4,11 @@ import main.GamePanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class ImageStore {
     private GamePanel gp;
@@ -32,6 +34,15 @@ public class ImageStore {
     private Map<Class<?>, ImageIcon> galleryTeam2Icon;
     private Map<Class<?>, ImageIcon> galleryTeam1IconShaded;
     private Map<Class<?>, ImageIcon> galleryTeam2IconShaded;
+    private Map<Class<?>, ImageIcon> galleryTeam1BigIcon;
+    private Map<Class<?>, ImageIcon> galleryTeam2BigIcon;
+
+    /***
+     * This monster is responsible for storing every single handpainted image (gallery)
+     * and changing those images to the current teams' colors
+     * or making the tile images by printing the different road ob obstacle images on them
+     * @param gp this is needed for getting the team colors
+     */
     public ImageStore(GamePanel gp) {
         gallery = new HashMap<>();
         galleryTeam1Shaded = new HashMap<>();
@@ -55,6 +66,8 @@ public class ImageStore {
         galleryTeam2Icon = new HashMap<>();
         galleryTeam1IconShaded = new HashMap<>();
         galleryTeam2IconShaded = new HashMap<>();
+        galleryTeam1BigIcon = new HashMap<>();
+        galleryTeam2BigIcon = new HashMap<>();
         this.gp = gp;
         //AAB
         List<BufferedImage> li = new ArrayList<>();
@@ -585,11 +598,6 @@ public class ImageStore {
 
         for (Map.Entry<String, List<BufferedImage>> entry : tileGallery.entrySet()) {
             String key = entry.getKey();
-            //List<BufferedImage> value = new ArrayList<>();
-            //value.add(entry.getValue());
-            //BufferedImage newValue = changeColor(value,-100,-100,-100,true).get(0);
-            //tileOutOfRangeGallery.put(key,newValue);
-            //BufferedImage newValue = changeColor(value,-100,-100,-100,true).get(0);
             tileOutOfRangeGallery.put(key,changeColor(entry.getValue(),-100,-100,-100,true));
         }
 
@@ -821,10 +829,34 @@ public class ImageStore {
             ImageIcon value = new ImageIcon(entry.getValue().get(0));
             galleryTeam2IconShaded.put(key,value);
         }
+        for (Map.Entry<Class<?>, List<BufferedImage>> entry : galleryTeam1.entrySet()) {
+            Class<?> key = entry.getKey();
+            Image scaledImage = entry.getValue().get(0).getScaledInstance(240/3*2, 240/3*2, Image.SCALE_SMOOTH);
+            ImageIcon value = new ImageIcon(scaledImage);
+            galleryTeam1BigIcon.put(key,value);
+        }
+        for (Map.Entry<Class<?>, List<BufferedImage>> entry : galleryTeam2.entrySet()) {
+            Class<?> key = entry.getKey();
+            Image scaledImage = entry.getValue().get(0).getScaledInstance(240/3*2, 240/3*2, Image.SCALE_SMOOTH);
+            ImageIcon value = new ImageIcon(scaledImage);
+            galleryTeam2BigIcon.put(key,value);
+        }
+
     }
+
+    /***
+     * this is very handy because this allows me to be able to choose any team color and to paint every image of the units only once
+     * this is also used to make the unselected versions of the images
+     * @param original originally it was used for the units and those have images from all directions, that is why this is a list
+     * @param r the selected pixels will change the red in their rgb value by this amount
+     * @param g the selected pixels will change the green in their rgb value by this amount
+     * @param b the selected pixels will change the blue in their rgb value by this amount
+     * @param isSelection if the returned list is supposed to be a selection that means the gray pixels should be changed too
+     *                    otherwise it is team color change that ignores gray pixels
+     * @return the changed version of the original as new images
+     */
     public List<BufferedImage> changeColor(List<BufferedImage> original, int r, int g, int b, boolean isSelection){
         List<BufferedImage> result = new ArrayList<>();
-        //ImageIO.read(getClass().getResource("/tankH_4.png")); // Load your PNG image here
         for (BufferedImage originalImage : original) {
             // Create a copy of the original image
             BufferedImage modifiedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -885,6 +917,15 @@ public class ImageStore {
         return result;
     }
 
+    /***
+     * this is very handy because tiles get their images assigned at initialisation
+     * and with this I can put the obsacle images or the road images onto the tile images
+     * this is purely for the aestetics (like bridges going over shallow water)
+     * @param base the base image or the skin
+     * @param upper the image that is printed on the base, or the tattoo
+     * @return the base image but where the upper also has a pixel now has the same color as the upper
+     *         or the hand with a new tattoo
+     */
     public BufferedImage combineImages(BufferedImage base, BufferedImage upper){
         BufferedImage modifiedImage = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB);
         // Apply a color change to pixels of base image
@@ -893,15 +934,7 @@ public class ImageStore {
                 int baseRgb = base.getRGB(x, y);
                 int upperRgb = upper.getRGB(x, y);
                 int alpha = (upperRgb >> 24) & 0xFF;
-                //int baseRed = (baseRgb >> 16) & 0xFF;
-                //int baseGreen = (baseRgb >> 8) & 0xFF;
-                //int baseBlue = baseRgb & 0xFF;
-                //int upperRed = (upperRgb >> 16) & 0xFF;
-                //int upperGreen = (upperRgb >> 8) & 0xFF;
-                //int upperBlue = upperRgb & 0xFF;
                 if (alpha > 0){
-                    // Combine modified color components with original alpha
-                    //int modifiedRGB = (alpha << 24) | (upperRed << 16) | (upperGreen << 8) | upperBlue;
                     modifiedImage.setRGB(x, y, upperRgb);
                 }
                 else{
@@ -1062,7 +1095,7 @@ public class ImageStore {
         this.galleryTeam2Icon = galleryTeam2Icon;
     }
     public Map<Class<?>, ImageIcon> getGalleryTeam1IconShaded() {
-        return galleryTeam1Icon;
+        return galleryTeam1IconShaded;
     }
 
     public void setGalleryTeam1IconShaded(Map<Class<?>, ImageIcon> galleryTeam1Icon) {
@@ -1070,10 +1103,26 @@ public class ImageStore {
     }
 
     public Map<Class<?>, ImageIcon> getGalleryTeam2IconShaded() {
-        return galleryTeam2Icon;
+        return galleryTeam2IconShaded;
     }
 
     public void setGalleryTeam2IconShaded(Map<Class<?>, ImageIcon> galleryTeam2Icon) {
         this.galleryTeam2Icon = galleryTeam2Icon;
+    }
+
+    public Map<Class<?>, ImageIcon> getGalleryTeam1BigIcon() {
+        return galleryTeam1BigIcon;
+    }
+
+    public void setGalleryTeam1BigIcon(Map<Class<?>, ImageIcon> galleryTeam1BigIcon) {
+        this.galleryTeam1BigIcon = galleryTeam1BigIcon;
+    }
+
+    public void setGalleryTeam2BigIcon(Map<Class<?>, ImageIcon> galleryTeam2BigIcon) {
+        this.galleryTeam2BigIcon = galleryTeam2BigIcon;
+    }
+
+    public Map<Class<?>, ImageIcon> getGalleryTeam2BigIcon() {
+        return galleryTeam2BigIcon;
     }
 }

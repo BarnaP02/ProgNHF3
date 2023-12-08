@@ -1,30 +1,33 @@
 package tile;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class Tile {
-    private BufferedImage image;
-    private BufferedImage imageShaded;
-    private BufferedImage red;
-    String type;
-    int[] coords;
-    Tile[] border;
+public class Tile implements Serializable {
+    private transient BufferedImage image;
+    private transient BufferedImage imageShaded;
+    private transient BufferedImage red;
+    private String type;
+    private int[] coords;
+    private Tile[] border;
     private final int[] borders;
     public int worldX;
     public int worldY;
-    //public int screenX;
-    //public int screenY;
-    boolean isStructure;
-    boolean isObstacle;
-    boolean isStructureDoor;
-    boolean isRoad;
-    boolean isSelected;
-    boolean isHighlighted;
-    boolean isOnScreen;
-    boolean isVisited;
-    boolean isInRange;
-    int currentMoveRange;
-    //Tile cameFrom;
+    private boolean isStructure;
+    private boolean isObstacle;
+    private boolean isStructureDoor;
+    private boolean isRoad;
+    private boolean isSelected;
+    private boolean isHighlighted;
+    private boolean isOnScreen;
+    private boolean isVisited;
+    private boolean isInRange;
+    private int currentMoveRange;
+
+    /***
+     * the constructor for Tile
+     * @param type the type of tile this is as a string
+     */
     Tile(String type){
         image = null;
         this.type = type;
@@ -51,6 +54,10 @@ public class Tile {
         return coords;
     }
 
+    /***
+     * returns the number of bordering tiles
+     * @return num of bordering tiles
+     */
     public int numOfBorder(){
         int counter = 0;
         for(Tile b : border){
@@ -59,6 +66,10 @@ public class Tile {
         return counter;
     }
 
+    /***
+     * in the array 0 represents that there is no bordering tile and 1 that there is one
+     * @return the int array representing the neighbors
+     */
     public int[] borders(){
         for(int i = 0; i < 6; i++){
             if(border[i] != null) borders[i]=1;
@@ -111,5 +122,45 @@ public class Tile {
 
     public void setInRange(boolean inRange) {
         isInRange = inRange;
+    }
+
+    public boolean isStructure() {
+        return isStructure;
+    }
+
+    public boolean isObstacle() {
+        return isObstacle;
+    }
+
+    public void setObstacle(boolean obstacle) {
+        isObstacle = obstacle;
+    }
+
+    public void setStructure(boolean structure) {
+        isStructure = structure;
+    }
+
+    public boolean isStructureDoor() {
+        return isStructureDoor;
+    }
+
+    public void setStructureDoor(boolean structureDoor) {
+        isStructureDoor = structureDoor;
+    }
+
+    public boolean isRoad() {
+        return isRoad;
+    }
+
+    public void setRoad(boolean road) {
+        isRoad = road;
+    }
+
+    public boolean isOnScreen() {
+        return isOnScreen;
+    }
+
+    public void setOnScreen(boolean onScreen) {
+        isOnScreen = onScreen;
     }
 }

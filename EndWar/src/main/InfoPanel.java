@@ -1,5 +1,6 @@
 package main;
 
+import com.sun.nio.sctp.NotificationHandler;
 import entity.ImageStore;
 import entity.SuperUnit;
 import entity.*;
@@ -10,62 +11,235 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.net.NoRouteToHostException;
 
 import static javax.swing.UIManager.getIcon;
 import static main.Main.fontGallery;
 
 public class InfoPanel extends JPanel {
-    JLabel cycleNumberField = new JLabel();
-    JLabel currentHighlighted = new JLabel();
-    JLabel currentTeamField = new JLabel();
-    JLabel currentMoving = new JLabel();
-    JLabel currentActed = new JLabel();
-    JLabel currentPhaseField = new JLabel();
+    private PanelManager panM;
+    private SuperUnit inspectedUnit;
+    private JLabel cycleNumberField = new JLabel();
+    private JLabel currentHighlighted = new JLabel();
+    private JLabel currentTeamField = new JLabel();
+    private JLabel currentMoving = new JLabel();
+    private JLabel currentActed = new JLabel();
+    private JLabel currentPhaseField = new JLabel();
 
 
     private JPanel slot1 = new JPanel();
+    private JLabel slot1Label;
     private JPanel slot2 = new JPanel();
+    private JLabel slot2Label;
     private JPanel slot3 = new JPanel();
+    private JLabel slot3Label;
     private JPanel slot4 = new JPanel();
+    private JLabel slot4Label;
     private JPanel slot5 = new JPanel();
+    private JLabel slot5Label;
     private JPanel slot6 = new JPanel();
+    private JLabel slot6Label;
     private ImageIcon prev1Icon = new ImageIcon();
     private ImageIcon prev2Icon = new ImageIcon();
     private ImageIcon prev3Icon = new ImageIcon();
     private ImageIcon prev4Icon = new ImageIcon();
     private ImageIcon prev5Icon = new ImageIcon();
     private ImageIcon prev6Icon = new ImageIcon();
+    private JPanel team1Stats;
+    private JPanel team2Stats;
+    private JLabel team1GroundStats;
+    private JLabel team1AirStats;
+    private JLabel team1SeaStats;
+    private JLabel team2GroundStats;
+    private JLabel team2AirStats;
+    private JLabel team2SeaStats;
     private int t1Ground = 0;
     private int t1Air = 0;
     private int t1Sea = 0;
     private int t2Ground = 0;
     private int t2Air = 0;
     private int t2Sea = 0;
+    private int oldT1Ground = 0;
+    private int oldT1Air = 0;
+    private int oldT1Sea = 0;
+    private int oldT2Ground = 0;
+    private int oldT2Air = 0;
+    private int oldT2Sea = 0;
+    private ImageIcon unitIcon;
+    private ImageIcon unitIconPrev;
+    private JLabel unitImageLabel;
+    private JLabel unitHP;
+    private JLabel unitXP;
+    private JLabel unitARgrd;
+    private JLabel unitARair;
+    private JLabel unitARsea;
+    private JLabel unitDgrd;
+    private JLabel unitDair;
+    private JLabel unitDsea;
 
-
+    /***
+     * this is a very useful panel, this shows the stats of the unit that is on the same tile as the cursor
+     * also when the cursor is on a structure with the same color as the player,
+     * pressing tab the player can iterate between the stored units and while a unit is highlighted,
+     * pressing space will select that unit
+     * @param gp this panel displays information from the GamePanel
+     * @param panM used for creating placeholders
+     * @param height the height of this panel
+     */
     public InfoPanel(GamePanel gp, PanelManager panM, int height){
         this.setPreferredSize(new Dimension(250, height));
-        this.setBackground(Color.BLACK);
+        this.setBackground(Color.YELLOW);
         this.setFocusable(false);
+        this.panM = panM;
 
-        //setBackground(Color.BLACK);
+        setLayout(new GridLayout(2,1));
+        JPanel currentUnitPanel = new JPanel();
+        currentUnitPanel.setBackground(Color.RED);
 
-        setLayout(new GridLayout(2, 1));
-        JPanel inventorySpacer = new JPanel(new GridLayout(3, 1));
+        //Unit preview panel
+        GridBagConstraints gbcUnitPreview = new GridBagConstraints();
+        gbcUnitPreview.gridx = 0;
+        gbcUnitPreview.gridy = 0;
+        gbcUnitPreview.gridwidth = 2;
+        gbcUnitPreview.gridheight = 4;
+        gbcUnitPreview.weightx = 1.0;
+        gbcUnitPreview.fill = GridBagConstraints.BOTH;
+        gbcUnitPreview.anchor = GridBagConstraints.CENTER;
+        gbcUnitPreview.insets = new Insets(5, 5, 5, 5);
 
-        inventorySpacer.add(panM.createPlaceHolder(Color.BLACK));
+        //Unit HP and XP panel
+        GridBagConstraints gbcUnitXPHP = new GridBagConstraints();
+        gbcUnitXPHP.gridx = 2;
+        gbcUnitXPHP.gridy = 0;
+        gbcUnitXPHP.gridwidth = 1;
+        gbcUnitXPHP.gridheight = 4;
+        gbcUnitXPHP.weightx = 1;
+        gbcUnitXPHP.fill = GridBagConstraints.BOTH;
+        gbcUnitXPHP.anchor = GridBagConstraints.CENTER;
+        gbcUnitXPHP.insets = new Insets(5, 5, 5, 5);
+
+        //Unit attack range panel
+        GridBagConstraints gbcUnitStatLabel = new GridBagConstraints();
+        gbcUnitStatLabel.gridx = 0;
+        gbcUnitStatLabel.gridy = 4;
+        gbcUnitStatLabel.gridwidth = 3;
+        gbcUnitStatLabel.gridheight = 1;
+        gbcUnitStatLabel.weightx = 1.0;
+        gbcUnitStatLabel.fill = GridBagConstraints.BOTH;
+        gbcUnitStatLabel.anchor = GridBagConstraints.CENTER;
+        gbcUnitStatLabel.insets = new Insets(5, 5, 5, 5);
+
+        //Unit attack range panel
+        GridBagConstraints gbcUnitAR = new GridBagConstraints();
+        gbcUnitAR.gridx = 0;
+        gbcUnitAR.gridy = 5;
+        gbcUnitAR.gridwidth = 3;
+        gbcUnitAR.gridheight = 1;
+        gbcUnitAR.weightx = 1.0;
+        gbcUnitAR.fill = GridBagConstraints.BOTH;
+        gbcUnitAR.anchor = GridBagConstraints.CENTER;
+        gbcUnitAR.insets = new Insets(5, 5, 5, 5);
+
+        //Unit attack damage panel
+        GridBagConstraints gbcUnitD = new GridBagConstraints();
+        gbcUnitD.gridx = 0;
+        gbcUnitD.gridy = 6;
+        gbcUnitD.gridwidth = 3;
+        gbcUnitD.gridheight = 1;
+        gbcUnitD.weightx = 1.0;
+        gbcUnitD.fill = GridBagConstraints.BOTH;
+        gbcUnitD.anchor = GridBagConstraints.CENTER;
+        gbcUnitD.insets = new Insets(5, 5, 5, 5);
+
+        JPanel unitPreviewPanel = panM.createPlaceHolder(Color.DARK_GRAY);
+        unitIcon = gp.imagS.getGalleryTeam1BigIcon().get(U_tank_H.class);
+        unitIconPrev = unitIcon;
+        unitImageLabel = new JLabel();
+        unitImageLabel.setIcon(unitIcon);
+
+        unitPreviewPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        unitPreviewPanel.add(unitImageLabel);
+        unitPreviewPanel.setPreferredSize(new Dimension(240/3*2, 250/3*2));
+        currentUnitPanel.add(unitPreviewPanel, gbcUnitPreview);
+        JPanel unitXPHPPanel = panM.createPlaceHolder(Color.BLACK);
+        unitXPHPPanel.setPreferredSize(new Dimension(240/3, 250/3*2));
+        unitXPHPPanel.setLayout(new GridLayout(4,1));
+        unitXPHPPanel.add(panM.createLabel("HP:", fontGallery.getFontMap().get(3).get(3), Color.WHITE));
+        unitHP = new JLabel();
+        unitHP.setFont(fontGallery.getFontMap().get(3).get(3));
+        unitHP.setForeground(Color.GRAY);
+        unitXPHPPanel.add(unitHP);
+        unitXPHPPanel.add(panM.createLabel("XP:", fontGallery.getFontMap().get(3).get(3), Color.WHITE));
+        unitXP = new JLabel();
+        unitXP.setFont(fontGallery.getFontMap().get(3).get(3));
+        unitXP.setForeground(Color.MAGENTA);
+        unitXPHPPanel.add(unitXP);
+
+        currentUnitPanel.add(unitXPHPPanel,gbcUnitXPHP);
+
+        JPanel unitStatLabelPanel = new JPanel(new GridLayout(1,4));
+        unitStatLabelPanel.setPreferredSize(new Dimension(250, 40));
+        unitStatLabelPanel.setBackground(Color.BLACK);
+        JLabel statfiller = new JLabel();
+        statfiller.setBackground(Color.BLACK);
+        unitStatLabelPanel.add(statfiller);
+        statfiller = panM.createLabel("GRD:",fontGallery.getFontMap().get(3).get(2), Color.GREEN);
+        unitStatLabelPanel.add(statfiller);
+        statfiller = panM.createLabel("AIR:",fontGallery.getFontMap().get(3).get(2), Color.GRAY);
+        unitStatLabelPanel.add(statfiller);
+        statfiller = panM.createLabel("SEA:",fontGallery.getFontMap().get(3).get(2), Color.CYAN);
+        unitStatLabelPanel.add(statfiller);
+        currentUnitPanel.add(unitStatLabelPanel,gbcUnitStatLabel);
+
+        JPanel unitARPanel = new JPanel(new GridLayout(1,4));
+        unitARPanel.setPreferredSize(new Dimension(250, 40));
+        unitARPanel.setBackground(Color.BLACK);
+        unitARPanel.add(panM.createLabel("RNG:",fontGallery.getFontMap().get(3).get(2), Color.WHITE));
+        unitARgrd = new JLabel();
+        unitARgrd.setFont(fontGallery.getFontMap().get(3).get(2));
+        unitARgrd.setForeground(Color.GREEN);
+        unitARPanel.add(unitARgrd);
+        unitARair = new JLabel();
+        unitARair.setFont(fontGallery.getFontMap().get(3).get(2));
+        unitARair.setForeground(Color.GRAY);
+        unitARPanel.add(unitARair);
+        unitARsea = new JLabel();
+        unitARsea.setFont(fontGallery.getFontMap().get(3).get(2));
+        unitARsea.setForeground(Color.CYAN);
+        unitARPanel.add(unitARsea);
+        currentUnitPanel.add(unitARPanel,gbcUnitAR);
+
+        JPanel unitDPanel = new JPanel(new GridLayout(1,4));
+        unitDPanel.setPreferredSize(new Dimension(250, 40));
+        unitDPanel.setBackground(Color.BLACK);
+        unitDPanel.add(panM.createLabel("DMG:",fontGallery.getFontMap().get(3).get(2), Color.WHITE));
+        unitDgrd = new JLabel();
+        unitDgrd.setFont(fontGallery.getFontMap().get(3).get(2));
+        unitDgrd.setForeground(Color.GREEN);
+        unitDPanel.add(unitDgrd);
+        unitDair = new JLabel();
+        unitDair.setFont(fontGallery.getFontMap().get(3).get(2));
+        unitDair.setForeground(Color.GRAY);
+        unitDPanel.add(unitDair);
+        unitDsea = new JLabel();
+        unitDsea.setFont(fontGallery.getFontMap().get(3).get(2));
+        unitDsea.setForeground(Color.CYAN);
+        unitDPanel.add(unitDsea);
+        currentUnitPanel.add(unitDPanel,gbcUnitAR);
+
+        add(currentUnitPanel);
 
         JPanel currentInventoryPanel = new JPanel(new GridLayout(2, 3));
         currentInventoryPanel.setBackground(Color.CYAN);
         ImageIcon tankIcon = new ImageIcon(gp.imagS.getGallery().get(U_tank_H.class).get(4));
-        //JPanel slot = new JPanel();
-        slot1.add(new JLabel(tankIcon));
-        slot1.setBackground(Color.GRAY);
+        slot1Label = new JLabel(tankIcon);
+        slot1.add(slot1Label);
+        slot1.setBackground(Color.BLACK);
         slot1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         slot1.setFocusable(false);
         // Add space key binding to each panel
-        slot1.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel");
-        slot1.getActionMap().put("selectPanel", new AbstractAction() {
+        slot1.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel1");
+        slot1.getActionMap().put("selectPanel1", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Space pressed on panel index: " + 1);
@@ -77,107 +251,106 @@ public class InfoPanel extends JPanel {
             }
         });
         currentInventoryPanel.add(slot1);
-        //slot2 = new JButton(tankIcon);
-        slot2.add(new JLabel(tankIcon));
+        slot2Label = new JLabel(tankIcon);
+        slot2.add(slot2Label);
         slot2.setBackground(Color.BLACK);
         slot2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         slot2.setFocusable(false);
         // Add space key binding to each panel
-        slot2.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel");
-        slot2.getActionMap().put("selectPanel", new AbstractAction() {
+        slot2.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel2");
+        slot2.getActionMap().put("selectPanel2", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Space pressed on panel index: " + 2);
                 if (slot2.hasFocus()){
                     gp.timeL.setGotNewIndex(true);
-                    gp.timeL.setNewIndex(0);
+                    gp.timeL.setNewIndex(1);
                     gp.requestFocus();
                 }
             }
         });
         currentInventoryPanel.add(slot2);
-        //slot3 = new JButton(tankIcon);
-        slot3.add(new JLabel(tankIcon));
-        slot3.setBackground(Color.GRAY);
+        slot3Label = new JLabel(tankIcon);
+        slot3.add(slot3Label);
+        slot3.setBackground(Color.BLACK);
         slot3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         slot3.setFocusable(false);
         // Add space key binding to each panel
-        slot3.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel");
-        slot3.getActionMap().put("selectPanel", new AbstractAction() {
+        slot3.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel3");
+        slot3.getActionMap().put("selectPanel3", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Space pressed on panel index: " + 3);
                 if (slot3.hasFocus()){
                     gp.timeL.setGotNewIndex(true);
-                    gp.timeL.setNewIndex(0);
+                    gp.timeL.setNewIndex(2);
                     gp.requestFocus();
                 }
             }
         });
         currentInventoryPanel.add(slot3);
-        //slot4 = new JButton(tankIcon);
-        slot4.add(new JLabel(tankIcon));
+        slot4Label = new JLabel(tankIcon);
+        slot4.add(slot4Label);
         slot4.setBackground(Color.BLACK);
         slot4.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         slot4.setFocusable(false);
         // Add space key binding to each panel
-        slot4.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel");
-        slot4.getActionMap().put("selectPanel", new AbstractAction() {
+        slot4.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel4");
+        slot4.getActionMap().put("selectPanel4", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Space pressed on panel index: " + 4);
                 if (slot4.hasFocus()){
                     gp.timeL.setGotNewIndex(true);
-                    gp.timeL.setNewIndex(0);
+                    gp.timeL.setNewIndex(3);
                     gp.requestFocus();
                 }
             }
         });
         currentInventoryPanel.add(slot4);
-        //slot5 = new JButton(tankIcon);
-        slot5.add(new JLabel(tankIcon));
-        slot5.setBackground(Color.GRAY);
+        slot5Label = new JLabel(tankIcon);
+        slot5.add(slot5Label);
+        slot5.setBackground(Color.BLACK);
         slot5.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         slot5.setFocusable(false);
         // Add space key binding to each panel
-        slot5.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel");
-        slot5.getActionMap().put("selectPanel", new AbstractAction() {
+        slot5.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel5");
+        slot5.getActionMap().put("selectPanel5", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Space pressed on panel index: " + 5);
                 if (slot5.hasFocus()){
                     gp.timeL.setGotNewIndex(true);
-                    gp.timeL.setNewIndex(0);
+                    gp.timeL.setNewIndex(4);
                     gp.requestFocus();
                 }
             }
         });
         currentInventoryPanel.add(slot5);
-        //slot6 = new JButton(tankIcon);
-        slot6.add(new JLabel(tankIcon));
+        slot6Label = new JLabel(tankIcon);
+        slot6.add(slot6Label);
         slot6.setBackground(Color.BLACK);
         slot6.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         slot6.setFocusable(false);
         // Add space key binding to each panel
-        slot6.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel");
-        slot6.getActionMap().put("selectPanel", new AbstractAction() {
+        slot6.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "selectPanel6");
+        slot6.getActionMap().put("selectPanel6", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Space pressed on panel index: " + 6);
                 if (slot6.hasFocus()){
                     gp.timeL.setGotNewIndex(true);
-                    gp.timeL.setNewIndex(0);
+                    gp.timeL.setNewIndex(5);
                     gp.requestFocus();
                 }
             }
         });
         currentInventoryPanel.add(slot6);
-        inventorySpacer.add(currentInventoryPanel);
 
-        inventorySpacer.add(panM.createPlaceHolder(Color.BLACK));
+        JPanel otherStats = new JPanel(new GridLayout(2,1));
+        otherStats.add(currentInventoryPanel);
 
-        inventorySpacer.setBackground(Color.BLACK);
-        add(inventorySpacer);
+        currentUnitPanel.setBackground(Color.BLACK);
 
         JPanel gameStatsPanel = new JPanel(new GridLayout(6, 1));
         gameStatsPanel.setBackground(Color.BLACK);
@@ -187,16 +360,19 @@ public class InfoPanel extends JPanel {
         gameStatsPanel.add(label);
         //row 2
         JPanel team1Labels = new JPanel(new GridLayout(1, 3));
-        team1Labels.add(panM.createLabel("GROUND:", fontGallery.getFontMap().get(3).get(1), Color.GREEN));
+        team1Labels.add(panM.createLabel("GRD:", fontGallery.getFontMap().get(3).get(1), Color.GREEN));
         team1Labels.add(panM.createLabel("AIR:", fontGallery.getFontMap().get(3).get(1), Color.GRAY));
         team1Labels.add(panM.createLabel("SEA:", fontGallery.getFontMap().get(3).get(1), Color.CYAN));
         team1Labels.setBackground(Color.BLACK);
         gameStatsPanel.add(team1Labels);
         //row 3
-        JPanel team1Stats = new JPanel(new GridLayout(1, 3));
-        team1Stats.add(panM.createLabel(""+t1Ground, fontGallery.getFontMap().get(3).get(2), Color.GREEN));
-        team1Stats.add(panM.createLabel(""+t1Air, fontGallery.getFontMap().get(3).get(2), Color.GRAY));
-        team1Stats.add(panM.createLabel(""+t1Sea, fontGallery.getFontMap().get(3).get(2), Color.CYAN));
+        team1Stats = new JPanel(new GridLayout(1, 3));
+        team1GroundStats = panM.createLabel(""+t1Ground, fontGallery.getFontMap().get(3).get(2), Color.GREEN);
+        team1Stats.add(team1GroundStats);
+        team1AirStats = panM.createLabel(""+t1Air, fontGallery.getFontMap().get(3).get(2), Color.GRAY);
+        team1Stats.add(team1AirStats);
+        team1SeaStats = panM.createLabel(""+t1Sea, fontGallery.getFontMap().get(3).get(2), Color.CYAN);
+        team1Stats.add(team1SeaStats);
         team1Stats.setBackground(Color.BLACK);
         gameStatsPanel.add(team1Stats);
 
@@ -206,119 +382,73 @@ public class InfoPanel extends JPanel {
         gameStatsPanel.add(label);
         //row 5
         JPanel team2Labels = new JPanel(new GridLayout(1, 3));
-        team2Labels.add(panM.createLabel("GROUND:", fontGallery.getFontMap().get(3).get(1), Color.GREEN));
+        team2Labels.add(panM.createLabel("GRD:", fontGallery.getFontMap().get(3).get(1), Color.GREEN));
         team2Labels.add(panM.createLabel("AIR:", fontGallery.getFontMap().get(3).get(1), Color.GRAY));
         team2Labels.add(panM.createLabel("SEA:", fontGallery.getFontMap().get(3).get(1), Color.CYAN));
         team2Labels.setBackground(Color.BLACK);
         gameStatsPanel.add(team2Labels);
         //row 6
-        JPanel team2Stats = new JPanel(new GridLayout(1, 3));
-        team2Stats.add(panM.createLabel(""+t2Ground, fontGallery.getFontMap().get(3).get(2), Color.GREEN));
-        team2Stats.add(panM.createLabel(""+t2Air, fontGallery.getFontMap().get(3).get(2), Color.GRAY));
-        team2Stats.add(panM.createLabel(""+t2Sea, fontGallery.getFontMap().get(3).get(2), Color.CYAN));
+        team2Stats = new JPanel(new GridLayout(1, 3));
+        team2GroundStats = panM.createLabel(""+t2Ground, fontGallery.getFontMap().get(3).get(2), Color.GREEN);
+        team2Stats.add(team2GroundStats);
+        team2AirStats = panM.createLabel(""+t2Air, fontGallery.getFontMap().get(3).get(2), Color.GRAY);
+        team2Stats.add(team2AirStats);
+        team2SeaStats = panM.createLabel(""+t2Sea, fontGallery.getFontMap().get(3).get(2), Color.CYAN);
+        team2Stats.add(team2SeaStats);
         team2Stats.setBackground(Color.BLACK);
         gameStatsPanel.add(team2Stats);
 
-        add(gameStatsPanel);
+        otherStats.add(gameStatsPanel);
+        add(otherStats);
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("permanentFocusOwner", evt -> {
             Component focused = (Component) evt.getNewValue();
             if (slot1 == focused) {
                 System.out.println("Focused panel index: " + 1);
-                gp.timeL.setGotNewIndex(true);
-                gp.timeL.setNewIndex(0);
-                //gp.requestFocus();
+                inspectedUnit = gp.getStructureFromTile(gp.cruser.getHover()).getInventory().get(0);
             }
-            if (slot2 == focused) {
+            else if (slot2 == focused) {
                 System.out.println("Focused panel index: " + 2);
-                gp.timeL.setGotNewIndex(true);
-                gp.timeL.setNewIndex(1);
-                //gp.requestFocus();
+                inspectedUnit = gp.getStructureFromTile(gp.cruser.getHover()).getInventory().get(1);
             }
-            if (slot3 == focused) {
+            else if (slot3 == focused) {
                 System.out.println("Focused panel index: " + 3);
-                gp.timeL.setGotNewIndex(true);
-                gp.timeL.setNewIndex(2);
-                //gp.requestFocus();
+                inspectedUnit = gp.getStructureFromTile(gp.cruser.getHover()).getInventory().get(2);
             }
-            if (slot4 == focused) {
+            else if (slot4 == focused) {
                 System.out.println("Focused panel index: " + 4);
-                gp.timeL.setGotNewIndex(true);
-                gp.timeL.setNewIndex(3);
-                //gp.requestFocus();
+                inspectedUnit = gp.getStructureFromTile(gp.cruser.getHover()).getInventory().get(3);
             }
-            if (slot5 == focused) {
+            else if (slot5 == focused) {
                 System.out.println("Focused panel index: " + 5);
-                gp.timeL.setGotNewIndex(true);
-                gp.timeL.setNewIndex(4);
-                //gp.requestFocus();
+                inspectedUnit = gp.getStructureFromTile(gp.cruser.getHover()).getInventory().get(4);
             }
-            if (slot6 == focused) {
+            else if (slot6 == focused) {
                 System.out.println("Focused panel index: " + 6);
-                gp.timeL.setGotNewIndex(true);
-                gp.timeL.setNewIndex(5);
-                //gp.requestFocus();
+                inspectedUnit = gp.getStructureFromTile(gp.cruser.getHover()).getInventory().get(5);
+            }
+            else{
+                inspectedUnit = null;
             }
         });
-
-
-
-
-/*
-        setLayout(new GridLayout(1, 1)); // Single row, single column
-        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add some padding
-
-        // Create a nested panel with GridLayout for labels and fields
-        JPanel infoPanel = new JPanel(new GridLayout(10, 1)); // 1 row, 10 columns
-
-        // Add labels
-        infoPanel.add(new JLabel());
-        infoPanel.add(new JLabel("Cycle number:"));
-        //JTextField cycleNumberField = new JTextField(5);
-        infoPanel.add(cycleNumberField);
-        infoPanel.add(currentHighlighted);
-        infoPanel.add(new JLabel("Current team:"));
-        //JTextField currentTeamField = new JTextField(15);
-        infoPanel.add(currentTeamField);
-        infoPanel.add(currentActed);
-        infoPanel.add(currentMoving);
-        infoPanel.add(new JLabel("Current phase:"));
-        //JTextField currentPhaseField = new JTextField(10);
-        infoPanel.add(currentPhaseField);
-        // Add empty spaces for input fields
-
-        // Add input fields
-
-        // Add the nested panel to the bottomPanel
-        add(infoPanel);
-        //setVisible(true);
-*/
     }
+
+    /***
+     * this updated this panel with the current information
+     * @param gp for accessing information
+     * @param unit if a visible unit is standing on the same tile as the cursor then that unit, otherwise null
+     */
     public void update(GamePanel gp, SuperUnit unit){
         if (gp.cycleState == GamePanel.Cycle.T2ATTACK || gp.cycleState == GamePanel.Cycle.T1ATTACK){
             setSlotsFocusable(false);
         }
         if (gp.cruser.getHover().getType().equals("depot") || gp.cruser.getHover().getType().equals("harbor") ||
                 gp.cruser.getHover().getType().equals("factory")){
-            //setSlotsFocusable(true);
-            //cycleNumberField.setText("type: " + gp.cruser.getHover().getType() + " size: " +gp.getStructureFromTile(gp.cruser.getHover()).getInventory().size());
-            //currentActed.setText("unitFromStructure: "+gp.timeL.unitFromStructure);
-            unit = gp.getUnitFromTile(gp.cruser.getHover());
-            if (unit != null) {
-                currentTeamField.setText("is visible: " + unit.isVisible());
-                currentHighlighted.setText("sideNum of unit: "+ unit.getTeamNum());
-            }
+
             SuperStructure struc = gp.getStructureFromTile(gp.cruser.getHover());
-            //int cycletype = 0;
-            //if ( &&
-            //(gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 2) ||
-            //        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 1))
             if (!struc.getInventory().isEmpty()){
-                //slot1.repaint();
-                if((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
-                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0)){
-                    slot1.setFocusable(true);
-                }
+                slot1.setFocusable((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
+                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0));
                 ImageIcon icon;
                 if (!struc.getInventory().get(0).isActed()){
                     if (struc.getSide() == 0){
@@ -337,39 +467,21 @@ public class InfoPanel extends JPanel {
                     }
                 }
                 if (prev1Icon != icon){
-                    slot1.removeAll();
-                    slot1.add(new JLabel(icon));
-                    System.out.println("VAAAA");
-                    //slot1.repaint();
-                    System.out.println("NEM___ICON");
+                    slot1Label.setIcon(icon);
                     prev1Icon = icon;
+                    slot1Label.repaint();
                 }
-                else {
-                    boolean print = prev1Icon != icon;
-                    //System.out.println("NEM___ICON---NOT     "+print);
-                    slot1.setBackground(Color.CYAN);
-                    System.out.println("VAAAA");
-                    //slot1.repaint();
-                    //System.out.println(struc.getInventory());
-                    //slot1.repaint();
-                }
+                slot1.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
             }
             else {
-                slot1.setFocusable(false);
-                if (prev1Icon != null){
-                    slot1.removeAll();
-                    //slot1.add(new JLabel(icon));
-                    prev1Icon = null;
-                    System.out.println("VAAAA");
-                    slot1.repaint();
-                }
+                slot1Label.setIcon(null);
+                slot1Label.repaint();
+                prev1Icon = null;
+                slot1.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
             }
             if (struc.getInventory().size() > 1){
-                if(((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
-                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0))){
-                    //slot2.repaint();
-                    slot2.setFocusable(true);
-                }
+                slot2.setFocusable((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
+                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0));
                 ImageIcon icon;
                 if (!struc.getInventory().get(1).isActed()){
                     if (struc.getSide() == 0){
@@ -388,29 +500,21 @@ public class InfoPanel extends JPanel {
                     }
                 }
                 if (prev2Icon != icon){
-                    slot2.removeAll();
-                    slot2.add(new JLabel(icon));
-                    System.out.println("VAAAA");
-                    slot2.repaint();
+                    slot2Label.setIcon(icon);
                     prev2Icon = icon;
+                    slot2Label.repaint();
                 }
+                slot2.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
             }
             else {
-                slot2.setFocusable(false);
-                if (prev2Icon != null){
-                    slot2.removeAll();
-                    //slot1.add(new JLabel(icon));
-                    prev2Icon = null;
-                    System.out.println("VAAAA");
-                    slot2.repaint();
-                }
+                slot2Label.setIcon(null);
+                slot2Label.repaint();
+                prev2Icon = null;
+                slot2.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
             }
             if (struc.getInventory().size() > 2){
-                if((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
-                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0)){
-                    //slot3.repaint();
-                    slot3.setFocusable(true);
-                }
+                slot3.setFocusable((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
+                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0));
                 ImageIcon icon;
                 if (!struc.getInventory().get(2).isActed()){
                     if (struc.getSide() == 0){
@@ -429,29 +533,21 @@ public class InfoPanel extends JPanel {
                     }
                 }
                 if (prev3Icon != icon){
-                    slot3.removeAll();
-                    slot3.add(new JLabel(icon));
-                    System.out.println("VAAAA");
-                    slot3.repaint();
+                    slot3Label.setIcon(icon);
                     prev3Icon = icon;
+                    slot3Label.repaint();
                 }
+                slot3.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
             }
             else {
-                slot3.setFocusable(false);
-                if (prev3Icon != null){
-                    slot3.removeAll();
-                    //slot1.add(new JLabel(icon));
-                    prev3Icon = null;
-                    System.out.println("VAAAA");
-                    slot3.repaint();
-                }
+                slot3Label.setIcon(null);
+                slot3Label.repaint();
+                prev3Icon = null;
+                slot3.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
             }
             if (struc.getInventory().size() > 3){
-                if ((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
-                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0)){
-                    //slot4.repaint();
-                    slot4.setFocusable(true);
-                }
+                slot4.setFocusable((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
+                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0));
                 ImageIcon icon;
                 if (!struc.getInventory().get(3).isActed()){
                     if (struc.getSide() == 0){
@@ -470,29 +566,21 @@ public class InfoPanel extends JPanel {
                     }
                 }
                 if (prev4Icon != icon){
-                    slot4.removeAll();
-                    slot4.add(new JLabel(icon));
-                    System.out.println("VAAAA");
-                    slot4.repaint();
+                    slot4Label.setIcon(icon);
                     prev4Icon = icon;
+                    slot4Label.repaint();
                 }
+                slot4.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
             }
             else {
-                slot4.setFocusable(false);
-                if (prev4Icon != null){
-                    slot4.removeAll();
-                    //slot1.add(new JLabel(icon));
-                    prev4Icon = null;
-                    System.out.println("VAAAA");
-                    slot4.repaint();
-                }
+                slot4Label.setIcon(null);
+                slot4Label.repaint();
+                prev4Icon = null;
+                slot4.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
             }
             if (struc.getInventory().size() > 4){
-                if((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
-                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0)){
-                    //slot5.repaint();
-                    slot5.setFocusable(true);
-                }
+                slot5.setFocusable((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
+                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0));
                 ImageIcon icon;
                 if (!struc.getInventory().get(4).isActed()){
                     if (struc.getSide() == 0){
@@ -511,29 +599,21 @@ public class InfoPanel extends JPanel {
                     }
                 }
                 if (prev5Icon != icon){
-                    slot5.removeAll();
-                    slot5.add(new JLabel(icon));
-                    System.out.println("VAAAA");
-                    slot5.repaint();
+                    slot5Label.setIcon(icon);
                     prev5Icon = icon;
+                    slot5Label.repaint();
                 }
+                slot5.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
             }
             else {
-                slot5.setFocusable(false);
-                if (prev5Icon != null){
-                    slot5.removeAll();
-                    //slot1.add(new JLabel(icon));
-                    prev5Icon = null;
-                    System.out.println("VAAAA");
-                    slot5.repaint();
-                }
+                slot5Label.setIcon(null);
+                slot5Label.repaint();
+                prev5Icon = null;
+                slot5.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
             }
             if (struc.getInventory().size() > 5){
-                if ((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
-                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0)){
-                    //slot6.repaint();
-                    slot6.setFocusable(true);
-                }
+                slot6.setFocusable((gp.cycleState == GamePanel.Cycle.T2MOVE && struc.getSide() == 1) ||
+                        (gp.cycleState == GamePanel.Cycle.T1MOVE && struc.getSide() == 0));
                 ImageIcon icon;
                 if (!struc.getInventory().get(5).isActed()){
                     if (struc.getSide() == 0){
@@ -552,103 +632,148 @@ public class InfoPanel extends JPanel {
                     }
                 }
                 if (prev6Icon != icon){
-                    slot6.removeAll();
-                    slot6.add(new JLabel(icon));
-                    System.out.println("VAAAA");
-                    slot6.repaint();
+                    slot6Label.setIcon(icon);
                     prev6Icon = icon;
+                    slot6Label.repaint();
                 }
+                slot6.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
             }
             else {
-                slot6.setFocusable(false);
-                if (prev6Icon != null){
-                    slot6.removeAll();
-                    //slot1.add(new JLabel(icon));
-                    prev6Icon = null;
-                    System.out.println("VAAAA");
-                    slot6.repaint();
-                }
+                slot6Label.setIcon(null);
+                slot6Label.repaint();
+                prev6Icon = null;
+                slot6.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
             }
+
 
             if (slot1.hasFocus()){
-                slot1.setBackground(Color.RED);
-                slot1.setBackground(Color.BLACK);
+                unit = struc.getInventory().get(0);
                 slot1.setBorder(BorderFactory.createLineBorder(Color.CYAN, 2));
             }
-            else {
-                slot1.setBackground(Color.BLACK);
-                slot1.setBorder(BorderFactory.createLineBorder(Color.CYAN, 0));
-            }
-            System.out.println("VAUUA");
-            slot1.repaint();
             if (slot2.hasFocus()){
-                slot2.setBackground(Color.RED);
-                slot2.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+                unit = struc.getInventory().get(1);
+                slot2.setBorder(BorderFactory.createLineBorder(Color.CYAN, 2));
             }
-            else {
-                slot2.setBackground(Color.BLACK);
-            }
-            slot2.repaint();
             if (slot3.hasFocus()){
-                slot3.setBackground(Color.RED);
-                slot3.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+                unit = struc.getInventory().get(2);
+                slot3.setBorder(BorderFactory.createLineBorder(Color.CYAN, 2));
             }
-            else {
-                slot3.setBackground(Color.BLACK);
-            }
-            slot3.repaint();
             if (slot4.hasFocus()){
-                slot4.setBackground(Color.RED);
-                slot4.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+                unit = struc.getInventory().get(3);
+                slot4.setBorder(BorderFactory.createLineBorder(Color.CYAN, 2));
             }
-            else {
-                slot4.setBackground(Color.BLACK);
-            }
-            slot4.repaint();
             if (slot5.hasFocus()){
-                slot5.setBackground(Color.RED);
-                slot5.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+                unit = struc.getInventory().get(4);
+                slot5.setBorder(BorderFactory.createLineBorder(Color.CYAN, 2));
             }
-            else {
-                slot5.setBackground(Color.BLACK);
-            }
-            slot5.repaint();
             if (slot6.hasFocus()){
-                slot6.setBackground(Color.RED);
-                slot6.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+                unit = struc.getInventory().get(5);
+                slot6.setBorder(BorderFactory.createLineBorder(Color.CYAN, 2));
             }
-            else {
-                slot6.setBackground(Color.BLACK);
-            }
-            //slot6.repaint();
-
-            /*currentHighlighted.setText(unit.getType());
-            currentTeamField.setText("in range: " + unit.isInRange());
-            currentActed.setText("acted: " + unit.isActed());
-            currentMoving.setText("moving: " + unit.isMoving());
-            currentPhaseField.setText("" + unit.getXp());*/
-
         }
         else{
-            unit = gp.getUnitFromTile(gp.cruser.getHover());
-            setSlotsFocusable(false);
-            if (unit != null){
-                cycleNumberField.setText("" + unit.getHp());
-                currentHighlighted.setText(unit.getType());
-                currentTeamField.setText("in range: " + unit.isInRange());
-                currentActed.setText("acted: " + unit.isActed());
-                currentMoving.setText("moving: " + unit.isMoving());
-                currentPhaseField.setText("" + unit.getXp());
+            slot1Label.setIcon(null);
+            slot1.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
+            prev1Icon = null;
+
+            slot2Label.setIcon(null);
+            slot2.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
+            prev2Icon = null;
+
+            slot3Label.setIcon(null);
+            slot3.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
+            prev3Icon = null;
+
+            slot4Label.setIcon(null);
+            slot4.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
+            prev4Icon = null;
+
+            slot5Label.setIcon(null);
+            slot5.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
+            prev5Icon = null;
+
+            slot6Label.setIcon(null);
+            slot6.setBorder(BorderFactory.createLineBorder(Color.WHITE, 0));
+            prev6Icon = null;
+        }
+
+
+        if (unit != null){
+            ImageIcon newUnitIcon;
+            SuperStructure struc = gp.getStructureFromTile(gp.cruser.getHover());
+            if (struc != null) {
+                //in this case that unit color is the color of the structure
+                if (struc.getSide() == 0) {
+                    newUnitIcon = gp.imagS.getGalleryTeam1BigIcon().get(unit.getClass());
+                } else {
+                    newUnitIcon = gp.imagS.getGalleryTeam2BigIcon().get(unit.getClass());
+                }
             }
-            else{
-                currentTeamField.setText("");
-                currentHighlighted.setText("");
-                cycleNumberField.setText("");
-                currentPhaseField.setText("");
-                currentActed.setText("");
-                currentMoving.setText("");
+            else if (unit.getTeamNum() == 0){
+                newUnitIcon = gp.imagS.getGalleryTeam1BigIcon().get(unit.getClass());
+            }
+            else {
+                newUnitIcon = gp.imagS.getGalleryTeam2BigIcon().get(unit.getClass());
+            }
+
+            if (newUnitIcon != unitIconPrev){
+                unitIcon = newUnitIcon;
+                unitIconPrev = unitIcon;
+                unitHP.setText(""+unit.getHp());
+                unitXP.setText(""+unit.getXp());
+                unitImageLabel.setIcon(unitIcon);
+                String statfillr;
+                if (unit.getAttackRange()[0] == unit.getAttackRange()[1]){
+                    statfillr = ""+unit.getAttackRange()[0];
+                }
+                else {
+                    statfillr = unit.getAttackRange()[0]+"-"+unit.getAttackRange()[1];
+                }
+                unitARgrd.setText(statfillr);
+
+                if (unit.getAttackRange()[2] == unit.getAttackRange()[3]){
+                    statfillr = ""+unit.getAttackRange()[2];
+                }
+                else {
+                    statfillr = unit.getAttackRange()[2]+"-"+unit.getAttackRange()[3];
+                }
+                unitARair.setText(statfillr);
+
+                if (unit.getAttackRange()[4] == unit.getAttackRange()[5]){
+                    statfillr = ""+unit.getAttackRange()[4];
+                }
+                else {
+                    statfillr = unit.getAttackRange()[4]+"-"+unit.getAttackRange()[5];
+                }
+                unitARsea.setText(statfillr);
+
+                unitDgrd.setText(""+unit.getAttackDamage()[0]);
+                unitDair.setText(""+unit.getAttackDamage()[1]);
+                unitDsea.setText(""+unit.getAttackDamage()[2]);
             }
         }
+        else {
+            if (unitIconPrev != null){
+                unitIcon = null;
+                unitIconPrev = null;
+                unitHP.setText("");
+                unitXP.setText("");
+                unitImageLabel.setIcon(unitIcon);
+                unitARgrd.setText("~");
+                unitARair.setText("~");
+                unitARsea.setText("~");
+                unitDgrd.setText("~");
+                unitDair.setText("~");
+                unitDsea.setText("~");
+            }
+        }
+
+        t1Ground = 0;
+        t1Air = 0;
+        t1Sea = 0;
+        t2Ground = 0;
+        t2Air = 0;
+        t2Sea = 0;
         for (SuperUnit su : gp.ally){
             if(su.isNavy()){
                 t1Sea++;
@@ -671,8 +796,17 @@ public class InfoPanel extends JPanel {
                 t2Ground++;
             }
         }
-        repaint();
+        if (oldT1Ground != t1Ground || oldT1Air != t1Air || oldT1Sea != t1Sea || oldT2Ground != t2Ground || oldT2Air != t2Air || oldT2Sea != t2Sea){
+            refreshTeamStats();
+            team1Stats.repaint();
+            team2Stats.repaint();
+        }
     }
+
+    /***
+     * sets all the 6 slots' focus to focus
+     * @param focus the value for focus
+     */
     public void setSlotsFocusable(boolean focus){
         slot1.setFocusable(focus);
         slot2.setFocusable(focus);
@@ -680,6 +814,18 @@ public class InfoPanel extends JPanel {
         slot4.setFocusable(focus);
         slot5.setFocusable(focus);
         slot6.setFocusable(focus);
+    }
+
+    /***
+     * sets the label values to the new values
+     */
+    public void refreshTeamStats(){
+        team1GroundStats.setText(""+t1Ground);
+        team1AirStats.setText(""+t1Air);
+        team1SeaStats.setText(""+t1Sea);
+        team2GroundStats.setText(""+t2Ground);
+        team2AirStats.setText(""+t2Air);
+        team2SeaStats.setText(""+t2Sea);
     }
 
     public JPanel getSlot1() {

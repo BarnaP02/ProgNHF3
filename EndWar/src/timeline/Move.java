@@ -7,29 +7,34 @@ import tile.Tile;
 import java.util.List;
 
 public class Move extends Order{
-    Tile destinationTile;
-    Tile startingTile;
-    //Tile next;
-    List<Tile> path;
-    int beginX = 0;
-    int beginY = 0;
-    int endX = 0;
-    int endY = 0;
-    int incrementX = 0;
-    int incrementY = 0;
-    int counter = 0;
-    Tile current = null;
+    private Tile destinationTile;
+    private Tile startingTile;
+    private List<Tile> path;
+    private int beginX = 0;
+    private int beginY = 0;
+    private int endX = 0;
+    private int endY = 0;
+    private int incrementX = 0;
+    private int incrementY = 0;
+    private int counter = 0;
+    private Tile current = null;
     protected Tile origin;
     protected int originalTeamNum = 0;
 
+    /***
+     * the constructor for move orders, this stores that a unit moves from tile a to tile b
+     * @param gp for context
+     * @param dancer the unit that is moving
+     * @param destinationTile the tile that dancer is moving to
+     * @param path the path on which dancer travels
+     */
+
     Move(GamePanel gp, SuperUnit dancer, Tile destinationTile, List<Tile> path){
         if (dancer.getTeamNum()==0){
-            //otherSide = gp.enemy;
             side = gp.ally;
             originalTeamNum = 0;
         }
         else if (dancer.getTeamNum()==1){
-            //otherSide = gp.ally;
             side = gp.enemy;
             originalTeamNum = 1;
         }
@@ -46,39 +51,33 @@ public class Move extends Order{
                 index = i;
             }
         }
-        //this.side = side;
-        //this.index = index;
         this.destinationTile = destinationTile;
         this.path = path;
         this.startingTile = dancer.getCurrentTile();
         origin = side.get(index).getCurrentTile();
-        //previous = origin;
         current = side.get(index).getCurrentTile();
         actor = dancer;
         side.get(index).setCurrentTile(destinationTile);
         if (side.get(index).is2tile()){
-            //side.get(index).setOtherCurrentTile(side.get(index).direction);
             side.get(index).setOtherCurrentTile(path.get(path.size()-2));
         }
         else {
             side.get(index).setOtherCurrentTile(side.get(index).getCurrentTile());
         }
-        //side.get(index).setOtherCurrentTile(path.get(path.size()-1));
     }
 
+    /***
+     * this is what completes a move
+     * @param gp for context
+     */
     @Override
     public void complete(GamePanel gp) {
-        /*
-        if(side.equals("ally")){
-            gp.ally.get(index).moveUnit(gp, destinationTile);
-        }*/
         if(actor.getClass() == U_arty_H.class){
             actor.setArtyAbleToFire(false);
         }
         int next = 0;
         for (int i = 0; i < path.size(); ++i){
             if (path.get(i) == current){
-                //current = path.get(i);
                 next = i + 1;
             }
         }
@@ -91,15 +90,10 @@ public class Move extends Order{
             if (sust != null){
                 sust.unitArrived(actor);
             }
-            //gp.paintComponent(gp.getGraphics());
-
-            //gp.easyAccessUnitLocation.put(side.get(index),side.get(index).getCurrentTile());
-            //gp.easyAccessUnitLocationOther.put(side.get(index),side.get(index).getOtherCurrentTile());
             return;
         }
         for (int i = 0; i < current.borders().length; ++i){
             if (current.getBorder(i) == path.get(next)){
-                //current = path.get(i);
                 actor.setDirection(i);
             }
         }
@@ -124,6 +118,11 @@ public class Move extends Order{
             actor.setWorldY(actor.getWorldY() + incrementY);
         }
     }
+
+    /***
+     * this is for after a side moved, to reset the units to their original positions because the enemy gives the attack orders before the move orders are given
+     * @param gp for context
+     */
     @Override
     public void reverse(GamePanel gp){
         int newDirection = 0;
@@ -135,13 +134,6 @@ public class Move extends Order{
         actor.setDirection(newDirection);
         actor.setCurrentTile(origin);
         actor.setOtherCurrentTile(path.get(0));
-        /*if (side.get(index).is2tile()){
-
-            side.get(index).setOtherCurrentTile(path.get(0));
-        }
-        else {
-            side.get(index).setOtherCurrentTile(path.get(1));
-        }*/
         actor.setWorldX(origin.worldX);
         actor.setWorldY(origin.worldY);
         actor.setActed(false);
@@ -151,14 +143,16 @@ public class Move extends Order{
             sust.deployUnit(actor, originalTeamNum);
         }
         SuperStructure sustru = gp.getStructureFromTile(startingTile);
-        //if (sustru != null){
-        //    sustru.storeUnit(actor);
-        //}
         actor.setTeamNum(originalTeamNum);
         actor.setVisible(originalTeamNum != 2);
 
         actor.setLastImgIndex(-1);
     }
+
+    /***
+     * after the enemy attack phase ends or begins and units are still on the move, this forces the move orders to finish immediately
+     * @param gp for context
+     */
     @Override
     public void forceFinish(GamePanel gp){
         if (current == null){
@@ -198,19 +192,8 @@ public class Move extends Order{
                 gp.getStructureFromTile(destinationTile).storeUnit(actor);
             }
         }
-        /*if (gp.getStructureFromTile(startingTile) != null){
-            actor.setVisible(false);
-            actor.setTeamNum(2);
-
-            //for when reverse stores actor
-            //if (!gp.getStructureFromTile(startingTile).getInventory().contains(actor)){
-            //    gp.getStructureFromTile(startingTile).deployUnit(actor, originalTeamNum);
-            //}
-        }*/
         if (originalTeamNum == 2) {
             actor.setVisible(true);
         }
-        //gp.easyAccessUnitLocation.put(side.get(index),side.get(index).getCurrentTile());
-        //gp.easyAccessUnitLocationOther.put(side.get(index),side.get(index).getOtherCurrentTile());
     }
 }
